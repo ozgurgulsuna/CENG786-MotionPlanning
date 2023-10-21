@@ -16,7 +16,15 @@ Possible formats:
   - [x] IEEE IROS
   - [ ] IEEE T-RO
 
-
+### Thoughts
+  - increase dimensions of maze, time varying maze
+  - discomfort function / Pressure
+  - multiple robots / bugs
+  - flying bug
+  - bug with limited battery 
+  - bug with limited memory
+  - bug with limited sensor range
+  - gaussian splatting bug
 
 
 **bonus**: implement a faster sensor reading method.
