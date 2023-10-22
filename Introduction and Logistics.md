@@ -90,5 +90,8 @@ $$
 
 and a path $ c \in C^0$ is $c: [0,1] \rightarrow W_{free}$ where $c(0) = q_{start}$ and $c(1) = q_{goal}$.
 
+The goal of a motion planning [[algorithm]] is to find a feasible path in the free space that satisfies any given constraints or objectives, such as minimizing distance or avoiding certain regions of the [[workspace]].
+
+
 -----
 #CENG786 - [Robot Motion Control and Planning](Robot%20Motion%20Control%20and%20Planning.md) at [METU](METU.md)
