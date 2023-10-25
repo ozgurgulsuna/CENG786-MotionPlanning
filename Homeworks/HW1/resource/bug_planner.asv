@@ -19,18 +19,18 @@ for i=2:200
     % dist(0) = 10; % minimum distance
     min = -pi/2; % angle of minimum distance
     % sweep the sensor around
-    for theta=0:2*pi/40:2*pi  % 10 degree steps
-        dist(2) = read_sensor(theta, [x(i-1) y(i-1)]);
-        if (dist(2)<dist(1)) && (dist(2)<0.25)
+    for theta=0:2*pi/10:2*pi  % 10 degree steps
+        dist(2) = read_sensor(theta, [x(i-1) y(i-1)])
+        if dist(2)<dist(1) 
             dist(1) = dist(2) ;
-            min = theta;
+            min = theta
         end
     end
     
     % move in the direction orthogonal to the minimum distance
     x(i) = x(i-1) + range*0.1*(cos(min+pi/2));
     y(i) = y(i-1) + range*0.1*(sin(min+pi/2));
-    min;
+    min
    
 
 

@@ -1,3 +1,4 @@
+
 %  This file is an example template you can use for your solution.  It
 % provides wrapper functions as well as various utilities that may be
 % useful for your implementation
@@ -39,7 +40,8 @@
 %
 
 function ceng786_hw1;
-
+clear
+clc
 % Global Parameters Declarations -----------------
 global sensor_range;  % Determines limited sensor range
 global arena_limits;  % Boundaries of the arena: [xmin xmax ymin ymax]
