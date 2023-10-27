@@ -58,7 +58,7 @@ arena_map = [];
 % Invoking your solutions for the example arena ------------------------
 init_arena();
 
-[x_m1_b1, y_m1_b1] = bug_planner( qstart, qgoal );
+[x_m1_b1, y_m1_b1] = bug_one( qstart, qgoal );
 
 figure(1);
 clf;
@@ -102,13 +102,54 @@ arena_map = [];
 %     5.2889  6.0427; 5.5402  6.0930; 5.7412  6.4447; ...
 %     5.7412  6.9724; 5.4899  7.2990; 5.2638  7.4749 ];
 
-arena_map{1} = ...
-   [2.8571    8.3236; ...
-    3.1487    1.5889; 
-    4.4898    1.5015;
-    4.5773    8.6443 ];
+arena_map{1} =  ...
+   [3      8;   ...
+    3      1;   ...
+    3.5    1;   ...
+    3.0    8 ];
 
-qstart = [2 9];
+arena_map{2} =   ...
+   [5      4;    ...
+    4.5    4;    ...
+    4.5    2;    ...
+    6.5    2;    ...
+    6.5    2.5;  ...
+    5      2.5 ];
+
+qstart = [1.5 3];
 qgoal = [6 3];
 
 end
+
+
+E =[];
+edge_idx = 1;
+
+for i=2:N-1
+    
+    % number of the current polygon
+    object_nr = vertices(i,3);
+    
+    % check previous vertex to find the initial vertex of the object
+    if ( vertices(i-1,3) ~= object_nr )
+        % initial vertex index of this object
+        init_vertex_idx = i;
+    end
+    
+    % check next vertex to find an edge
+    if ( vertices(i+1,3) == object_nr )
+        % the next vertex belongs to the same object, so there is an
+        % edge
+        E(edge_idx,:) = [i, i+1];
+    else
+        % the current vertex is the last one of the object, so there is
+        % an edge between this vertex and the initial vertex of the
+        % object
+        E(edge_idx,:) = [i, init_vertex_idx];
+    end
+    
+    edge_idx = edge_idx + 1;
+    
+end
+
+E
