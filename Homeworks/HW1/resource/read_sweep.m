@@ -10,83 +10,65 @@ function [ edges ] = read_sweep( vertices , v)
   %     edges, which is not pre-defined, given that it depends on the
   %     problem.
   
-      % number of vertices
-      N = size(vertices,1);
-  
-      % intitialise the output vector
-      edges = [];
-      
-      % index of the next edge to be inserted
-      edges_idx = 1;
-      
-      % list of edges
-      E = calculate_edges( vertices, N);
-      
-      % plot the initial environment
-      figure;
-      plot_environmnet( E, vertices );
-      
-      % test whether the environment has no obstacles
-      if( isempty(E) ); edges = [1,2]; plot_result( edges, vertices ); return; end;
-      
-      % Iterate through all the vertices to determine the visible vertices
-      % from each vertex
+    % number of vertices
+    N = size(vertices,1);
 
-        for i=1:N
-            
-            % vertex v: start point
-            % v = vertices(i,:);
+    % intitialise the output vector
+    edges = [];
     
-            % subset of vertex except the start point
-            %subset = [vertices(1:i-1,:); vertices(i+1:N,:)];
-            subset = vertices;
-            % angle from the horizontal axis to the line segment vv_i sorted in
-            % incresing order
-            A = calculate_alpha( v, subset );
+    % index of the next edge to be inserted
+    edges_idx = 1;
     
-            % sorted list of edges that intersects the horizontal line
-            % emanating from v
-            [S, E_dst] = intersects_line( v, vertices, E );
-            
-            % evaluate each vertex
-            for j=1: N
-                
-                % determine the index of the vertex in the initial array
-                if (A(j)<i); vertex_nr = A(j); else vertex_nr = A(j) + 1; end
-                
-                % vertex whose visibility will be tested
-                vi = subset(A(j),:);
-                
-                % add the edge to the visible list, in case is visible
-                [edges, edges_idx] = add_edge(S, v, vi, E, vertices, E_dst, ...
-                                                vertex_nr, edges_idx, edges, i);
-                                     
-                % determine the edges indexes where vi is the start edge
-                start_edge = find( E(:,1) == vertex_nr );
-                
-                % determine the edges indexes where vi is the end edge
-                end_edge = find( E(:,2) == vertex_nr );
-                
-                % find the edges that should be either deleted or inserted
-                [insert_edges, delete_edges] = find_edges(v,vi,start_edge,end_edge,E,vertices);
-                
-                % if vi is in the begining of an edge that is not in S
-                if ~isempty( insert_edges)
-                    % insert the edge in S
-                    [S, E_dst] = insert_edge(v, vi, insert_edges, E_dst, S, vertices);
-                end
-                
-                % if vi is in the end of an edge in S
-                if ~isempty( delete_edges)
-                    % delete the edge from S
-                    [S, E_dst] = delete_edge(delete_edges, E, E_dst, S);
-                end
-            end   
+    % list of edges
+    E = calculate_edges( vertices, N);
+    
+    % plot the initial environment
+    %figure;
+    %plot_environmnet( E, vertices );
+
+    % angle from the horizontal axis to the line segment vv_i sorted in
+    % incresing order
+    A = calculate_alpha( v, vertices );
+
+    % sorted list of edges that intersects the horizontal line
+    [S, E_dst] = intersects_line( v, vertices, E );
+
+    % evaluate each vertex
+    for j=1: N
+
+        vertex_nr = A(j);
+        % vertex whose visibility will be tested
+        vi = vertices(A(j),:);
+
+        % add the edge to the visible list, in case is visible
+        [edges, edges_idx] = add_edge(S, v, vi, E, vertices, E_dst, ...
+            vertex_nr, edges_idx, edges, 1);
+
+        % determine the edges indexes where vi is the start edge
+        start_edge = find( E(:,1) == vertex_nr );
+
+        % determine the edges indexes where vi is the end edge
+        end_edge = find( E(:,2) == vertex_nr );
+
+        % find the edges that should be either deleted or inserted
+        [insert_edges, delete_edges] = find_edges(v,vi,start_edge,end_edge,E,vertices);
+
+        % if vi is in the begining of an edge that is not in S
+        if ~isempty( insert_edges)
+            % insert the edge in S
+            [S, E_dst] = insert_edge(v, vi, insert_edges, E_dst, S, vertices);
         end
-        % plot_result( edges, vertices );
 
+        % if vi is in the end of an edge in S
+        if ~isempty( delete_edges)
+            % delete the edge from S
+            [S, E_dst] = delete_edge(delete_edges, E, E_dst, S);
+        end
+    end
+    % edges = clear_edges(edges, vertices, E);
+    % plots the resulting edges
+    % plot_result( edges, vertices );
 
-    %   for i=1:N
           
     %       % vertex v: start point
     %       % v = vertices(i,:);
@@ -136,7 +118,6 @@ function [ edges ] = read_sweep( vertices , v)
     %               [S, E_dst] = delete_edge(delete_edges, E, E_dst, S);
     %           end
     %       end   
-    %   end
       
     %   % delete internal edges and add polygon lines
     %   % edges = clear_edges(edges, vertices, E);
@@ -642,19 +623,19 @@ function [ edges ] = read_sweep( vertices , v)
 
 
   function [edges, edges_idx] = add_edge(S, v, vi, E, vertices, E_dst, vertex_nr, edges_idx, edges, i)
-    %ADD_EDGE Add visible edges to the vector edges and update the value of the
-    %index
+    % ADD_EDGE Add visible edges to the vector edges and update the value of the
+    % index
     
         if ( ~isempty( S) )
         % test whether the vertex is visible
             if is_visible(v, vi, S, E, vertices, E_dst)
                 % add indexes [v vi] to the visibility graph
-                edges(edges_idx,:) = [i, vertex_nr];                    
+                edges(edges_idx,:) = [v, vertex_nr];                    
                 edges_idx = edges_idx + 1;
             end
         else
                 % if S is empty, add index to the visibility graph
-                edges(edges_idx,:) = [i, vertex_nr];
+                edges(edges_idx,:) = [v, vertex_nr];
                 edges_idx = edges_idx + 1;
         end
                                      
