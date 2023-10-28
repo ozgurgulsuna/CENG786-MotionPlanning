@@ -1,4 +1,4 @@
-function [ edges ] = read_sweep( vertices , v)
+function [ visible ] = read_sweep( obstacle , v)
   % (RPS) Rotational Plane Sweep Algorithm, is an algorithm that determines
   % the visible edges of a given environment.
   %
@@ -9,22 +9,21 @@ function [ edges ] = read_sweep( vertices , v)
   %     initial vertex and the final vertex of the edge. M is the number of
   %     edges, which is not pre-defined, given that it depends on the
   %     problem.
-  
+
+  % selected v being inside an obstacle is handled outside this function !
+
+    vertices = generate_vertices( obstacle );
     % number of vertices
     N = size(vertices,1);
 
     % intitialise the output vector
-    edges = [];
+    visible = [];
     
-    % index of the next edge to be inserted
-    edges_idx = 1;
+    % index of the next vertex to be inserted
+    visible_idx = 1;
     
     % list of edges
     E = calculate_edges( vertices, N);
-    
-    % plot the initial environment
-    %figure;
-    %plot_environmnet( E, vertices );
 
     % angle from the horizontal axis to the line segment vv_i sorted in
     % incresing order
@@ -40,9 +39,9 @@ function [ edges ] = read_sweep( vertices , v)
         % vertex whose visibility will be tested
         vi = vertices(A(j),:);
 
-        % add the edge to the visible list, in case is visible
-        [edges, edges_idx] = add_edge(S, v, vi, E, vertices, E_dst, ...
-            vertex_nr, edges_idx, edges, 1);
+        % add the vertex to the visible list, in case is visible
+        [visible, visible_idx] = add_visible(S, v, vi, E, vertices, E_dst, ...
+            vertex_nr, visible_idx, visible);
 
         % determine the edges indexes where vi is the start edge
         start_edge = find( E(:,1) == vertex_nr );
@@ -64,69 +63,12 @@ function [ edges ] = read_sweep( vertices , v)
             % delete the edge from S
             [S, E_dst] = delete_edge(delete_edges, E, E_dst, S);
         end
-    end
-    % edges = clear_edges(edges, vertices, E);
-    % plots the resulting edges
-    % plot_result( edges, vertices );
 
-          
-    %       % vertex v: start point
-    %       % v = vertices(i,:);
-  
-    %       % subset of vertex except the start point
-    %       %subset = [vertices(1:i-1,:); vertices(i+1:N,:)];
-    %       subset = vertices;
-    %       % angle from the horizontal axis to the line segment vv_i sorted in
-    %       % incresing order
-    %       A = calculate_alpha( v, subset );
-  
-    %       % sorted list of edges that intersects the horizontal line
-    %       % emanating from v
-    %       [S, E_dst] = intersects_line( v, vertices, E );
-          
-    %       % evaluate each vertex
-    %       for j=1: N
-              
-    %           % determine the index of the vertex in the initial array
-    %           if (A(j)<i); vertex_nr = A(j); else vertex_nr = A(j) + 1; end
-              
-    %           % vertex whose visibility will be tested
-    %           vi = subset(A(j),:);
-              
-    %           % add the edge to the visible list, in case is visible
-    %           [edges, edges_idx] = add_edge(S, v, vi, E, vertices, E_dst, ...
-    %                                         vertex_nr, edges_idx, edges, i);
-                                   
-    %           % determine the edges indexes where vi is the start edge
-    %           start_edge = find( E(:,1) == vertex_nr );
-              
-    %           % determine the edges indexes where vi is the end edge
-    %           end_edge = find( E(:,2) == vertex_nr );
-              
-    %           % find the edges that should be either deleted or inserted
-    %           [insert_edges, delete_edges] = find_edges(v,vi,start_edge,end_edge,E,vertices);
-              
-    %           % if vi is in the begining of an edge that is not in S
-    %           if ~isempty( insert_edges)
-    %               % insert the edge in S
-    %               [S, E_dst] = insert_edge(v, vi, insert_edges, E_dst, S, vertices);
-    %           end
-              
-    %           % if vi is in the end of an edge in S
-    %           if ~isempty( delete_edges)
-    %               % delete the edge from S
-    %               [S, E_dst] = delete_edge(delete_edges, E, E_dst, S);
-    %           end
-    %       end   
-      
-    %   % delete internal edges and add polygon lines
-    %   % edges = clear_edges(edges, vertices, E);
-      
-    %   % plots the resulting edges
-    %   plot_result( edges, vertices );
-    %   % paint in blue the polygons
-    %   % plot_environmnet( E, vertices );
-      
+
+    end
+
+    % clear edges that belongs to the same polygon
+    % visible = clear_edges(visible, vertices, E);
   end
   
 
@@ -446,7 +388,7 @@ function [ edges ] = read_sweep( vertices , v)
   end
     
   function [ visible ] = is_visible(v, vi, S, E, vertices, E_dst)
-    %IS_VISIBLE Determines whether a vertex is visible or not
+    % IS_VISIBLE Determines whether a vertex is visible or not
   
       % distance from v to vi
       dst = norm((v(1:2) - vi(1:2)),2);
@@ -465,23 +407,46 @@ function [ edges ] = read_sweep( vertices , v)
       
       % determine if the line v_vi intersects with any edge that is closer to
       % the candidate vertex
-      %     while ( ( S_idx <= N ) && ( dst >= E_dst(S_idx) ) )
-      while ( ( S_idx <= N ) )
+        for i=1:N
+            
+            % index of the edge
+            edge_idx = S(S_idx);
+            
+            % define edge as a line in the form [x1 y1 x2 y2]
+            line = [vertices( E(edge_idx,1), 1:2),  vertices( E(edge_idx,2), 1:2)];
+            
+            % determine wheter lines intersects or not and compute the distance
+            % to the initial vertex
+            [ intersect , dst] = is_intersected(line_v_vi, line, E, vertices);
+            
+            % if the line intersects with an edge, the vertex is not visible
+            if intersect
+                visible = false;
+                break;
+            end
+            
+            % increment the index of S
+            S_idx = S_idx + 1;
+            
+        end
+    %           %while ( ( S_idx <= N ) && ( dst >= E_dst(S_idx) ) )
+    %   while ( ( S_idx <= N ) )
           
-          E_idx = S(S_idx)
-          
-          line_e = [vertices( E(E_idx,1), 1:2),  vertices( E(E_idx,2), 1:2)];
-          
-          [ intersect , ~] = is_intersected(line_v_vi, line_e, E, vertices);
-          
-          if( intersect )
-              visible = false;
-              break;
-          end
-          
-          S_idx = S_idx + 1;
-          
-      end
+    %     E_idx = S(S_idx);
+        
+    %     line_e = [vertices( E(E_idx,1), 1:2),  vertices( E(E_idx,2), 1:2)];
+        
+    %     [ intersect , ~] = is_intersected(line_v_vi, line_e, E, vertices);
+        
+    %     if( intersect )
+    %         visible = false;
+    %         break;
+    %     end
+        
+    %     S_idx = S_idx + 1;
+        
+    % end
+
   
   end
     
@@ -517,7 +482,7 @@ function [ edges ] = read_sweep( vertices , v)
   
   end
     
-  function [ S_out, E_dst_out ] = delete_edge(edges_dlt, E, E_dst, S);
+  function [ S_out, E_dst_out ] = delete_edge(edges_dlt, E, E_dst, S)
     %INSERT_EDGES Summary of this function goes here
     %   Detailed explanation goes here
   
@@ -551,23 +516,23 @@ function [ edges ] = read_sweep( vertices , v)
   
   end                                             
     
-  function [edges] = clear_edges(edges, vertices, E)
+  function [visible] = clear_edges(visible, vertices, E)
     %UNTITLED6 Summary of this function goes here
     %   Detailed explanation goes here
   
-      edge_idx = 1;
+      visible_idx = 1;
       
       % delete edges that belongs to the same polygon
-      for i=1:size(edges,1)
-          if ( vertices( edges(edge_idx,1),3 ) == vertices( edges(edge_idx,2),3 ) )
-              edges(edge_idx,:) = [];
+      for i=1:size(visible,1)
+          if ( vertices( visible(visible_idx,1),3 ) == vertices( visible(visible_idx,2),3 ) )
+            visible(visible_idx,:) = [];
           else
-              edge_idx = edge_idx + 1;
+            visible_idx = visible_idx + 1;
           end
       end
       
-      edges = [edges; E];
-      edges = sortrows(edges);
+      visible = [visible; E];
+      visible = sortrows(visible);
   
   end
 
@@ -594,7 +559,7 @@ function [ edges ] = read_sweep( vertices , v)
         end
         
         if( ~isempty(end_idx) )
-            proj_end = dot(line_v_vi_hmg, vertex_end)
+            proj_end = dot(line_v_vi_hmg, vertex_end);
         end
     
         insert_idx = 1;
@@ -622,55 +587,24 @@ function [ edges ] = read_sweep( vertices , v)
 
 
 
-  function [edges, edges_idx] = add_edge(S, v, vi, E, vertices, E_dst, vertex_nr, edges_idx, edges, i)
-    % ADD_EDGE Add visible edges to the vector edges and update the value of the
+  function [visible, visible_idx] = add_visible(S, v, vi, E, vertices, E_dst, vertex_nr, visible_idx, visible)
+    % ADD_VISIBLE Add visible vertices to the vector and update the value of the
     % index
     
         if ( ~isempty( S) )
         % test whether the vertex is visible
             if is_visible(v, vi, S, E, vertices, E_dst)
                 % add indexes [v vi] to the visibility graph
-                edges(edges_idx,:) = [v, vertex_nr];                    
-                edges_idx = edges_idx + 1;
+                visible(visible_idx,:) = [vi vertex_nr];                    
+                visible_idx = visible_idx + 1;
             end
         else
                 % if S is empty, add index to the visibility graph
-                edges(edges_idx,:) = [v, vertex_nr];
-                edges_idx = edges_idx + 1;
+                visible(visible_idx,:) = [vi vertex_nr];
+                visible_idx = visible_idx + 1;
         end
                                      
   end
 
-
-% global sensor_range arena_map arena_limits infinity;
-% distance = 0;
-
-% position = [position(1) position(2)];
-
-% % First, determine if the position is outside the boundaries
-% xmin = arena_limits(1);
-% xmax = arena_limits(2);
-% ymin = arena_limits(3);
-% ymax = arena_limits(4);
-
-% if ( position(1) < xmin || position(1) > xmax ...
-%      || position(2) < ymin || position(2) > ymax )
-%   return;
-% end
-
-% % Determine if the robot is inside any of the obstacles
-% for i = 1:length(arena_map)
-%   obstacle = arena_map{i};
-%   if (inpolygon(position(1), position(2), obstacle(:,1), obstacle(: ,2)))
-%     return;
-%   end
-% end
-
-% % Now that we know the robot is outside all of the obstacles and
-% % inside the arena, determine the closest obstacle in the given
-% % direction
-
-% % Infinity is modeled as a very large value
-% distance = infinity;
 
 
