@@ -22,7 +22,7 @@ function [ visible_edges ] = rps_single( arena_map , v)
         [ E ] = calculate_edges( vertices, N );
 
         % draw the graph
-        draw_graph( vertices, E );
+        % draw_graph( vertices, E );
 
         % initialize visibility graph
         visibility_graph = [];
@@ -45,7 +45,7 @@ function [ visible_edges ] = rps_single( arena_map , v)
             for j = 1: size(A, 1)
                 
                 % initial vertex
-                vertex = i
+                vertex = i ;
 
                 % get the vertex index
                 vertex_j = A(j, 3);
@@ -59,7 +59,7 @@ function [ visible_edges ] = rps_single( arena_map , v)
                     % draw the line
                     node_1 = [vertices(vertex, 1) vertices(vertex, 2)];
                     node_2 = [vertices(vertex_j, 1) vertices(vertex_j, 2)];
-                    line([node_1(1, 1), node_2(1, 1)], [node_1(1, 2), node_2(1, 2)], 'Color', 'r');
+                    % line([node_1(1, 1), node_2(1, 1)], [node_1(1, 2), node_2(1, 2)], 'Color', 'r');
 
                     % add the edge to the visibility graph
                     visibility_graph = [visibility_graph; vertex vertex_j];
@@ -109,9 +109,9 @@ function [ visible_edges ] = rps_single( arena_map , v)
         end
     
         edges = sortrows(result);
-        visibility_graph(:,2)
-        edges
-    
+
+        % create new unified simple obstacle map from visible edges
+        [ visible_edges ] = generate_visible_edges( arena_map, vertices, visibility_graph, E );
 end
 
 
@@ -119,9 +119,103 @@ end
 
 
 
+function [ visible_edges ] = generate_visible_edges( arena_map, vertices, visibility_graph, edges )
+    % generate new unified simple obstacle map from visible edges.
+    %
+    %   - Input: arena_map = [[x1 y1; x2 y2; ... ; xn yn], [x1 y1; x2 y2; ... ; xm ym], ...]
+    %            edges = [[x1 y1; x2 y2], [x1 y1; x2 y2], ...]
+    %            visibility_graph = [[x1 y1; x2 y2], [x1 y1; x2 y2], ...]
+    %
+    %   - Output: visible_edges = [[x1 y1; x2 y2], [x1 y1; x2 y2], ...]
 
+    % visible_edges = zeros(length(visibility_graph(:,2)), 4);
+    visible_edges = {};
 
+    len = length(visibility_graph(:,2));
+    for i = 1: len
+        idx = visibility_graph(i,2);
+        [h w] = size(edges);
+        % draw edges
+        for j = 1: w
+        
+            % check there is an edge between vertices or not
+            if edges(idx, j) == 1
+                
+                % get the x and y values of the first vertex
+                x_1 = vertices(idx, 1);
+                y_1 = vertices(idx, 2);
 
+                % get the x and y values of the second vertex
+                x_2 = vertices(j, 1);
+                y_2 = vertices(j, 2);
+
+                % line([x_1, x_2], [y_1, y_2], 'Color', 'b');
+
+                visible_edges{end+1} = [x_1 y_1; x_2 y_2];
+            
+            end
+            
+        end
+
+        
+        % % number of edges
+        % N = size(edges, 1);
+
+        % % initialize visible edges
+        % visible_edges = [];
+
+        % % traverse the edges
+        % for i = 1: N
+
+        %     % get the x and y values of the first vertex
+        %     x_1 = edges(i, 1);
+        %     y_1 = edges(i, 2);
+
+        %     % get the x and y values of the second vertex
+        %     x_2 = edges(i, 3);
+        %     y_2 = edges(i, 4);
+
+        %     visibility_graph(:,2)
+
+        %     % check whether the edge is in the visibility graph or not
+        %     if ismember([x_1 y_1; x_2 y_2], visibility_graph, 'rows') == 1
+
+        %         % add the edge to the visible edges
+        %         visible_edges = [visible_edges; x_1 y_1; x_2 y_2];
+
+        %     end
+
+        % end
+
+        % % number of visible edges
+        % N = size(visible_edges, 1);
+
+        % % traverse the visible edges
+        % for i = 1: N
+
+        %     % get the x and y values of the first vertex
+        %     x_1 = visible_edges(i, 1);
+        %     y_1 = visible_edges(i, 2);
+
+        %     % get the x and y values of the second vertex
+        %     x_2 = visible_edges(i + 1, 1);
+        %     y_2 = visible_edges(i + 1, 2);
+
+        %     % check whether the edge is in the visibility graph or not
+        %     if ismember([x_1 y_1; x_2 y_2], visibility_graph, 'rows') == 1
+
+        %         % remove the edge from the visible edges
+        %         visible_edges(i + 1, :) = [];
+
+        %     end
+
+        % end
+
+        % % number of visible edges
+        % N = size(visible_edges, 1);
+
+    end
+end
 
 function [ E ] = calculate_edges( vertices , N)
     % CALCULATE_EDGES Transforms the initial set of vertices into a data

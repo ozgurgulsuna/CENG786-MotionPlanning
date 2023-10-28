@@ -1,6 +1,6 @@
 function [x,y] = bug_planner( qstart, qgoal )
 
-global sensor_range infinity arena_map;
+global sensor_range infinity;
 
 % % A simple hack which blindly goes towards the goal
 % samples = norm( qgoal - qstart ) / (sensor_range / 20);
@@ -17,13 +17,13 @@ status = 1;
 range = 0.075;
 x(1) = qstart(1);
 y(1) = qstart(2);
-for i=2:1000
+for i=2:400
     dist= [10 5];
     min = 0; % angle of minimum distance
     % sweep the sensor around
-    visible = rps_single(arena_map, [x(i-1) y(i-1)]);
-    for theta=0:2*pi/20:2*pi  % 10 degree steps
-        dist(2) = read_sensor_2(theta, [x(i-1) y(i-1)], visible);
+    visible = 
+    for theta=0:2*pi/50:2*pi  % 10 degree steps
+        dist(2) = read_sensor_2(theta, [x(i-1) y(i-1)]);
         if (dist(2)<dist(1))
             dist(1) = dist(2) ;
             min = theta;
