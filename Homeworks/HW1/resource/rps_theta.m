@@ -1,4 +1,5 @@
 function [ dist, angle ] = rps_theta( arena_map , v)
+global closest_vec;
     % (RPS) Rotational Plane Sweep Algorithm, find the visibility graph from given vertices
     % then generate new unified simple obstacle map from visible edges.
     %
@@ -29,6 +30,9 @@ function [ dist, angle ] = rps_theta( arena_map , v)
 
         % initialize active list
         [ S ] = zeros(N, N);
+
+        % initialize distance and angle of the closest vector
+        closest_vec = [[0 0], [0 0], 1000000, 0];
 
         % evaluated starting vertex (v), or robot position (last vertex)
         % TODO: if v is inside the obstacle, then it is not evaluated
@@ -109,12 +113,15 @@ function [ dist, angle ] = rps_theta( arena_map , v)
         end
     
         edges = sortrows(result);
-
+        dist = closest_vec(5);
+        angle = closest_vec(6);
+        
         % create new unified simple obstacle map from visible edges
-        [ visible_edges ] = generate_visible_edges( arena_map, vertices, visibility_graph, E );
+        %[ visible_edges ] = generate_visible_edges( arena_map, vertices, visibility_graph, E );
 
         % calculate the minimum distance and angle
-        [ dist, angle ] = calculate_distance_angle( visible_edges, v );
+        %[ dist, angle ] = calculate_distance_angle( visible_edges, v );
+
 end
 
 
@@ -426,7 +433,7 @@ function [ S ] = intersects_line( v, vertices, E, S )
     
                     x_0 = vertices(v, 1);
                     y_0 = vertices(v, 2);
-                    [ distance ] = calculate_distance( x_0, y_0, x_1, y_1, x_2, y_2 );
+                    [ distance ,~] = point_segment_distance( [x_0  y_0] , [[x_1 y_1] ; [ x_2 y_2]] );
                     
                     indexed_edge = [indexed_edge; i j distance];
                 
@@ -466,14 +473,18 @@ function [ S ] = intersects_line( v, vertices, E, S )
         end
 end
 
-function [ distance ] = calculate_distance( x_0, y_0, x_1, y_1, x_2, y_2 )
-    % CALCULATE_DISTANCE Calculate the distance between one point to the line IS THIS EVEN CORRECT ??
-    % segment.
 
-        distance_1 = sqrt((y_1 - y_0)^2 + (x_1 - x_0)^2);
-        distance_2 = sqrt((y_2 - y_0)^2 + (x_2 - x_0)^2);
-        distance = (distance_1 + distance_2) / 2;
-end
+
+
+
+% function [ distance ] = calculate_distance( x_0, y_0, x_1, y_1, x_2, y_2 )
+%     % CALCULATE_DISTANCE Calculate the distance between one point to the line IS THIS EVEN CORRECT ??
+%     % segment.
+
+%         distance_1 = sqrt((y_1 - y_0)^2 + (x_1 - x_0)^2);
+%         distance_2 = sqrt((y_2 - y_0)^2 + (x_2 - x_0)^2);
+%         distance = (distance_1 + distance_2) / 2;
+% end
 
 function out = lineSegmentIntersect(XY1,XY2)
     %LINESEGMENTINTERSECT Intersections of line segments.
@@ -665,6 +676,8 @@ function [ draw_line, adjacency_list ] = check_intersection( vertex_1, vertex_2,
 end
 
 function [ S_active_list ] = check_active_list( vertex_0, vertex_1, vertices, adjacency_list, S_active_list )
+    global closest_vec;
+
     %check_active_list add or remove the edge to the list S
 
     if isempty(adjacency_list)
@@ -698,11 +711,16 @@ function [ S_active_list ] = check_active_list( vertex_0, vertex_1, vertices, ad
             x_0 = vertices(vertex_0, 1);
             y_0 = vertices(vertex_0, 2);
             
-            [ distance ] = calculate_distance( x_0, y_0, x_1, y_1, x_2, y_2 );
+            [ distance , ang] = point_segment_distance([ x_0 y_0],[ [x_1, y_1]; [x_2 y_2] ]);
 
             S_active_list(vertex_1, vertex_2) = distance;
             
             S_active_list(vertex_2, vertex_1) = distance;
+
+            
+            if distance < closest_vec(5)
+                closest_vec = [[ [x_1, y_1], [x_2 y_2] ], distance, ang];
+            end
 
         end
         
