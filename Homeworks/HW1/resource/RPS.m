@@ -1,6 +1,7 @@
-function [ edges ] = RPS( vertices )
+function [ edges ] = RPS( vertices , v)
 %RPS find the visibility graph from given vertices
-
+    [h w] = size(vertices);
+    vertices(h+1,:) = [v, 0];
     % create the edges according to the vertices
     [ edges ] = create_edges( vertices );
     % draw the graph according to the vertices and edges
@@ -13,7 +14,7 @@ function [ edges ] = RPS( vertices )
     S_active_list = zeros(h, h);
 
     % traverse the all vertices
-    for i = 1:h
+    for i = h
 
         [ angles ] = calculate_angle( i, vertices );
 
@@ -95,7 +96,7 @@ function [ edges ] = RPS( vertices )
     end
 
     edges = sortrows(result);
-
+    visibility_graph(:,2)
 end
 
 
