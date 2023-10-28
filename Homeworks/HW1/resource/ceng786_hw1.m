@@ -60,7 +60,7 @@ qgoal = [6 3];
 % Invoking your solutions for the example arena ------------------------
 % init_arena();
 tic
-[x_m1_b1, y_m1_b1] = bug_planner( qstart, qgoal );
+[x_m1_b1, y_m1_b1] = bug_fast_planner( qstart, qgoal );
 toc
 figure(1);
 clf;
