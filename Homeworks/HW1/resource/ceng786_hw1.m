@@ -228,6 +228,6 @@ arena_map{4} = [ ...
 
 
 qstart = [0 0];
-qgoal  = [9 9];
+qgoal  = [9.2 6];
 
 end
