@@ -11,7 +11,7 @@ global sensor_range infinity;
 
 % samples = norm( qgoal - qstart ) / (sensor_range / 20);
 % range = linspace(0,1,samples);
-ref_dist = 0.25;
+ref_dist = sensor_range/2;
 circumnav_dir = -1;   % CCW = 1, CW = -1
 status = 1;
 range = 0.075;
@@ -28,10 +28,10 @@ for i=2:400
             min = theta;
             status = 1;
         end
-        if (dist(1)<0.15)
+        if (dist(1)<sensor_range*0.2)
             status = 2;
         end
-        if (dist(1)> 0.4)
+        if (dist(1)> sensor_range*0.8)
             status = 3;
         end
 

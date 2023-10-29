@@ -1,5 +1,5 @@
 function [ dist, angle ] = rps_sensor( arena_map , v)
-global closest_vec;
+global closest_vec arena_limits infinity sensor_range;
     % (RPS) Rotational Plane Sweep Algorithm, find the visibility graph from given vertices
     % then generate new unified simple obstacle map from visible edges.
     %
@@ -9,6 +9,34 @@ global closest_vec;
     %   - Output: visible_edges = [[x1 y1; x2 y2], [x1 y1; x2 y2], ...]
     %
     % Note: robot position (v) being inside the obstacle is handled outside of this function.
+        position = v;
+        position = [position(1) position(2)];
+
+        % First, determine if the position is outside the boundaries
+        xmin = arena_limits(1);
+        xmax = arena_limits(2);
+        ymin = arena_limits(3);
+        ymax = arena_limits(4);
+
+        if ( position(1) < xmin || position(1) > xmax ...
+            || position(2) < ymin || position(2) > ymax )
+        return;
+        end
+
+        % Determine if the robot is inside any of the obstacles
+        for i = 1:length(arena_map)
+            obstacle = arena_map{i};
+            if (inpolygon(position(1), position(2), obstacle(:,1), obstacle(: ,2)))
+                
+                % message that the robot is inside an obstacle
+                disp('Robot is inside an obstacle');
+                return;
+            end
+        end
+
+        % Now that we know the robot is outside all of the obstacles and
+        % inside the arena, determine the closest obstacle in the given
+        % direction
 
         % create vertices from given arena_map
         [ vertices ] = generate_vertices( arena_map );
@@ -107,7 +135,13 @@ global closest_vec;
         end
     
         edges = sortrows(result);
+
+        if closest_vec(5) > sensor_range
+            closest_vec(5) = infinity;
+        end
+
         dist = closest_vec(5);
+    
         angle = closest_vec(6);
 
         % create new unified simple obstacle map from visible edges
@@ -120,6 +154,7 @@ end
 
 
 function [ dist, angle ] = calculate_distance_angle( visible_edges, v )
+% global infinity
     % calculate the minimum distance and angle from given visible edges and robot position
     %
     %   - Input: visible_edges = [[x1 y1; x2 y2], [x1 y1; x2 y2], ...]
