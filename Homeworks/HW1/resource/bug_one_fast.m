@@ -1,5 +1,5 @@
 function [x,y] = bug_one_fast( qstart, qgoal )
-global sensor_range infinity arena_map ;
+global sensor_range infinity arena_map taken;
 
     ref_dist = sensor_range*0.5;
     circumnav_dir = -1;   % CCW = 1, CW = -1
@@ -28,9 +28,11 @@ global sensor_range infinity arena_map ;
     % as a rule of thumb 5 times is a good start.
     epsilon = step*5; 
 
+    meeting_point = [0 0];
+
 
     while (norm([x(i) y(i)]-qgoal) > epsilon/3)
-    %for i=1:3000
+    %for i=1:2000
         [dist, min]= rps_sensor(arena_map, [x(i) y(i)]);
         % if (dist > sensor_range)
         %     % move to the goal
@@ -49,6 +51,8 @@ global sensor_range infinity arena_map ;
                 status = 1;
                 leave = 0;
                 minimum_dist(obstacle_num) = infinity;
+                meeting_point = [0 0];
+                display('encountered')
             end
 
         end
@@ -58,26 +62,31 @@ global sensor_range infinity arena_map ;
             break;
         end
 
-
-        if (abs(x_encounter(obstacle_num) - x(i)) > 3*epsilon ) || (abs(y_encounter(obstacle_num) - y(i)) > 3*epsilon)
+        if (abs(x_encounter(obstacle_num) - x(i)+meeting_point(1)) > 10*epsilon ) || (abs(y_encounter(obstacle_num) - y(i)+meeting_point(2)) > 10*epsilon)
             leave_lock = 0;
         end
 
         % record the minimum distance
         if (norm([qgoal(1)-x(i) qgoal(2)-y(i)]) < minimum_dist(obstacle_num)) && (leave == 0) && (status == 1)
             minimum_dist(obstacle_num)  = norm([qgoal(1)-x(i) qgoal(2)-y(i)]);
-            minimum_point{obstacle_num} = [x(i) y(i)];
+            minimum_point{obstacle_num} = [(x(i)-meeting_point(1)) (y(i)-meeting_point(2))];
         end
 
-        if (abs(x_encounter(obstacle_num) - x(i)) < 2*epsilon) && (abs(y_encounter(obstacle_num) - y(i)) < 2*epsilon)
+        if (abs(x_encounter(obstacle_num) - x(i)-meeting_point(1)) < epsilon) && (abs(y_encounter(obstacle_num) - y(i)-meeting_point(2)) < epsilon) && (leave == 0)
             % if the robot has circumnavigated the obstacle, go to the minimum distance point
+            display('circumnavigated');
+            i
             if leave_lock == 0
                 leave = 1;
             end
         end
-
-        if (abs(x(i) - minimum_point{obstacle_num}(1)) < epsilon) && (abs(y(i) - minimum_point{obstacle_num}(2)) < epsilon) && leave == 1
+         
+        % abs(x(i) - minimum_point{obstacle_num}(1)+meeting_point(1))
+        if (abs(x(i) - minimum_point{obstacle_num}(1)) < epsilon) && (abs(y(i) - minimum_point{obstacle_num}(2)) < epsilon) && (leave == 1)
             % if the robot has reached the minimum distance point, go to the goal
+            display('reached minimum distance');
+            x(i);
+            y(i);
             status = 3;
             encounter = 0;
         end
@@ -90,12 +99,25 @@ global sensor_range infinity arena_map ;
 
 
         if status == 3
-            x(i+1) = x(i) + step*(qgoal(1)-x(i))/norm([qgoal(1)-x(i) qgoal(2)-y(i)]);
-            y(i+1) = y(i) + step*(qgoal(2)-y(i))/norm([qgoal(1)-x(i) qgoal(2)-y(i)]);
+            x(i+1) = x(i) + 2*step*(qgoal(1)-x(i))/norm([qgoal(1)-x(i) qgoal(2)-y(i)]);
+            y(i+1) = y(i) + 2*step*(qgoal(2)-y(i))/norm([qgoal(1)-x(i) qgoal(2)-y(i)]);
         end
 
         i = i + 1;
+        
+        taken = i;
+        %% move arena map at a fixed rate
+        for j=1:size(arena_map,2)
+            arena_map{j}(:,1) = arena_map{j}(:,1) + step*0.018;
+            arena_map{j}(:,2) = arena_map{j}(:,2) + step*0.018;
+        end
+
+        meeting_point(1) = meeting_point(1) - step*0.018;
+        meeting_point(2) = meeting_point(2) - step*0.018;
+        
+
     end
+    display('done')
 
 end
 

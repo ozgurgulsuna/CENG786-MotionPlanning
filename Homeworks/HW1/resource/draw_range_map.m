@@ -17,6 +17,7 @@ position = [position(1) position(2)];
 clf;
 subplot(1,2,1);
 draw_arena();
+
 hold on;
 
 distances = [];
