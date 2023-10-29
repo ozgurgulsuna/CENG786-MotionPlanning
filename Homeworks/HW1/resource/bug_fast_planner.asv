@@ -19,25 +19,28 @@ x(1) = qstart(1);
 y(1) = qstart(2);
 
 for i=2:1000
-    [dist, min]= rps_sensor(arena_map, [x(i-1) y(i-1)]);
-    if dist > sensor_range
-        dist = sensor_range;
+    dist= [10 5];
+    
+    [dist(1), min]= rps_(arena_map, [x(i-1) y(i-1)]);
+
+    if dist(1) > sensor_range
+        dist(1) = sensor_range;
     end
     
-    if (dist<=0.4)|| (dist>=0.15)
+    if (dist(1)<=0.4)|| (dist(1)>=0.15)
         status = 1;
     end
-    if (dist<0.15)
+    if (dist(1)<0.15)
         status = 2;
     end
-    if (dist> 0.4)
+    if (dist(1)> 0.4)
         status = 3;
     end
     % move in the direction orthogonal to the minimum distance
     % tangent move
     if status == 1
-        x(i) = x(i-1) + range*1*(cos(min-(pi/2*circumnav_dir))) + range*1*(cos(min))*(dist-ref_dist);
-        y(i) = y(i-1) + range*1*(sin(min-(pi/2*circumnav_dir))) + range*1*(sin(min))*(dist-ref_dist);
+        x(i) = x(i-1) + range*1*(cos(min-(pi/2*circumnav_dir))) + range*1*(cos(min))*(dist(1)-ref_dist);
+        y(i) = y(i-1) + range*1*(sin(min-(pi/2*circumnav_dir))) + range*1*(sin(min))*(dist(1)-ref_dist);
     end
 
     % get away

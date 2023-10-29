@@ -50,7 +50,7 @@ global infinity;      % Large value to be used as 'infinity'
 global qstart qgoal;  % Start and goal configurations
 
 % Parameter values to be used for the homework ---
-sensor_range = 0.8;
+sensor_range = 0.5;
 infinity = 1e5;
 arena_limits = [0 10 0 10];
 % arena_map = [];

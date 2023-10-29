@@ -1,4 +1,5 @@
-function [ visible_edges ] = rps_single( arena_map , v)
+function [ dist, angle ] = rps_sensor( arena_map , v)
+global closest_vec;
     % (RPS) Rotational Plane Sweep Algorithm, find the visibility graph from given vertices
     % then generate new unified simple obstacle map from visible edges.
     %
@@ -30,6 +31,9 @@ function [ visible_edges ] = rps_single( arena_map , v)
         % initialize active list
         [ S ] = zeros(N, N);
 
+        % initialize distance and angle of the closest vector
+        closest_vec = [[0 0], [0 0], 1000000, 0];
+
         % evaluated starting vertex (v), or robot position (last vertex)
         % TODO: if v is inside the obstacle, then it is not evaluated
         % to create complete visibility graph, traverse all vertices (i = 1 : N)
@@ -57,8 +61,8 @@ function [ visible_edges ] = rps_single( arena_map , v)
                 if draw_line == 1
 
                     % draw the line
-                    node_1 = [vertices(vertex, 1) vertices(vertex, 2)];
-                    node_2 = [vertices(vertex_j, 1) vertices(vertex_j, 2)];
+                    % node_1 = [vertices(vertex, 1) vertices(vertex, 2)];
+                    % node_2 = [vertices(vertex_j, 1) vertices(vertex_j, 2)];
                     % line([node_1(1, 1), node_2(1, 1)], [node_1(1, 2), node_2(1, 2)], 'Color', 'r');
 
                     % add the edge to the visibility graph
@@ -94,30 +98,113 @@ function [ visible_edges ] = rps_single( arena_map , v)
     
         % traverse the edges
         for i = 1: h
-    
             for j = 1: i
-    
                 if edges(i, j) ~= 0
-    
                     % edges = [edges; edges(i, j) i j];
                     result = [result; j i];
-    
                 end
-    
             end
-    
         end
     
         edges = sortrows(result);
+        dist = closest_vec(5);
+        angle = closest_vec(6);
 
         % create new unified simple obstacle map from visible edges
-        [ visible_edges ] = generate_visible_edges( arena_map, vertices, visibility_graph, E );
+        %[ visible_edges ] = generate_visible_edges( arena_map, vertices, visibility_graph, E );
+
+        % calculate the minimum distance and angle
+        %[ dist, angle ] = calculate_distance_angle( visible_edges, v );
+
 end
 
 
+function [ dist, angle ] = calculate_distance_angle( visible_edges, v )
+    % calculate the minimum distance and angle from given visible edges and robot position
+    %
+    %   - Input: visible_edges = [[x1 y1; x2 y2], [x1 y1; x2 y2], ...]
+    %                    v = [x y] (robot position)
+    %
+    %   - Output: dist = minimum distance
+    %             angle = angle of the minimum distance
 
+    % initialize the minimum distance
+    dist = 1000000;
 
+    % initialize the angle of the minimum distance
+    angle = 0;
 
+    % traverse the visible edges
+    for i = 1: length(visible_edges)
+
+        % get the x and y values of the first vertex
+        x_1 = visible_edges{i}(1, 1);
+        y_1 = visible_edges{i}(1, 2);
+
+        % get the x and y values of the second vertex
+        x_2 = visible_edges{i}(2, 1);
+        y_2 = visible_edges{i}(2, 2);
+
+        % calculate the distance between the robot position and the edge
+        [ distance, ang ] = point_segment_distance( [v(1) v(2)],[[ x_1 y_1];[ x_2 y_2]] ); % second part is just visible_edges{i}
+
+        % if the distance is less than the minimum distance
+        if distance < dist
+
+            % update the minimum distance
+            dist = distance;
+            angle = ang;
+
+        end
+
+    end
+end
+
+function [ distance, angle ] = point_segment_distance( v , x )
+    % POINT_SEGMENT_DISTANCE Calculate the distance between a point and a line segment.
+    %
+    %   - Input: v = [x y] (robot position)
+    %            ab = [[x1 y1] [x2 y2]] (edge)
+    %
+    %   - Output: closest_vector = [x y] (closest point on the edge)
+
+    % get the x and y values of the first vertex
+    a_x = x(1, 1);
+    a_y = x(1, 2);
+
+    % get the x and y values of the second vertex
+    b_x = x(2, 1);
+    b_y = x(2, 2);
+
+    ab = [b_x - a_x, b_y - a_y];
+    av = [v(1) - a_x, v(2) - a_y];
+
+    % calculate the dot product of ab and av
+    av_ab = dot(av, ab);
+
+    % length square of ab
+    % ab_ab = dot(ab, ab);
+    ab_ab = norm(ab)^2;
+
+    % distance then is
+    d = av_ab / ab_ab;
+
+    if d < 0
+        closest_point = [a_x, a_y];
+    elseif d >= 1
+        closest_point = [b_x, b_y];
+    else
+        closest_point = [a_x + ab(1) * d, a_y + ab(2) * d];
+    end
+
+    distance = sqrt((v(1) - closest_point(1))^2 + (v(2) - closest_point(2))^2);
+    angle = atan2(closest_point(2) - v(2), closest_point(1) - v(1));
+
+    if angle < 0
+        angle = angle + 2 * pi;
+    end
+    
+end
 
 function [ visible_edges ] = generate_visible_edges( arena_map, vertices, visibility_graph, edges )
     % generate new unified simple obstacle map from visible edges.
@@ -339,7 +426,7 @@ function [ S ] = intersects_line( v, vertices, E, S )
     
                     x_0 = vertices(v, 1);
                     y_0 = vertices(v, 2);
-                    [ distance ] = calculate_distance( x_0, y_0, x_1, y_1, x_2, y_2 );
+                    [ distance ,~] = point_segment_distance( [x_0  y_0] , [[x_1 y_1] ; [ x_2 y_2]] );
                     
                     indexed_edge = [indexed_edge; i j distance];
                 
@@ -377,15 +464,6 @@ function [ S ] = intersects_line( v, vertices, E, S )
             line([x_1, x_2], [y_1, y_2], 'Color', 'r');
             %}
         end
-end
-
-function [ distance ] = calculate_distance( x_0, y_0, x_1, y_1, x_2, y_2 )
-    % CALCULATE_DISTANCE Calculate the distance between one point to the line
-    % segment.
-
-        distance_1 = sqrt((y_1 - y_0)^2 + (x_1 - x_0)^2);
-        distance_2 = sqrt((y_2 - y_0)^2 + (x_2 - x_0)^2);
-        distance = (distance_1 + distance_2) / 2;
 end
 
 function out = lineSegmentIntersect(XY1,XY2)
@@ -516,70 +594,78 @@ function out = lineSegmentIntersect(XY1,XY2)
 end
 
 function [ draw_line, adjacency_list ] = check_intersection( vertex_1, vertex_2, vertices, edges, S_active_list )
-        %check_intersection check whether there is an intersection between two lines or not
-        
-            draw_line = 0;
-        
-            % vertex_2'nin edgelerini bul!! belki vertex indexlerini return ettirebiliriz
-            adjacency_list = find(edges(vertex_2, :));
-        
-            if vertices(vertex_1, 3) ~= vertices(vertex_2, 3)
-        
-                [h w] = size(S_active_list);
-                
-                weight_lines = [];
-        
-                % draw edges
-                for i = 1: h
-        
-                    for j = 1: i 
-        
-                        % check there is an edge between vertices or not
-                        if S_active_list(i, j) ~= 0 && i ~= vertex_2 && j ~= vertex_2 && i ~= vertex_1 && j ~= vertex_1
-        
-                            % get the x and y values of the first vertex
-                            x_1 = vertices(i, 1);
-                            y_1 = vertices(i, 2);
-        
-                            % get the x and y values of the second vertex
-                            x_2 = vertices(j, 1);
-                            y_2 = vertices(j, 2);
-        
-                            weight_lines = [weight_lines; S_active_list(i, j) i j x_1 y_1 x_2 y_2];
-        
-                        end
-        
+    % CHECK_INTERSECTION Check whether there is an intersection between two vertices or not
+    %
+    %   - Input: vertex_1 = index of the first vertex
+    %            vertex_2 = index of the second vertex 
+    %            vertices = [[x1 y1; x2 y2; ... ; xn yn], [x1 y1; x2 y2; ... ; xm ym], ...] (arena_map)
+    %            edges = [[x1 y1; x2 y2], [x1 y1; x2 y2], ...]
+    %            S_active_list = active list of edges
+    %
+    %   - Output: draw_line = 1 if there is no intersection, 0 if there is an intersection
+    %             adjacency_list = list of the edges of the second vertex
+    %
+    
+        draw_line = 0;
+        adjacency_list = find(edges(vertex_2, :));
+
+        if vertices(vertex_1, 3) ~= vertices(vertex_2, 3)
+
+            [h w] = size(S_active_list);
+            weight_lines = [];
+
+            % draw edges
+            for i = 1: h
+                for j = 1: i 
+                    % check there is an edge between vertices or not
+                    if S_active_list(i, j) ~= 0 && i ~= vertex_2 && j ~= vertex_2 && i ~= vertex_1 && j ~= vertex_1
+
+                        % get the x and y values of the first vertex
+                        x_1 = vertices(i, 1);
+                        y_1 = vertices(i, 2);
+
+                        % get the x and y values of the second vertex
+                        x_2 = vertices(j, 1);
+                        y_2 = vertices(j, 2);
+
+                        weight_lines = [weight_lines; S_active_list(i, j) i j x_1 y_1 x_2 y_2];
                     end
-                    
                 end
-        
-                weight_lines = sortrows(weight_lines);
-        
-                if ~isempty(weight_lines)
-                  
-                    shortest_line = weight_lines(1, :);
-        
-                    current_line = [vertices(vertex_1, 1) vertices(vertex_1, 2) vertices(vertex_2, 1) vertices(vertex_2, 2)];
-                    % line([vertices(vertex_1, 1), vertices(vertex_2, 1)], [vertices(vertex_1, 2), vertices(vertex_2, 2)], 'Color', 'g');
-        
-                    out = lineSegmentIntersect(current_line, shortest_line(4: end));
-        
-                    % isempty(find(out.intAdjacencyMatrix) == 1 ise intersection yok
-                    draw_line = isempty(find(out.intAdjacencyMatrix));
-        
-                else
-        
-                    draw_line = 1;
-        
-                end
-        
             end
+
+            weight_lines = sortrows(weight_lines);
+
+            if ~isempty(weight_lines)
+                shortest_line = weight_lines(1, :);
+                current_line = [vertices(vertex_1, 1) vertices(vertex_1, 2) vertices(vertex_2, 1) vertices(vertex_2, 2)];
+                % line([vertices(vertex_1, 1), vertices(vertex_2, 1)], [vertices(vertex_1, 2), vertices(vertex_2, 2)], 'Color', 'g');
+
+                out = lineSegmentIntersect(current_line, shortest_line(4: end));
+
+                % isempty(find(out.intAdjacencyMatrix) == 1 ise intersection yok
+                draw_line = isempty(find(out.intAdjacencyMatrix));
+
+            else
+                draw_line = 1;
+            end
+        end
         
 end
 
 function [ S_active_list ] = check_active_list( vertex_0, vertex_1, vertices, adjacency_list, S_active_list )
-    %check_active_list add or remove the edge to the list S
+    % CHECK_ACTIVE_LIST Check whether there is an edge between two vertices or not
+    %
+    %   - Input: vertex_0 = index of the first vertex
+    %            vertex_1 = index of the second vertex
+    %            vertices = [[x1 y1; x2 y2; ... ; xn yn], [x1 y1; x2 y2; ... ; xm ym], ...] (arena_map)
+    %            adjacency_list = list of the edges of the second vertex
+    %            S_active_list = active list of edges
+    %
+    %   - Output: S_active_list = updated active list of edges
 
+    global closest_vec;
+
+    %check_active_list add or remove the edge to the list S
     if isempty(adjacency_list)
         
         return;
@@ -589,17 +675,13 @@ function [ S_active_list ] = check_active_list( vertex_0, vertex_1, vertices, ad
     [h w] = size(adjacency_list);
     
     for i = 1: w
-        
         vertex_2 = adjacency_list(i);
 
         if S_active_list(vertex_1, vertex_2) ~= 0 || S_active_list(vertex_2, vertex_1) ~= 0 
-            
             S_active_list(vertex_1, vertex_2) = 0;
-            
             S_active_list(vertex_2, vertex_1) = 0;
             
         else
-
             % get the x and y values of the first vertex
             x_1 = vertices(vertex_1, 1);
             y_1 = vertices(vertex_1, 2);
@@ -611,14 +693,54 @@ function [ S_active_list ] = check_active_list( vertex_0, vertex_1, vertices, ad
             x_0 = vertices(vertex_0, 1);
             y_0 = vertices(vertex_0, 2);
             
-            [ distance ] = calculate_distance( x_0, y_0, x_1, y_1, x_2, y_2 );
+            [ distance , ang] = point_segment_distance([ x_0 y_0],[ [x_1, y_1]; [x_2 y_2] ]);
 
             S_active_list(vertex_1, vertex_2) = distance;
-            
             S_active_list(vertex_2, vertex_1) = distance;
 
+            
+            if distance < closest_vec(5)
+                closest_vec = [[ [x_1, y_1], [x_2 y_2] ], distance, ang];
+            end
         end
+    end
+end
+
+function [ vertices ] = generate_vertices( obstacle )
+    %GENERATE_VERTICES Generate the vertices of the environment
+    %   - obstacle: array of size N x 2, where each row [x, y] represents
+    %     the x coordinate and y coordinate of the obstacle. N is the number
+    %     of obstacles, which is not pre-defined, given that it depends on
+    %     the problem.
+    %   - vertices: array of size M x 3, where each row [x, y, n] represents
+    %     the x coordinate, y coordinate and object number. M is the number of
+    %     vertices, which is not pre-defined, given that it depends on the
+    %     problem.
+    
+    % number of obstacles
+    N = size(obstacle,2);
+    
+    % intitialise the output vector
+    vertices = [];
+    
+    % index of the next vertex to be inserted
+    vertices_idx = 1;
+    
+    % iterate through all the obstacles
+    for i=1:N
         
+        % number of vertices of the current obstacle
+        n = size(obstacle{i},1);
+        
+        % iterate through all the vertices of the current obstacle
+        for j=1:n
+            
+            % add the vertex to the output vector
+            vertices(vertices_idx,:) = [obstacle{i}(j,:), i];
+            
+            % increment the index of the next vertex to be inserted
+            vertices_idx = vertices_idx + 1;
+        end
     end
 end
 
@@ -698,3 +820,5 @@ function display_edge( edges )
     size(result)
     
 end
+
+  
