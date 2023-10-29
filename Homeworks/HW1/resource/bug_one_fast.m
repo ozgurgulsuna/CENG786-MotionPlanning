@@ -31,8 +31,8 @@ global sensor_range infinity arena_map taken;
     meeting_point = [0 0];
 
 
-    while (norm([x(i) y(i)]-qgoal) > epsilon/3)
-    %for i=1:2000
+    %while (norm([x(i) y(i)]-qgoal) > epsilon/3)
+    for i=1:3500
         [dist, min]= rps_sensor(arena_map, [x(i) y(i)]);
         % if (dist > sensor_range)
         %     % move to the goal
@@ -57,10 +57,10 @@ global sensor_range infinity arena_map taken;
 
         end
 
-        if abs(x_encounter(obstacle_num) - minimum_point{obstacle_num-1}(1)) < epsilon && abs(y_encounter(obstacle_num) - minimum_point{obstacle_num-1}(2)) < epsilon
-            disp('no solution')
-            break;
-        end
+        % if abs(x_encounter(obstacle_num) - minimum_point{obstacle_num-1}(1)) < epsilon && abs(y_encounter(obstacle_num) - minimum_point{obstacle_num-1}(2)) < epsilon
+        %     disp('no solution')
+        %     break;
+        % end
 
         if (abs(x_encounter(obstacle_num) - x(i)+meeting_point(1)) > 10*epsilon ) || (abs(y_encounter(obstacle_num) - y(i)+meeting_point(2)) > 10*epsilon)
             leave_lock = 0;
@@ -75,7 +75,7 @@ global sensor_range infinity arena_map taken;
         if (abs(x_encounter(obstacle_num) - x(i)-meeting_point(1)) < epsilon) && (abs(y_encounter(obstacle_num) - y(i)-meeting_point(2)) < epsilon) && (leave == 0)
             % if the robot has circumnavigated the obstacle, go to the minimum distance point
             display('circumnavigated');
-            i
+            i;
             if leave_lock == 0
                 leave = 1;
             end
