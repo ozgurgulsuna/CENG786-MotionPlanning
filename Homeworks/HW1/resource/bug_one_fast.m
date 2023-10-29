@@ -33,8 +33,8 @@ global sensor_range infinity arena_map ;
     epsilon = step*5; 
 
 
-    %while (norm([x(i) y(i)]-qgoal) > 0.1)
-    for i=1:2000
+    while (norm([x(i) y(i)]-qgoal) > 0.1)
+    % for i=1:3000
         [dist, min]= rps_sensor(arena_map, [x(i) y(i)]);
         % if (dist > sensor_range)
         %     % move to the goal
@@ -45,18 +45,20 @@ global sensor_range infinity arena_map ;
         if (dist<=ref_dist)
             % if it is the first encounter, save the point of contact
             if (encounter == 0)
-                obstacle_num = obstacle_num + 1;
+                obstacle_num = obstacle_num + 1
                 x_encounter = x(i);
                 y_encounter = y(i);
                 encounter = 1;
                 leave_lock = 1;
+                status = 1;
+                leave = 0;
             end
             % circumnavigate the obstacle
-            status = 1;
+            
 
         end
 
-        if (abs(x_encounter - x(i)) > 3*sensor_range ) || (abs(y_encounter - y(i)) > 3*sensor_range)
+        if (abs(x_encounter - x(i)) > 3*epsilon ) || (abs(y_encounter - y(i)) > 3*epsilon)
             leave_lock = 0;
         end
 
@@ -67,16 +69,17 @@ global sensor_range infinity arena_map ;
             minimum_point = [x(i) y(i)];
         end
 
-        if (abs(x_encounter - x(i)) < epsilon) && (abs(y_encounter - y(i)) < epsilon)
+        if (abs(x_encounter - x(i)) < 2*epsilon) && (abs(y_encounter - y(i)) < 2*epsilon)
             % if the robot has circumnavigated the obstacle, go to the minimum distance point
             if leave_lock == 0
                 leave = 1;
             end
         end
 
-        if (abs(x(i) - minimum_point(1)) < epsilon/2) && (abs(y(i) - minimum_point(2)) < epsilon/2) && leave == 1
+        if (abs(x(i) - minimum_point(1)) < epsilon) && (abs(y(i) - minimum_point(2)) < epsilon) && leave == 1
             % if the robot has reached the minimum distance point, go to the goal
             status = 3;
+            encounter = 0;
         end
         
 
@@ -87,8 +90,8 @@ global sensor_range infinity arena_map ;
 
 
         if status == 3
-            x(i+1) = x(i) + step*0.5*(qgoal(1)-x(i));
-            y(i+1) = y(i) + step*0.5*(qgoal(2)-y(i));
+            x(i+1) = x(i) + step*(qgoal(1)-x(i))/norm([qgoal(1)-x(i) qgoal(2)-y(i)]);
+            y(i+1) = y(i) + step*(qgoal(2)-y(i))/norm([qgoal(1)-x(i) qgoal(2)-y(i)]);
         end
 
         i = i + 1;
