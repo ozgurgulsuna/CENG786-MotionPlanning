@@ -99,10 +99,10 @@ global sensor_range infinity arena_map ;
 
         i = i + 1;
 
-        for j=1:size(arena_map,2)
-            arena_map{j}(:,1) = arena_map{j}(:,1) + step*0.1;
-            arena_map{j}(:,2) = arena_map{j}(:,2) + step*0.0018;
-        end
+%         for j=1:size(arena_map,2)
+%             arena_map{j}(:,1) = arena_map{j}(:,1) + step*0.1;
+%             arena_map{j}(:,2) = arena_map{j}(:,2) + step*0.0018;
+%         end
     end
 
 end
