@@ -53,11 +53,12 @@ global qstart qgoal;  % Start and goal configurations
 sensor_range = 0.25;
 infinity = 1e5;
 arena_limits = [0 10 0 10];
-% arena_map = [];
+qstart = [0.5 0.5];
+qgoal  = [8 9];
 n = 10; % time step for animation
 
 % Invoking your solutions for the example arena ------------------------
-init_arena();
+% init_arena();
 tic
 [x_m1_b1, y_m1_b1] = bug_one_fast( qstart, qgoal );
 toc
@@ -227,7 +228,7 @@ arena_map{4} = [ ...
     2.4841    0.7962];
 
 
-qstart = [2 9];
-qgoal  = [9.2 5];
+qstart = [0.5 0.5];
+qgoal  = [8 9];
 
 end

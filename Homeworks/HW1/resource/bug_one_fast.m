@@ -33,7 +33,7 @@ global sensor_range infinity arena_map taken;
 
 
     while (norm([x(i) y(i)]-qgoal) > epsilon/3)
-    %for i=1:3500
+    %for i=1:1500
         [dist, min]= rps_sensor(arena_map, [x(i) y(i)]);
         % if (dist > sensor_range)
         %     % move to the goal
