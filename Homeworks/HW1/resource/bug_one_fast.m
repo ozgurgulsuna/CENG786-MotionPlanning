@@ -32,8 +32,8 @@ global sensor_range infinity arena_map taken;
     meeting_point = [0 0];
 
 
-    while (norm([x(i) y(i)]-qgoal) > epsilon/3)
-    %for i=1:1500
+    %while (norm([x(i) y(i)]-qgoal) > epsilon/3)
+    for i=1:1500
         [dist, min]= rps_sensor(arena_map, [x(i) y(i)]);
         % if (dist > sensor_range)
         %     % move to the goal
@@ -112,12 +112,12 @@ global sensor_range infinity arena_map taken;
         taken = i;
         %% move arena map at a fixed rate
         for j=1:size(arena_map,2)
-            arena_map{j}(:,1) = arena_map{j}(:,1) + step*0.018;
-            arena_map{j}(:,2) = arena_map{j}(:,2) + step*0.018;
+            arena_map{j}(:,1) = arena_map{j}(:,1) + step*0.1;
+            arena_map{j}(:,2) = arena_map{j}(:,2) + step*0.0018;
         end
 
-        meeting_point(1) = meeting_point(1) + step*0.018;
-        meeting_point(2) = meeting_point(2) + step*0.018;
+        meeting_point(1) = meeting_point(1) + step*0.1;
+        meeting_point(2) = meeting_point(2) + step*0.0018;
         
 
     end

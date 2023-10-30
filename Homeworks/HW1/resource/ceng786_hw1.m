@@ -71,14 +71,14 @@ figure(2);
 clf;
 
 for j=1:size(arena_map,2)
-    arena_map{j}(:,1) = arena_map{j}(:,1) - 0.02*length(x_m1_b1)*0.018;
-    arena_map{j}(:,2) = arena_map{j}(:,2) - 0.02*length(x_m1_b1)*0.018;
+    arena_map{j}(:,1) = arena_map{j}(:,1) - 0.02*length(x_m1_b1)*0.1;
+    arena_map{j}(:,2) = arena_map{j}(:,2) - 0.02*length(x_m1_b1)*0.0018;
 end
 for i = 1:length(x_m1_b1)/n
   draw_range_map( [x_m1_b1(n*i) y_m1_b1(n*i)], 30 );
   for j=1:size(arena_map,2)
-    arena_map{j}(:,1) = arena_map{j}(:,1) + 0.02*n*0.018;
-    arena_map{j}(:,2) = arena_map{j}(:,2) + 0.02*n*0.018;
+    arena_map{j}(:,1) = arena_map{j}(:,1) + 0.02*n*0.1;
+    arena_map{j}(:,2) = arena_map{j}(:,2) + 0.02*n*0.0018;
 end
   drawnow;
 end
