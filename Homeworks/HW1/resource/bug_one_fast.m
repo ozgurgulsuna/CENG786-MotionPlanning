@@ -45,8 +45,8 @@ global sensor_range infinity arena_map taken;
                 % if it is the first encounter, save the point of contact
                 if (encounter == 0)
                     obstacle_num = obstacle_num + 1;
-                    x_encounter(obstacle_num) = x(i);
-                    y_encounter(obstacle_num) = y(i);
+                    x_encounter(obstacle_num) = x(i)-meeting_point(1);
+                    y_encounter(obstacle_num) = y(i)-meeting_point(2);
                     encounter = 1;
                     leave_lock = 1;
                     status = 1;
@@ -66,17 +66,17 @@ global sensor_range infinity arena_map taken;
         %     break;
         % end
 
-        if (abs(x_encounter(obstacle_num) - x(i)-meeting_point(1)) > 10*epsilon ) || (abs(y_encounter(obstacle_num) - y(i)-meeting_point(2)) > 10*epsilon)
+        if (abs(x_encounter(obstacle_num) - x(i)+meeting_point(1)) > 10*epsilon ) || (abs(y_encounter(obstacle_num) - y(i)+meeting_point(2)) > 10*epsilon)
             leave_lock = 0;
         end
 
         % record the minimum distance
-        if (norm([qgoal(1)-x(i)-meeting_point(1) qgoal(2)-y(i)-meeting_point(2)]) < minimum_dist(obstacle_num)) && (leave == 0) && (status == 1)
-            minimum_dist(obstacle_num)  = norm([qgoal(1)-x(i)-meeting_point(1) qgoal(2)-y(i)-meeting_point(2)]);
+        if (norm([qgoal(1)-x(i) qgoal(2)-y(i)]) < minimum_dist(obstacle_num)) && (leave == 0) && (status == 1)
+            minimum_dist(obstacle_num)  = norm([qgoal(1)-x(i) qgoal(2)-y(i)]);
             minimum_point{obstacle_num} = [(x(i)-meeting_point(1)) (y(i)-meeting_point(2))];
         end
 
-        if (abs(x_encounter(obstacle_num) - x(i)-meeting_point(1)) < epsilon) && (abs(y_encounter(obstacle_num) - y(i)-meeting_point(2)) < epsilon) && (leave == 0)
+        if (abs(x_encounter(obstacle_num) - x(i)+meeting_point(1)) < epsilon) && (abs(y_encounter(obstacle_num) - y(i)+meeting_point(2)) < epsilon) && (leave == 0)
             % if the robot has circumnavigated the obstacle, go to the minimum distance point
             display('circumnavigated');
             i;
@@ -116,8 +116,8 @@ global sensor_range infinity arena_map taken;
             arena_map{j}(:,2) = arena_map{j}(:,2) + step*0.018;
         end
 
-        meeting_point(1) = meeting_point(1) - step*0.018;
-        meeting_point(2) = meeting_point(2) - step*0.018;
+        meeting_point(1) = meeting_point(1) + step*0.018;
+        meeting_point(2) = meeting_point(2) + step*0.018;
         
 
     end
