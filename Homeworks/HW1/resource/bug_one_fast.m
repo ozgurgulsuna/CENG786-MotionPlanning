@@ -32,8 +32,8 @@ global sensor_range infinity arena_map taken;
     meeting_point = [0 0];
 
 
-    %while (norm([x(i) y(i)]-qgoal) > epsilon/3)
-    for i=1:1500
+    while (norm([x(i) y(i)]-qgoal) > epsilon/3)
+    %for i=1:1500
         [dist, min]= rps_sensor(arena_map, [x(i) y(i)]);
         % if (dist > sensor_range)
         %     % move to the goal
