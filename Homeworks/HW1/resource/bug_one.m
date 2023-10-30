@@ -1,58 +1,101 @@
-function [x,y] = bug_one( qstart, qgoal )
+function [x,y] = bug_one_fast( qstart, qgoal )
+global sensor_range infinity arena_map ;
 
-global sensor_range infinity;
+    ref_dist = sensor_range*0.5;
+    circumnav_dir = -1;   % CCW = 1, CW = -1
+    status = 3;
+    step = 0.02;
+    x(1) = qstart(1);
+    y(1) = qstart(2);
 
-% % A simple hack which blindly goes towards the goal
-% samples = norm( qgoal - qstart ) / (sensor_range / 20);
-% range = linspace(0,1,samples);
-% 
-% x = qstart(1) + range*(qgoal(1) - qstart(1));
-% y = qstart(2) + range*(qgoal(2) - qstart(2));
+    i = 1;
+    encounter = 0;
+    obstacle_num = 2;
+    minimum_point{1} = [infinity*2 infinity*2];
+    minimum_dist(1) = infinity;
+    x_encounter(1) = infinity;
+    y_encounter(1) = infinity;
 
-% samples = norm( qgoal - qstart ) / (sensor_range / 20);
-% range = linspace(0,1,samples);
-ref_dist = sensor_range/2;
-circumnav_dir = -1;   % CCW = 1, CW = -1
-status = 1;
-range = 0.075;
-x(1) = qstart(1);
-y(1) = qstart(2);
-for i=2:400
-    dist= [10 5];
-    min = 0; % angle of minimum distance
-    % sweep the sensor around
-    for theta=0:2*pi/50:2*pi  % 10 degree steps
-        dist(2) = read_sweep(theta, [x(i-1) y(i-1)]);
-        if (dist(2)<dist(1))
-            dist(1) = dist(2) ;
-            min = theta;
-            status = 1;
+    minimum_point{2} = [infinity*2 infinity*2];
+    minimum_dist(2) = infinity;
+    x_encounter(2) = infinity;
+    y_encounter(2) = infinity;
+
+    leave = 0;
+
+    % minimum distance to the critical points, if we increase the fineness of the
+    % path, i.e. the number of points using step, we can decrease this further.
+    % as a rule of thumb 5 times is a good start.
+    epsilon = step*5; 
+
+
+    while (norm([x(i) y(i)]-qgoal) > epsilon/3)
+    %for i=1:3000
+        [dist, min]= rps_sensor(arena_map, [x(i) y(i)]);
+        % if (dist > sensor_range)
+        %     % move to the goal
+        %     status = 3; 
+        %     encounter = 0; 
+        % end
+
+        if (dist<=ref_dist)
+            % if it is the first encounter, save the point of contact
+            if (encounter == 0)
+                obstacle_num = obstacle_num + 1;
+                x_encounter(obstacle_num) = x(i);
+                y_encounter(obstacle_num) = y(i);
+                encounter = 1;
+                leave_lock = 1;
+                status = 1;
+                leave = 0;
+                minimum_dist(obstacle_num) = infinity;
+            end
+
         end
-        if (dist(1)<sensor_range*0.2)
-            status = 2;
+
+        if abs(x_encounter(obstacle_num) - minimum_point{obstacle_num-1}(1)) < epsilon && abs(y_encounter(obstacle_num) - minimum_point{obstacle_num-1}(2)) < epsilon
+            disp('no solution')
+            break;
         end
-        if (dist(1)> sensor_range*0.8)
+
+
+        if (abs(x_encounter(obstacle_num) - x(i)) > 3*epsilon ) || (abs(y_encounter(obstacle_num) - y(i)) > 3*epsilon)
+            leave_lock = 0;
+        end
+
+        % record the minimum distance
+        if (norm([qgoal(1)-x(i) qgoal(2)-y(i)]) < minimum_dist(obstacle_num)) && (leave == 0) && (status == 1)
+            minimum_dist(obstacle_num)  = norm([qgoal(1)-x(i) qgoal(2)-y(i)]);
+            minimum_point{obstacle_num} = [x(i) y(i)];
+        end
+
+        if (abs(x_encounter(obstacle_num) - x(i)) < 2*epsilon) && (abs(y_encounter(obstacle_num) - y(i)) < 2*epsilon)
+            % if the robot has circumnavigated the obstacle, go to the minimum distance point
+            if leave_lock == 0
+                leave = 1;
+            end
+        end
+
+        if (abs(x(i) - minimum_point{obstacle_num}(1)) < epsilon) && (abs(y(i) - minimum_point{obstacle_num}(2)) < epsilon) && leave == 1
+            % if the robot has reached the minimum distance point, go to the goal
             status = 3;
+            encounter = 0;
+        end
+        
+
+        if status == 1
+            x(i+1) = x(i) + step*1*(cos(min-(pi/2*circumnav_dir))) + step*1*(cos(min))*(dist-ref_dist);
+            y(i+1) = y(i) + step*1*(sin(min-(pi/2*circumnav_dir))) + step*1*(sin(min))*(dist-ref_dist);
         end
 
+
+        if status == 3
+            x(i+1) = x(i) + step*(qgoal(1)-x(i))/norm([qgoal(1)-x(i) qgoal(2)-y(i)]);
+            y(i+1) = y(i) + step*(qgoal(2)-y(i))/norm([qgoal(1)-x(i) qgoal(2)-y(i)]);
+        end
+
+        i = i + 1;
     end
 
-    % move in the direction orthogonal to the minimum distance
-    % tangent move
-    if status == 1
-        x(i) = x(i-1) + range*1*(cos(min-(pi/2*circumnav_dir))) + range*1*(cos(min))*(dist(1)-ref_dist);
-        y(i) = y(i-1) + range*1*(sin(min-(pi/2*circumnav_dir))) + range*1*(sin(min))*(dist(1)-ref_dist);
-    end
-
-    % get away
-    if status == 2
-        x(i) = x(i-1) - range*1*(cos(min));
-        y(i) = y(i-1) - range*1*(sin(min));
-    end
-    % get in
-    if status == 3
-        x(i) = x(i-1) + range*1*(qgoal(1)-x(i-1));
-        y(i) = y(i-1) + range*1*(qgoal(2)-y(i-1));
-    end
-    status;
 end
+
