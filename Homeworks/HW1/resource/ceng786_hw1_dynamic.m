@@ -58,9 +58,9 @@ qgoal  = [8 9];
 n = 10; % time step for animation
 
 % Invoking your solutions for the example arena ------------------------
-% init_arena();
+init_arena();
 tic
-[x_m1_b1, y_m1_b1] = bug_one_fast( qstart, qgoal );
+[x_m1_b1, y_m1_b1] = bug_two_dynamic( qstart, qgoal );
 toc
 figure(1);
 clf;
