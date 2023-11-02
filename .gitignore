@@ -7,6 +7,5 @@ node_modules/
 Textbooks/
 
 # ignore lecture notes starting with "Lecture"
-Lecture\ Notes/Lecture*
-
+Lecture Notes/Lecture*.pdf
 
