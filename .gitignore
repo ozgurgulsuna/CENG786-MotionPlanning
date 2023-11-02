@@ -1,0 +1,12 @@
+# Ignore node_modules directory
+node_modules/
+
+# Ignore log files
+*.log
+# ignore textbooks directory
+Textbooks/
+
+# ignore lecture notes starting with "Lecture"
+Lecture\ Notes/Lecture*
+
+
