@@ -1,4 +1,4 @@
-## \[Proporsal-2\]: Geodesic Notion Planning ##
+## \[Proporsal-2\]: Geodesic Motion Planning ##
 ([Geometry-Aware Coverage Path Planning for Depowdering on Complex 3D Surfaces](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=10187673))
 
 #geometry-aware #geodesic #voronoi-tesellation #coverage-path #visual-coverage 
@@ -11,15 +11,15 @@
 
    The important aspects of this paper consist of having involved many different algorithms such as voronoi tesselation, TSP, dijkstra's algorithm and 3-opt algorithm along with the working on 3D mesh models which are more physical abstractaions of the real world. Lastly, the involement with the mathematical understanding in terms of geodesic norms and efficient computation of overlapping features are useful for the future work.
 
-\[1\] [Geometry-Aware Coverage Path Planning for Depowdering on Complex 3D Surfaces](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=10187673)
-
+\[1\] [Geometry-Aware Coverage Path Planning for Depowdering on Complex 3D Surfaces](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=10187673)  
 \[2\] [Fisher Information Based Active Planning for Aerial Photogrammetry](https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/617407/ICRA23_3007_FI.pdf?sequence=1)  
 
 ------------------------------------------------------------
 
 <h7>
-<div dir="rtl">ozgur gulsuna, 2023-11-19 </div>
-<div dir="rtl">2307668</div>
+<br>
+<div dir="rtl">Ozgur Gulsuna, 2307668</div>
+<div dir="rtl">2023-11-19</div>
 </h7>
 </br>
 

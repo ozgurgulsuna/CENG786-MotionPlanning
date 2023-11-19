@@ -15,8 +15,9 @@
 ------------------------------------------------------------
 
 <h7>
-<div dir="rtl">ozgur gulsuna, 2023-11-19 </div>
-<div dir="rtl">2307668</div>
+<br>
+<div dir="rtl">Ozgur Gulsuna, 2307668</div>
+<div dir="rtl">2023-11-19</div>
 </h7>
 </br>
 
