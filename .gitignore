@@ -15,4 +15,7 @@ Implementation/References/**/*.pdf
 
 # ignore pdfs in the Papers directory
 Implementation/Proposals/**/*.pdf
+
+!*[P-1]T*
+
 !*[★]*
