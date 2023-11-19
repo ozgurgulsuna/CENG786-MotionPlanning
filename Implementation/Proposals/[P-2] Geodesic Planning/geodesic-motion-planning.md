@@ -1,5 +1,5 @@
 ## \[Proporsal-2\]: Geodesic Motion Planning ##
-\[Geometry-Aware Coverage Path Planning for Depowdering on Complex 3D Surfaces\]  
+_\[Geometry-Aware Coverage Path Planning for Depowdering on Complex 3D Surfaces\]_  
 
 #geometry-aware #geodesic #voronoi-tesellation #coverage-path #visual-coverage 
 

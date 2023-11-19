@@ -1,5 +1,5 @@
 ## \[Proporsal-1\]: Truss Robot Motion Planning ##
-\[Polygon-Based Random Tree Search Algorithm for a Size-Changing Robot\]  
+_\[Polygon-Based Random Tree Search Algorithm for a Size-Changing Robot\]_
 
 #computational-geometry #cellular-robots #modular-robots #shape-changing #polygonal-linkages #motion-planning #RRT #VGT #truss-robots #voronoi-diagram
 
@@ -9,15 +9,14 @@
 
   The paper not only includes the motion planning algorithm, but also the locomotion and reconfiguration is discussed. The results with the simulation environment show that solutions for simple environments can be found within five minutes.
 
-\[1\] [Polygon-Based Random Tree Search Algorithm for a Size-Changing Robot](https://ieeexplore.ieee.org/document/10287401)  
-\[2\] [Motion Planning for Variable Topology Trusses: Reconfiguration and Locomotion](https://ieeexplore.ieee.org/document/10287401)  
+\[1\] [Polygon-Based Random Tree Search Algorithm for a Size-Changing Robot](https://ieeexplore.ieee.org/document/9477154)  
+\[2\] [Motion Planning for Variable Topology Trusses: Reconfiguration and Locomotion](https://ieeexplore.ieee.org/abstract/document/10026546)  
+\[3\] [RRT*-Based Path Planning for Continuum Arms](https://ieeexplore.ieee.org/document/9772994) 
 
-------------------------------------------------------------
-
+## ##
 <h7>
-<br>
 <div dir="rtl">Ozgur Gulsuna, 2307668</div>
 <div dir="rtl">2023-11-19</div>
 </h7>
-</br>
+
 

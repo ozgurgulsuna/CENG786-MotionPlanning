@@ -1,5 +1,5 @@
 ## \[Proporsal-3\]: Obstacle Displacement Motion Planning ##
-\[Real-Time Navigation for Autonomous Surface Vehicles In Ice-Covered Waters\]  
+_\[Real-Time Navigation for Autonomous Surface Vehicles In Ice-Covered Waters\]_  
 
 #minimizing-collision #obstacle-displacement #motion-planning #motion-primitives #moving-horizon #lattice-based-planner
 
