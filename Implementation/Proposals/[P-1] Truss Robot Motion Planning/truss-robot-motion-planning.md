@@ -10,8 +10,13 @@
   The paper not only includes the motion planning algorithm, but also the locomotion and reconfiguration is discussed. The results with the simulation environment show that solutions for simple environments can be found within five minutes.
 
 \[1\] [Polygon-Based Random Tree Search Algorithm for a Size-Changing Robot](https://ieeexplore.ieee.org/document/10287401)  
-\[2\] [Motion Planning for Variable Topology Trusses: Reconfiguration and Locomotion](https://ieeexplore.ieee.org/document/10287401)
+\[2\] [Motion Planning for Variable Topology Trusses: Reconfiguration and Locomotion](https://ieeexplore.ieee.org/document/10287401)  
 
 ------------------------------------------------------------
-ozgur gulsuna, 2023-11-19
-2307668
+
+<h7>
+<div dir="rtl">ozgur gulsuna, 2023-11-19 </div>
+<div dir="rtl">2307668</div>
+</h7>
+</br>
+
