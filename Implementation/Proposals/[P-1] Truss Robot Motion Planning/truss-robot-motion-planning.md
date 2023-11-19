@@ -1,5 +1,5 @@
 ## \[Proporsal-1\]: Truss Robot Motion Planning ##
-([Polygon-Based Random Tree Search Algorithm for a Size-Changing Robot](https://ieeexplore.ieee.org/document/10287401))
+\[Polygon-Based Random Tree Search Algorithm for a Size-Changing Robot\]  
 
 #computational-geometry #cellular-robots #modular-robots #shape-changing #polygonal-linkages #motion-planning #RRT #VGT #truss-robots #voronoi-diagram
 

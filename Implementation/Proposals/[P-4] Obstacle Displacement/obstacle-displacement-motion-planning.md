@@ -1,5 +1,6 @@
 ## \[Proporsal-3\]: Obstacle Displacement Motion Planning ##
 \[Real-Time Navigation for Autonomous Surface Vehicles In Ice-Covered Waters\]  
+
 #minimizing-collision #obstacle-displacement #motion-planning #motion-primitives #moving-horizon #lattice-based-planner
 
    In crowded environments where the obstacles also dynamic, an effective planning can be made with pushing the objects to the sides. A preliminary example of this setting is movement of the water vehicles in ice-covered waters, where the 2D ice blocks are the dynamic obstacles. The complexity of the problem is minimizing the displacement of the dynamic obstacles, the prior work focuses on the collision-free path planning for the vehicles. The related paper proposes a method to minimize the displacement of the ice blocks while planning the path for the vehicle. 

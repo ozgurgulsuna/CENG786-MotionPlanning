@@ -11,7 +11,8 @@ Textbooks/
 Lecture Notes/Lecture*.pdf
 
 # ignore selected papers in the Papers directory
-Implementation/References/
+Implementation/References/**/*.pdf
 
 # ignore pdfs in the Papers directory
 Implementation/Proposals/**/*.pdf
+!*[★]*
