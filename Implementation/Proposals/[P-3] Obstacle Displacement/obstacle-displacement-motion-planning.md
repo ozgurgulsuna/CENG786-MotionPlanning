@@ -14,12 +14,10 @@ _\[Real-Time Navigation for Autonomous Surface Vehicles In Ice-Covered Waters\]_
 \[1\] [Real-Time Navigation for Autonomous Surface Vehicles In Ice-Covered Waters](https://arxiv.org/pdf/2302.11601.pdf)  
 \[2\] [Computational Tradeoff in Minimum Obstacle Displacement Planning for Robot Navigation](https://arxiv.org/pdf/2302.07114.pdf)  
 
-------------------------------------------------------------
-
+## ##
 <h7>
-<br>
 <div dir="rtl">Ozgur Gulsuna, 2307668</div>
 <div dir="rtl">2023-11-19</div>
 </h7>
-</br>
+
 

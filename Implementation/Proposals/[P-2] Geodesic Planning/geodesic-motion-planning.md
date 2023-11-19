@@ -14,12 +14,10 @@ _\[Geometry-Aware Coverage Path Planning for Depowdering on Complex 3D Surfaces\
 \[1\] [Geometry-Aware Coverage Path Planning for Depowdering on Complex 3D Surfaces](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=10187673)  
 \[2\] [Fisher Information Based Active Planning for Aerial Photogrammetry](https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/617407/ICRA23_3007_FI.pdf?sequence=1)  
 
-------------------------------------------------------------
-
+## ##
 <h7>
-<br>
 <div dir="rtl">Ozgur Gulsuna, 2307668</div>
 <div dir="rtl">2023-11-19</div>
 </h7>
-</br>
+
 
