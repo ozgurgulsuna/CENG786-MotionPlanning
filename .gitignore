@@ -11,7 +11,18 @@ Textbooks/
 Lecture Notes/Lecture*.pdf
 
 # ignore pdfs in the Papers directory
-Implementation/Proposals/**/*.pdf
+# Implementation/Proposals/**/*.pdf
+Implementation/Proposals/References/
 
-!*[P*
-!*[★]*
+# Implementation/Proposals/\[P-1\] Truss Robot Motion Planning
+
+Implementation/Proposals/\[P*/**/*.pdf
+!Implementation/Proposals/\[P*/**/*\[\★\]*
+!Implementation/Proposals/\[P*/**/*\[P-*
+
+#**Implementation/Proposals/[P-1] Truss Robot Motion Planning/[P-1]Truss-robot-motion-planning.pdf
+
+# !*[★]*
+
+# [P-1] Truss Robot Motion Planning
+
