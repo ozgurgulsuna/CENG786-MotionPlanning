@@ -10,19 +10,15 @@ Textbooks/
 # ignore lecture notes starting with "Lecture"
 Lecture Notes/Lecture*.pdf
 
-# ignore pdfs in the Papers directory
-# Implementation/Proposals/**/*.pdf
+# ignore pdfs in the references directory
 Implementation/Proposals/References/
 
-# Implementation/Proposals/\[P-1\] Truss Robot Motion Planning
-
+# ignore pdfs in all subdirectories of the folders starting with "[P"
 Implementation/Proposals/\[P*/**/*.pdf
+
+# whitelist the starred pdfs and the pdfs starting with "[P-"
 !Implementation/Proposals/\[P*/**/*\[\★\]*
 !Implementation/Proposals/\[P*/**/*\[P-*
 
-#**Implementation/Proposals/[P-1] Truss Robot Motion Planning/[P-1]Truss-robot-motion-planning.pdf
 
-# !*[★]*
-
-# [P-1] Truss Robot Motion Planning
 
