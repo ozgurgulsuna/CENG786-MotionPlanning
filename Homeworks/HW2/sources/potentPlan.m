@@ -47,46 +47,59 @@ global arena_limits;  % Boundaries of the arena: [xmin xmax ymin ymax]
 global arena_map;     % Description of obstacles in the environment
 global infinity;      % Large value to be used as 'infinity'
 global qstart qgoal;  % Start and goal configurations
+global epsilon;       % Threshold for the goal region
+
+% Parameters
+epsilon = 0.5; % Threshold for the goal region
 
 % Parameter values to be used for the homework ---
 sensor_range = 0.5;
 infinity = 1e5;
 arena_limits = [0 10 0 10];
-qstart = [0.5 0.5];
-qgoal = [9 9];
-n = 10; % time step for animation
+qstart = [0.5 1];
+qgoal = [1 9];
+% n = 10; % time step for animation
 solver = "DISCRETE"; % "DISCRETE" or "ODE"
 
 % Invoking your solutions for the example arena ------------------------
 init_arena();
-tic
-[x_m1_b1, y_m1_b1] = bug_one( qstart, qgoal );
-toc
-figure(1);
+% tic
+% toc
 
-clf;
-xticks([0 1 2 3 4 5 6 7 8 9 10])
-yticks([0 1 2 3 4 5 6 7 8 9 10])
-zticks([0 1 2 3 4 5 6 7 8 9 10])
-draw_arena;
-hold on; 
-plot( x_m1_b1, y_m1_b1 );
+% call potential function with ode
+tspan = [1 1e25];
+options = odeset('Event',@(t,qstart) potEventFunc(t,qstart,qgoal));
+[T,Y] = ode45(@(t,qstart) attr_repl(t,qstart,qgoal),tspan,qstart,options);
 
-figure(2);
-clf;
-for i = 1:length(x_m1_b1)/n
-  draw_range_map( [x_m1_b1(n*i) y_m1_b1(n*i)], 30 );
-  drawnow;
+% plot results
+plot(Y(:,1),Y(:,2),'g','LineWidth',2);
+
+
+
+
+
+% figure(1);
+
+% clf;
+% xticks([0 1 2 3 4 5 6 7 8 9 10])
+% yticks([0 1 2 3 4 5 6 7 8 9 10])
+% zticks([0 1 2 3 4 5 6 7 8 9 10])
+% draw_arena;
+% hold on; 
+% plot( x_m1_b1, y_m1_b1 );
+
+% figure(2);
+% clf;
+% for i = 1:length(x_m1_b1)/n
+%   draw_range_map( [x_m1_b1(n*i) y_m1_b1(n*i)], 30 );
+%   drawnow;
+% end
+
 end
 
-end
-%% -----------------------------------------------------------------
-% init_arena
-%
-% Definition of the example arena map for Homework 1
-%
-%% -----------------------------------------------------------------
-function init_arena;
+
+% init_arena -----------------------------------------------------------------
+function init_arena
 global arena_map qstart qgoal;
 
 arena_map = [];
@@ -123,7 +136,7 @@ arena_map{2} =   ...
     6.5    2.5;  ...
     5    2.5 ];
 
-qstart = [0.5 0.5];
-qgoal = [6 3];
+% qstart = [0.5 0.5];
+% qgoal = [9 9];
 
 end

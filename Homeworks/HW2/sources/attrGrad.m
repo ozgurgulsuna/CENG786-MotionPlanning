@@ -1,4 +1,4 @@
-function nabla_Uatt = attrGrad( q , w )
+function nabla_Uatt = attrGrad(q, w)
 %ATTRGRAD Gradient of the attractive potential function
 %   This function computes the gradient of the attractive potential
 %   function between the two points q and w in an n-dimensions.
