@@ -1,16 +1,63 @@
-function [x,y] = attr_repl( qstart, qgoal )
-%BUG_ONE 
-%  This function implements the bug one algorithm. It takes the start and
-%  Returns the path as a vector of x and y coordinates.
+function [path] = attr_repl( qstart, qgoal )
+%ATTR_REPL Additive attraction and repulsion path planning implementation
+%  This function implements the additive attraction and repulsion method
+%  for path planning. The function takes as input the start and goal
+%  positions of the robot and returns the path as an n dimensional vector.
+%  The number of robot and the goal is assumed to be 1.
+%       
+%   - Input:  qstart = [s_1 s_2 ... s_n]     starting coordinates of the robot,
+%             qgoal  = [g_1 g_2 ... g_n]     goal coordinates of the robot,
+%                                            where "n" is the dimension of the
+%                                            configuration space.
+%
+%   - Output: path  =  [p_11 p_21 ... p_n1;  path of the robot, where rows are the
+%                       p_12 p_22 ... p_n2;  coordinates of the robot at a given
+%                       ...                  time step and "m" is the number of
+%                       p_1m p_2m ... p_nm]  steps.
+%                                            
+%                                            
+%   Ozgur Gulsuna, METU
+%   CENG786 Robot Motion Planning and Control, Fall 2023 
 
-global sensor_range infinity arena_map ;
+% Extern global variables
+global sensor_range ; 
+global infinity ;
+global arena_map ;
+global solver ;
+global dimension ;
+
+    % Initial declarations
+    path = zeros(dimension, 1);     % Path is initialized with only 1 step
+
+
+
+
+    % Attractive Potential Gradient
+    for n = 1: dimension
+        path(n, 1) = qstart(n) + attrGrad(qstart, qgoal);
+        
+    end
+
+    end
+
+
+
+    if solver == "DISCRETE"
+        % discrete method
+        [x,y] = discrete(qstart, qgoal);
+    end
+
+
+
+
+
+
 
     ref_dist = sensor_range*0.5;
     circumnav_dir = -1;   % CCW = 1, CW = -1
     status = 3;  
     step = 0.02; 
-    x(1) = qstart(1);
-    y(1) = qstart(2);
+
 
     i = 1;
     encounter = 0;

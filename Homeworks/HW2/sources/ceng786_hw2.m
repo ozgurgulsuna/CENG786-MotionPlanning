@@ -47,6 +47,8 @@ global arena_limits;  % Boundaries of the arena: [xmin xmax ymin ymax]
 global arena_map;     % Description of obstacles in the environment
 global infinity;      % Large value to be used as 'infinity'
 global qstart qgoal;  % Start and goal configurations
+global solver;        % Method to be used for planning
+global dimension;     % Dimension of the work space
 
 % Parameter values to be used for the homework ---
 sensor_range = 0.5;
@@ -55,6 +57,7 @@ arena_limits = [0 10 0 10];
 qstart = [0.5 0.5];
 qgoal = [9 9];
 n = 10; % time step for animation
+solver = "DISCRETE"; % "DISCRETE" or "ODE"
 
 % Invoking your solutions for the example arena ------------------------
 init_arena();

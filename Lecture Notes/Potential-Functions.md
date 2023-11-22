@@ -12,6 +12,8 @@ The second derivative of this function is called the [[Hessian]] matrix, and is 
 
 When the Hessian is nonsingular at the critical point, the critical point is non-degenerate, implying that the critical point is isolated. When the Hessian is positive-definite, the critical point is a local minimum; when the Hessian is negative-definite, then the critical point is a local maximum. Generally, we consider potential functions whose Hessians are nonsingular, i.e., those which only have isolated critical points. This also means that the potential function is never flat.
 
+The potential function algorithms can be applied to spaces of any dimension. However, the potential function algorithms are not guaranteed to find the global minimum.
+
 ###### Potential Functions ######
 ## Additive Attractive/Repulsive Potential ##
 
@@ -21,7 +23,15 @@ $\begin{equation}
 U(x) = U_{att}(x) + U_{rep}(x)
 \end{equation}$
 
-#### Attactive Potential ####
+#### Attractive Potential ####
+
+The attractive potential should be monotonically increasing with distance from the goal. The attractive potential is defined as,
+$\begin{equation}
+U_{att}(x) = \frac{1}{2} \zeta d^2
+\end{equation}$
+
+where $d$ is the distance from the goal and $\alpha$ is a positive constant.
+
 
 
 ------------------------------------------------------------------------------------------
