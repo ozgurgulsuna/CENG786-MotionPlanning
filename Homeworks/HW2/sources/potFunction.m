@@ -1,4 +1,4 @@
-function [gradPot] = attr_repl(tspan, qstart, qgoal)
+function [gradPot] = potFunction(tspan, qstart, qgoal)
 %ATTR_REPL Additive attraction and repulsion path planning implementation
 %  This function implements the additive attraction and repulsion method
 %  for path planning. The function takes as input the start and goal
@@ -27,18 +27,21 @@ qgoal
 dimension = length(qgoal);     % Dimension of the configuration space
 gradPot = zeros(dimension,1);     % Path is initialized with only 1 step
 
-q_start = qstart;
-q_goal = qgoal';
+
 % Attractive Potential Gradient
 for n = 1: dimension
-    gradPot(n) = -1*attrGrad(q_start(n), q_goal(n));
+    gradPot(n) = -1*attrGrad(qstart(n), qgoal(n));
 end
 
-% gradPot = gradPot';
-
 % Repulsive Potential Gradient
-% for n = 1: dimension
-%     gradPot(n) = gradPot(n) + replGrad(qstart(n));
-% end
+for i = 1: length(arena_map)
+    for n = 1: dimension
+        gradPot(n) = gradPot(n) + replGrad(qstart(n), arena_map(i).center(n), arena_map(i).radius);
+    end
+end
+
+
+
+
 
 end

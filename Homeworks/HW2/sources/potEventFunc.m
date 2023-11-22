@@ -6,10 +6,10 @@ global epsilon
 
 dimension = length(w);
 % find local minima by gradient
-gr = attr_repl(t,q,w)<epsilon*(ones(dimension,1));
+gr = potFunction(t,q,w)<epsilon*(ones(dimension,1));
 
 
-value = [(norm(attr_repl(t,q,w))>epsilon) ; % 
+value = [(norm(potFunction(t,q,w))>epsilon) ; % 
                        norm(q-w)<epsilon ;
                     gr(1)*gr(2)<epsilon ]   
 
