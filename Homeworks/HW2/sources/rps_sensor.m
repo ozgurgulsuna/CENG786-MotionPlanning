@@ -1,14 +1,20 @@
-function [ dist, angle ] = rps_sensor( arena_map , v)
+function [dist, angle] = rps_sensor( arena_map , v, object_index)
 global closest_vec arena_limits infinity sensor_range;
-    % (RPS) Rotational Plane Sweep Algorithm, find the visibility graph from given vertices
-    % then generate new unified simple obstacle map from visible edges.
+    %RPS_SENSOR Rotational Plane Sweep Algorithm (2D), find the distance and angle of the
+    % obstacle "i" from the robot position "v" in the given arena_map.
     %
-    %   - Input: arena_map = [[x1 y1; x2 y2; ... ; xn yn], [x1 y1; x2 y2; ... ; xm ym], ...]
-    %                    v = [x y] (robot position)
-    %
-    %   - Output: visible_edges = [[x1 y1; x2 y2], [x1 y1; x2 y2], ...]
-    %
-    % Note: robot position (v) being inside the obstacle is handled outside of this function.
+    %   - Input: arena_map = [[x11 x12 x13 ... x1n;
+    %                          x21 x22 x23 ... x2n;
+    %                          ... ... ... ... ...;
+    %                          xm1 xm2 xm3 ... xmn],
+    %                         [y11 x12 x13 ... x1n;
+    %                          y21 x22 x23 ... x2n;
+    %                          ... ... ... ... ...;
+    %                          ym1 xm2 xm3 ... xmn],
+    %                         ...]
+    %            v = [v1 v2 v3 ... vn] (robot position)
+    %            i = index of the obstacle
+
         position = v;
         position = [position(1) position(2)];
 
@@ -18,6 +24,7 @@ global closest_vec arena_limits infinity sensor_range;
         ymin = arena_limits(3);
         ymax = arena_limits(4);
 
+        % Robot is out of bounds
         if ( position(1) < xmin || position(1) > xmax ...
             || position(2) < ymin || position(2) > ymax )
         return;
@@ -39,16 +46,17 @@ global closest_vec arena_limits infinity sensor_range;
         % direction
 
         % create vertices from given arena_map
-        [ vertices ] = generate_vertices( arena_map );
+        [ vertices ] = [ arena_map{object_index}, ones(size(arena_map{object_index}, 1), 1) ];
 
         % number of vertices
         N = size(vertices, 1);
 
         % add the robot position as the last vertex with identifier "0"
-        vertices(N+1,:) = [v, 0];
+        vertices(N+1,:) = [v , 0];
 
         % create the list of edges according to the vertices
-        [ E ] = calculate_edges( vertices, N );
+        [ E ] = calculate_edges( N );
+
 
         % draw the graph
         % draw_graph( vertices, E );
@@ -136,9 +144,9 @@ global closest_vec arena_limits infinity sensor_range;
     
         edges = sortrows(result);
 
-        if closest_vec(5) > sensor_range
-            closest_vec(5) = infinity;
-        end
+        % if closest_vec(5) > sensor_range
+        %     closest_vec(5) = infinity;
+        % end
 
         dist = closest_vec(5);
     
@@ -150,50 +158,9 @@ global closest_vec arena_limits infinity sensor_range;
         % calculate the minimum distance and angle
         %[ dist, angle ] = calculate_distance_angle( visible_edges, v );
 
+%}
 end
 
-
-function [ dist, angle ] = calculate_distance_angle( visible_edges, v )
-% global infinity
-    % calculate the minimum distance and angle from given visible edges and robot position
-    %
-    %   - Input: visible_edges = [[x1 y1; x2 y2], [x1 y1; x2 y2], ...]
-    %                    v = [x y] (robot position)
-    %
-    %   - Output: dist = minimum distance
-    %             angle = angle of the minimum distance
-
-    % initialize the minimum distance
-    dist = 1000000;
-
-    % initialize the angle of the minimum distance
-    angle = 0;
-
-    % traverse the visible edges
-    for i = 1: length(visible_edges)
-
-        % get the x and y values of the first vertex
-        x_1 = visible_edges{i}(1, 1);
-        y_1 = visible_edges{i}(1, 2);
-
-        % get the x and y values of the second vertex
-        x_2 = visible_edges{i}(2, 1);
-        y_2 = visible_edges{i}(2, 2);
-
-        % calculate the distance between the robot position and the edge
-        [ distance, ang ] = point_segment_distance( [v(1) v(2)],[[ x_1 y_1];[ x_2 y_2]] ); % second part is just visible_edges{i}
-
-        % if the distance is less than the minimum distance
-        if distance < dist
-
-            % update the minimum distance
-            dist = distance;
-            angle = ang;
-
-        end
-
-    end
-end
 
 function [ distance, angle ] = point_segment_distance( v , x )
     % POINT_SEGMENT_DISTANCE Calculate the distance between a point and a line segment.
@@ -279,67 +246,10 @@ function [ visible_edges ] = generate_visible_edges( arena_map, vertices, visibi
             
         end
 
-        
-        % % number of edges
-        % N = size(edges, 1);
-
-        % % initialize visible edges
-        % visible_edges = [];
-
-        % % traverse the edges
-        % for i = 1: N
-
-        %     % get the x and y values of the first vertex
-        %     x_1 = edges(i, 1);
-        %     y_1 = edges(i, 2);
-
-        %     % get the x and y values of the second vertex
-        %     x_2 = edges(i, 3);
-        %     y_2 = edges(i, 4);
-
-        %     visibility_graph(:,2)
-
-        %     % check whether the edge is in the visibility graph or not
-        %     if ismember([x_1 y_1; x_2 y_2], visibility_graph, 'rows') == 1
-
-        %         % add the edge to the visible edges
-        %         visible_edges = [visible_edges; x_1 y_1; x_2 y_2];
-
-        %     end
-
-        % end
-
-        % % number of visible edges
-        % N = size(visible_edges, 1);
-
-        % % traverse the visible edges
-        % for i = 1: N
-
-        %     % get the x and y values of the first vertex
-        %     x_1 = visible_edges(i, 1);
-        %     y_1 = visible_edges(i, 2);
-
-        %     % get the x and y values of the second vertex
-        %     x_2 = visible_edges(i + 1, 1);
-        %     y_2 = visible_edges(i + 1, 2);
-
-        %     % check whether the edge is in the visibility graph or not
-        %     if ismember([x_1 y_1; x_2 y_2], visibility_graph, 'rows') == 1
-
-        %         % remove the edge from the visible edges
-        %         visible_edges(i + 1, :) = [];
-
-        %     end
-
-        % end
-
-        % % number of visible edges
-        % N = size(visible_edges, 1);
-
     end
 end
 
-function [ E ] = calculate_edges( vertices , N)
+function [ E ] = calculate_edges(N)
     % CALCULATE_EDGES Transforms the initial set of vertices into a data
     % structure that represents the edges of the polygons.
     %
@@ -355,26 +265,12 @@ function [ E ] = calculate_edges( vertices , N)
 
         % initialization of the variables
         E = zeros(N, N);   
-        edge_idx = 1;
         init_vertex_idx = 1;     
     
         % create edges
         for i = 1: N-1
-
-            % check object number of the current vertex and the next vertex
-            if vertices(i, 3) == vertices(i + 1, 3)
-                % if they are the same, create an edge between them 
-                % TODO: we can name the edges according to the object number
-                E(i, i + 1) = 1;
-                E(i + 1, i) = 1;
-    
-            else
-                % if they are not the same, create an edge between the first vertex 
-                E(i, init_vertex_idx) = 1;
-                E(init_vertex_idx, i) = 1;
-                init_vertex_idx = i + 1;
-    
-            end
+            E(i, i + 1) = 1;
+            E(i + 1, i) = 1;
         end
         % add the connection between the last vertex and the first vertex of the last object
         E(i+1,init_vertex_idx) = 1;
@@ -741,44 +637,6 @@ function [ S_active_list ] = check_active_list( vertex_0, vertex_1, vertices, ad
     end
 end
 
-function [ vertices ] = generate_vertices( obstacle )
-    %GENERATE_VERTICES Generate the vertices of the environment
-    %   - obstacle: array of size N x 2, where each row [x, y] represents
-    %     the x coordinate and y coordinate of the obstacle. N is the number
-    %     of obstacles, which is not pre-defined, given that it depends on
-    %     the problem.
-    %   - vertices: array of size M x 3, where each row [x, y, n] represents
-    %     the x coordinate, y coordinate and object number. M is the number of
-    %     vertices, which is not pre-defined, given that it depends on the
-    %     problem.
-    
-    % number of obstacles
-    N = size(obstacle,2);
-    
-    % intitialise the output vector
-    vertices = [];
-    
-    % index of the next vertex to be inserted
-    vertices_idx = 1;
-    
-    % iterate through all the obstacles
-    for i=1:N
-        
-        % number of vertices of the current obstacle
-        n = size(obstacle{i},1);
-        
-        % iterate through all the vertices of the current obstacle
-        for j=1:n
-            
-            % add the vertex to the output vector
-            vertices(vertices_idx,:) = [obstacle{i}(j,:), i];
-            
-            % increment the index of the next vertex to be inserted
-            vertices_idx = vertices_idx + 1;
-        end
-    end
-end
-
 function draw_graph( vertices, edges )
     %draw_graph draw the whole graph from given vertices and edges
 
@@ -825,35 +683,6 @@ function draw_graph( vertices, edges )
 
         end
 
-end
-
-function display_edge( edges )
-    %display_edge display the given edge
-
-    [h w] = size(edges);
-    
-    result = [];
-
-    % draw edges
-    for i = 1: h
-        
-        for j = 1: i
-            
-            if edges(i, j) ~= 0
-            
-                result = [result; edges(i, j) i j];
-                % result = [result; i j];
-            
-            end
-        
-        end
-
-    end
-
-    sortrows(result)
-    
-    size(result)
-    
 end
 
   

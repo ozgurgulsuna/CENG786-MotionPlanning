@@ -12,36 +12,60 @@ function [gradPot] = potFunction(tspan, qstart, qgoal)
 %
 %   - Output: gradPot  = [P_1 P_2 ... P_n]  gradient of the potential function
 %                                            
-%                                            
+                                          
 %   Ozgur Gulsuna, METU
 %   CENG786 Robot Motion Planning and Control, Fall 2023 
 
+
+%----------------------------- BEGIN CODE ------------------------------
+
 % Extern global variables
-global sensor_range ; 
-global infinity ;
-global arena_map ;
+global sensor_range infinity arena_map obst_approx;
 % global qgoal;
-qgoal 
+
 
 % Initial declarations
 dimension = length(qgoal);     % Dimension of the configuration space
 gradPot = zeros(dimension,1);     % Path is initialized with only 1 step
 
 
-% Attractive Potential Gradient
-for n = 1: dimension
-    gradPot(n) = -1*attrGrad(qstart(n), qgoal(n));
+% Error checks
+if length(qstart) < 2
+    error('Robot configuration and goal positions must have at least 2 dimensions');
 end
 
-% Repulsive Potential Gradient
+if length(qstart) ~= length(qgoal)
+    error('Robot configuration and goal positions must have the same dimension');
+end
+
 for i = 1: length(arena_map)
-    for n = 1: dimension
-        gradPot(n) = gradPot(n) + replGrad(qstart(n), arena_map(i).center(n), arena_map(i).radius);
+    if size(arena_map{i},2) ~= length(qstart)
+        error('Obstacles and robot configuration must have the same dimension');
     end
 end
 
+if length(qstart) ~= 2 && obst_approx == "EXACT"
+    error('Exact obstacle representation is only available for 2D configuration spaces');
+end
+
+% Attractive Potential Gradient
+gradPot = (-1*attrGrad(qstart, qgoal));
+gradPot = gradPot';
+% for n = 1: dimension
+%     gradPot(n) = -1*attrGrad(qstart(n), qgoal(n));
+% end
+
+% Repulsive Potential Gradient
+% for i = 1: length(arena_map)
+%     if obst_approx == "EXACT"
+%         for n = 1: dimension
+%             gradPot(n) = gradPot(n) + -1*replGrad(qstart(n), arena_map{i}(n));
+%         end
+
 
 
 
 
 end
+
+%----------------------------- END OF CODE ------------------------------

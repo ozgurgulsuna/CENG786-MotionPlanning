@@ -1,4 +1,4 @@
-function nabla_Uatt = replGrad(q, w)
+function nabla_Urepl = replGrad(q, w)
 %ATTRGRAD Gradient of the attractive potential function
 %   This function computes the gradient of the attractive potential
 %   function between the two points q and w in an n-dimensions.
@@ -28,9 +28,9 @@ dgoal_star = 15 ; % Distance at which the potential is truncated
 dgoal = norm(q - w) ;
 
 if dgoal > dgoal_star
-    nabla_Uatt = dgoal_star*zeta*(q - w)/norm(q - w) ;
+    nabla_Urepl = dgoal_star*zeta*(q - w)/norm(q - w) ;
 else
-    nabla_Uatt = zeta*(q - w) ;
+    nabla_Urepl = zeta*(q - w) ;
 end
 
 end

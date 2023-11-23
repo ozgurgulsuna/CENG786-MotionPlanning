@@ -48,6 +48,8 @@ global arena_map;     % Description of obstacles in the environment
 global infinity;      % Large value to be used as 'infinity'
 global qstart qgoal;  % Start and goal configurations
 global epsilon;       % Threshold for the goal region
+global solver;        % "DISCRETE" or "ODE"
+global obst_approx;   % "EXACT" or "BOUNDING_SPHERE"
 
 % Parameters
 epsilon = 0.5; % Threshold for the goal region
@@ -59,7 +61,8 @@ arena_limits = [0 10 0 10];
 qstart = [0.5 1];
 qgoal = [1 9];
 % n = 10; % time step for animation
-solver = "DISCRETE"; % "DISCRETE" or "ODE"
+solver = "ODE"; % "DISCRETE" or "ODE"
+obst_approx = "EXACT"; % "EXACT" or "BOUNDING_SPHERE"
 
 % Invoking your solutions for the example arena ------------------------
 init_arena();
@@ -123,10 +126,10 @@ arena_map = [];
 %     5.7412  6.9724; 5.4899  7.2990; 5.2638  7.4749 ];
 
 arena_map{1} =  ...
-   [3      8;   ...
-    3      1;   ...
-    3.5    1;   ...
-    3.5    8 ];
+   [3      8  ;   ...
+    3      1 ;   ...
+    3.5    1 ;   ...
+    3.5    8  ];
 
 arena_map{2} =   ...
    [5      4;    ...
