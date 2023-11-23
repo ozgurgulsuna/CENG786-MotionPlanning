@@ -52,14 +52,14 @@ global solver;        % "DISCRETE" or "ODE"
 global obst_approx;   % "EXACT" or "BOUNDING_SPHERE"
 
 % Parameters
-epsilon = 0.5; % Threshold for the goal region
+epsilon = 0.1; % Threshold for the goal region
 
 % Parameter values to be used for the homework ---
-sensor_range = 0.5;
+sensor_range = 1;
 infinity = 1e5;
 arena_limits = [0 10 0 10];
-qstart = [0.5 1];
-qgoal = [1 9];
+qstart = [1.2 1];
+qgoal = [9 9];
 % n = 10; % time step for animation
 solver = "ODE"; % "DISCRETE" or "ODE"
 obst_approx = "EXACT"; % "EXACT" or "BOUNDING_SPHERE"
@@ -78,16 +78,16 @@ options = odeset('Event',@(t,qstart) potEventFunc(t,qstart,qgoal));
 plot(Y(:,1),Y(:,2),'g','LineWidth',2);
 
 
-
+hold on;
 
 
 % figure(1);
 
 % clf;
-% xticks([0 1 2 3 4 5 6 7 8 9 10])
-% yticks([0 1 2 3 4 5 6 7 8 9 10])
-% zticks([0 1 2 3 4 5 6 7 8 9 10])
-% draw_arena;
+xticks([0 1 2 3 4 5 6 7 8 9 10])
+yticks([0 1 2 3 4 5 6 7 8 9 10])
+zticks([0 1 2 3 4 5 6 7 8 9 10])
+draw_arena;
 % hold on; 
 % plot( x_m1_b1, y_m1_b1 );
 
@@ -131,13 +131,13 @@ arena_map{1} =  ...
     3.5    1 ;   ...
     3.5    8  ];
 
-arena_map{2} =   ...
-   [5      4;    ...
-    4.5    4;    ...
-    4.5    2;    ...
-    6.5    2;    ...
-    6.5    2.5;  ...
-    5    2.5 ];
+% arena_map{1} =   ...
+%    [5      4;    ...
+%     4.5    4;    ...
+%     4.5    2;    ...
+%     6.5    2;    ...
+%     6.5    2.5;  ...
+%     5    2.5 ];
 
 % qstart = [0.5 0.5];
 % qgoal = [9 9];
