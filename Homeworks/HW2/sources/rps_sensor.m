@@ -32,16 +32,16 @@ global closest_vec arena_limits infinity sensor_range arena_map;
         return;
         end
 
-        % Determine if the robot is inside any of the obstacles
-        for i = 1:length(arena_map)
-            obstacle = arena_map{i};
-            if (inpolygon(position(1), position(2), obstacle(:,1), obstacle(: ,2)))
-                
-                % message that the robot is inside an obstacle
-                disp('Robot is inside an obstacle');
-                return;
-            end
-        end
+%         % Determine if the robot is inside any of the obstacles
+%         for i = 1:length(arena_map)
+%             obstacle = arena_map{i};
+%             if (inpolygon(position(1), position(2), obstacle(:,1), obstacle(: ,2)))
+%                 
+%                 % message that the robot is inside an obstacle
+%                 disp('Robot is inside an obstacle');
+%                 return;
+%             end
+%         end
 
         % Now that we know the robot is outside all of the obstacles and
         % inside the arena, determine the closest obstacle in the given
