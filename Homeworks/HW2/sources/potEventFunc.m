@@ -11,9 +11,9 @@ gr = potFunction(t,q,w)<epsilon*(ones(dimension,1));
 
 value = [(norm(potFunction(t,q,w))>epsilon) ...
                        norm(q-w)<epsilon ...
-                    gr(1)*gr(2)<epsilon ] ;  
+                    gr(1)*gr(2)<epsilon ] ;
 
-isterminal = [1 1 1];   % Stop the integration
+isterminal = [0 0 1];   % Stop the integration
 direction = [0 0 0];   % any direction
 
 

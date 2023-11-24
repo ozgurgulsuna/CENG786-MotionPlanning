@@ -1,4 +1,6 @@
 function [dist, angle] = rps_sensor(v, obst_num)
+dist = 0.01;
+angle = 0.01;
 global closest_vec arena_limits infinity sensor_range arena_map;
     %RPS_SENSOR Rotational Plane Sweep Algorithm (2D), find the distance and angle of the
     % obstacle "i" from the robot position "v" in the given arena_map.
@@ -158,7 +160,6 @@ global closest_vec arena_limits infinity sensor_range arena_map;
         % calculate the minimum distance and angle
         %[ dist, angle ] = calculate_distance_angle( visible_edges, v );
 
-%}
 end
 
 
