@@ -5,7 +5,7 @@ function [nabla_Urepl] = replGrad(q, obst_num)
 %   Ozgur Gulsuna, METU
 %   CENG786 Robot Motion Planning and Control, Fall 2023
 
-eta = 3;  % Repulsive potential gain
+eta = 0.5;  % Repulsive potential gain
 Q_star = 20 ; % Distance at which the potential is truncated
 
 % Compute the distance from the robot to the obstacle

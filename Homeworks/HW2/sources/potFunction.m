@@ -73,8 +73,13 @@ elseif norm(potFunc) < 0.1
     potFunc = 0;
 end
 
-potFunc ;
-
+for m = 1: length(arena_map)
+    if potFunc ~= 100
+        if inpolygon(qstart(1), qstart(2), arena_map{m}(:,1), arena_map{m}(:,2))
+            potFunc = 100;
+        end
+    end
+end
 
 
 
