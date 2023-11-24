@@ -65,20 +65,19 @@ solver = "ODE"; % "DISCRETE" or "ODE"
 obst_approx = "EXACT"; % "EXACT" or "BOUNDING_SPHERE"
 
 % Invoking your solutions for the example arena ------------------------
-% init_arena();
+init_arena();
 % tic
 % toc
 
 % call potential function with ode
 tspan = [1 1e25];
-options = odeset('Event',@(t,qstart) potEventFunc(t,qstart,qgoal));
-[T,Y] = ode45(@(t,qstart) potFunction(t,qstart,qgoal),tspan,qstart,options);
+options = odeset('Event',@(t,qstart) gradEventFunc(t,qstart,qgoal));
+[T,Y] = ode45(@(t,qstart) gradFunction(t,qstart,qgoal),tspan,qstart,options);
 
 % plot results
 plot(Y(:,1),Y(:,2),'g','LineWidth',2);
-
-
 hold on;
+
 
 
 % figure(1);
@@ -97,6 +96,8 @@ draw_arena;
 %   draw_range_map( [x_m1_b1(n*i) y_m1_b1(n*i)], 30 );
 %   drawnow;
 % end
+
+plotPotential()
 
 end
 
@@ -125,11 +126,11 @@ arena_map = [];
 %     5.2889  6.0427; 5.5402  6.0930; 5.7412  6.4447; ...
 %     5.7412  6.9724; 5.4899  7.2990; 5.2638  7.4749 ];
 
-% arena_map{1} =  ...
-%    [3      8  ;   ...
-%     3      1 ;   ...
-%     3.5    1 ;   ...
-%     3.5    8  ];
+arena_map{1} =  ...
+   [3      8  ;   ...
+    3      1 ;   ...
+    3.5    1 ;   ...
+    3.5    8  ];
 
 % arena_map{2} =   ...
 %    [5      4;    ...

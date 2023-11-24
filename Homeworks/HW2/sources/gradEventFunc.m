@@ -1,4 +1,4 @@
-function [value,isterminal,direction] = potEventFunc(t, q, w)
+function [value,isterminal,direction] = gradEventFunc(t, q, w)
 
 global epsilon
 % global qgoal
@@ -6,10 +6,10 @@ global epsilon
 
 dimension = length(w);
 % find local minima by gradient
-gr = potFunction(t,q,w)<epsilon/2*(ones(dimension,1));
+gr = gradFunction(t,q,w)<epsilon/2*(ones(dimension,1));
 
 
-value = [(norm(potFunction(t,q,w))>epsilon) ...
+value = [(norm(gradFunction(t,q,w))>epsilon) ...
                        norm(q-w)<epsilon ...
                     gr(1)*gr(2)<epsilon ] ;
 

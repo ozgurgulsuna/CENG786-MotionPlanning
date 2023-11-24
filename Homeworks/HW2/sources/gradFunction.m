@@ -1,4 +1,4 @@
-function [potFunc] = potFunction(tspan, qstart, qgoal)
+function [gradPot] = gradFunction(tspan, qstart, qgoal)
 %ATTR_REPL Additive attraction and repulsion path planning implementation
 %  This function implements the additive attraction and repulsion method
 %  for path planning. The function takes as input the start and goal
@@ -10,7 +10,7 @@ function [potFunc] = potFunction(tspan, qstart, qgoal)
 %                                           where "n" is the dimension of the
 %                                           configuration space.
 %
-%   - Output: potFunc  = [P_1 P_2 ... P_n]  gradient of the potential function
+%   - Output: gradPot  = [P_1 P_2 ... P_n]  gradient of the potential function
 %                                            
                                           
 %   Ozgur Gulsuna, METU
@@ -26,7 +26,7 @@ global sensor_range infinity arena_map obst_approx;
 
 % Initial declarations
 dimension = length(qgoal);     % Dimension of the configuration space
-potFunc = zeros(dimension,1);     % Path is initialized with only 1 step
+gradPot = zeros(dimension,1);     % Path is initialized with only 1 step
 
 
 % Error checks
@@ -49,29 +49,29 @@ if length(qstart) ~= 2 && obst_approx == "EXACT"
 end
 
 % Attractive Potential Gradient
-potFunc = (-1*attrPot(qstart, qgoal'));
+gradPot = (-1*attrGrad(qstart, qgoal'));
 
 
 
 % Repulsive Potential Gradient
 for i = 1: length(arena_map)
     if obst_approx == "EXACT"
-        potFunc = potFunc - 1*replPot(qstart', i);
+        gradPot = gradPot - 1*replGrad(qstart', i);
     elseif obst_approx == "APPROX"
         fprintf("Approximate obstacle representation is not implemented yet");
     end
 end
 
 
-% if abs(norm(potFunc)) < 0.1
-%     potFunc = zeros(dimension,1);
+% if abs(norm(gradPot)) < 0.1
+%     gradPot = zeros(dimension,1);
 % end
 
-if norm(potFunc) > 100
-    potFunc = 100*potFunc/norm(potFunc);
+if norm(gradPot) > 100
+    gradPot = 100*gradPot/norm(gradPot);
 end
 
-potFunc
+gradPot
 
 
 
