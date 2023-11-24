@@ -49,14 +49,14 @@ if length(qstart) ~= 2 && obst_approx == "EXACT"
 end
 
 % Attractive Potential Gradient
-potFunc = (-1*attrPot(qstart, qgoal'));
+potFunc = attrPot(qstart, qgoal');
 
 
 
 % Repulsive Potential Gradient
 for i = 1: length(arena_map)
     if obst_approx == "EXACT"
-        potFunc = potFunc - 1*replPot(qstart', i);
+        potFunc = potFunc + 1*replPot(qstart', i);
     elseif obst_approx == "APPROX"
         fprintf("Approximate obstacle representation is not implemented yet");
     end
@@ -68,10 +68,12 @@ end
 % end
 
 if norm(potFunc) > 100
-    potFunc = 100*potFunc/norm(potFunc);
+    potFunc = 100;
+elseif norm(potFunc) < 0.1
+    potFunc = 0;
 end
 
-potFunc
+potFunc ;
 
 
 
