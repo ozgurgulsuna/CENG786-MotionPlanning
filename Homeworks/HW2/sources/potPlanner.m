@@ -59,9 +59,9 @@ sensor_range = 100;
 infinity = 1e5;
 arena_limits = [0 10 0 10];
 qstart = [0.5 0.5];
-qgoal = [ 10 7];
+qgoal = [ 9 7];
 % n = 10; % time step for animation
-solver = "ODE"; % "DISCRETE" or "ODE"
+solver = "DISCRETE"; % "DISCRETE" or "ODE"
 obst_approx = "EXACT"; % "EXACT" or "BOUNDING_SPHERE"
 
 % Invoking your solutions for the example arena ------------------------
@@ -70,25 +70,20 @@ init_arena();
 % toc
 
 % call potential function with ode
-tspan = [1 1e25];
-options = odeset('Event',@(t,qstart) gradEventFunc(t,qstart,qgoal));
-[T,Y] = ode45(@(t,qstart) gradFunction(t,qstart,qgoal),tspan,qstart,options);
+if solver == "ODE"
+    tspan = [1 1e25];
+    options = odeset('Event',@(t,qstart) gradEventFunc(t,qstart,qgoal));
+    [T,Y] = ode45(@(t,qstart) gradFunction(t,qstart,qgoal),tspan,qstart,options);
 
+elseif solver == "DISCRETE"
+    [Y] = qstart;
+    for step = 1:155
+        Y(step+1,:) = Y(step,:)' + 0.1*gradFunction(0,Y(step,:)',qgoal)
+    end
+end
+
+Y
 % plot results
-plot(Y(:,1),Y(:,2),'g','LineWidth',2);
-hold on;
-
-
-
-% figure(1);
-
-xticks([0 1 2 3 4 5 6 7 8 9 10])
-yticks([0 1 2 3 4 5 6 7 8 9 10])
-zticks([0 1 2 3 4 5 6 7 8 9 10])
-draw_arena;
-
-% hold on; 
-% plot( x_m1_b1, y_m1_b1 );
 
 % figure(2);
 % clf;
@@ -97,9 +92,13 @@ draw_arena;
 %   drawnow;
 % end
 
-plotPotential()
+
+% plotPotential()
+plotPath(Y)
+
 
 end
+
 
 
 % init_arena -----------------------------------------------------------------
