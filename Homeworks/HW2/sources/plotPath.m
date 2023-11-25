@@ -1,6 +1,6 @@
 function [Y] =plotPath(Y)
 
-global arena_map arena_limits qstart qgoal solver;
+global arena_map arena_limits qstart qgoal solver approx_map;
 
 dimension = size(arena_map{1},2);
 
@@ -20,7 +20,28 @@ if  dimension == 2
     title('ODE45');
     legend('path','start','goal','goal');
     drawnow;
+end
 
+if dimension == 3
+    figure(1);
+    clf;
+    draw_arena();
+    hold on;
+    plot3(Y(:,1),Y(:,2),Y(:,3),'r');
+    plot3(qstart(1),qstart(2),qstart(3),'bo');
+    plot3(qgoal(1),qgoal(2),qgoal(3),'go');
+    hold off;
+    axis(arena_limits);
+    axis equal;
+    xlabel('x');
+    ylabel('y');
+    zlabel('z');
+    title('ODE45');
+    legend('path','start','goal','goal');
+    drawnow;
+
+
+end
 
 % % field resolution
 % res = 0.1;

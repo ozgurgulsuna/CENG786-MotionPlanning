@@ -24,30 +24,6 @@ global sensor_range infinity arena_map obst_approx;
 % global qgoal;
 
 
-% Initial declarations
-dimension = length(qgoal);     % Dimension of the configuration space
-potFunc = zeros(dimension,1);     % Path is initialized with only 1 step
-
-
-% Error checks
-if length(qstart) < 2
-    error('Robot configuration and goal positions must have at least 2 dimensions');
-end
-
-if length(qstart) ~= length(qgoal)
-    error('Robot configuration and goal positions must have the same dimension');
-end
-
-for i = 1: length(arena_map)
-    if size(arena_map{i},2) ~= length(qstart)
-        error('Obstacles and robot configuration must have the same dimension');
-    end
-end
-
-if length(qstart) ~= 2 && obst_approx == "EXACT"
-    error('Exact obstacle representation is only available for 2D configuration spaces');
-end
-
 % Attractive Potential Gradient
 potFunc = attrPot(qstart, qgoal');
 
