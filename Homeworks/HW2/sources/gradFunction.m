@@ -71,11 +71,6 @@ if norm(gradPot) > 100
     gradPot = 100*gradPot/norm(gradPot);
 end
 
-gradPot ;
-
-
-
-
 
 end
 

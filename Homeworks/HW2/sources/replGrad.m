@@ -19,9 +19,7 @@ if obst_approx == "EXACT"
         nabla_Urepl = [0 ; 0] ;
     end
 
-
 elseif obst_approx == "APPROX"
-    approx_map{obst_num};
     % center point of the obstacle
     v = (approx_map{obst_num}(1,:)+approx_map{obst_num}(2,:))/2 ;
 
@@ -38,7 +36,7 @@ elseif obst_approx == "APPROX"
     c = v + (q-v)*radius/dist ;
 
     if dist_c <= Q_star
-        nabla_Urepl = -(eta * (1/dist_c - 1/Q_star) * (1/dist_c^2) * (q-c) / dist_c)'
+        nabla_Urepl = -(eta * (1/dist_c - 1/Q_star) * (1/dist_c^2) * (q-c) / dist_c)';
     else
         nabla_Urepl = zeros(length(q),1) ;
     end

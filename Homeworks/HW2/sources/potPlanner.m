@@ -63,14 +63,13 @@ arena_limits = [0 10 0 10];
 qstart = [0.5 0.5];
 qgoal = [9 7];
 % n = 10; % time step for animation
-solver = "DISCRETE"; % "DISCRETE" or "ODE"
+solver = "ODE"; % "DISCRETE" or "ODE"
 obst_approx = "APPROX"; % "EXACT" or "APPROX"
 
 % Invoking your solutions for the example arena ------------------------
 init_arena();
 if obst_approx == "APPROX"
-    approx_map = approxObst(arena_map)
-    arena_map
+    approx_map = approxObst(arena_map);
 end
 % tic
 % toc
@@ -84,7 +83,6 @@ if solver == "ODE"
 elseif solver == "DISCRETE"
     [Y] = qstart;
     for step = 1:155
-        gradFunction(0,Y(step,:)',qgoal)
         Y(step+1,:) = Y(step,:)' + 0.1*gradFunction(0,Y(step,:)',qgoal);
     end
 end
@@ -100,8 +98,8 @@ Y;
 % end
 
 
-% plotPotential()
-plotPath(Y)
+plotPotential();
+plotPath(Y);
 
 
 end
@@ -124,7 +122,7 @@ arena_map = [];
 %   7.2465  2.4415; 7.6843  3.6696; 7.7765  5.1608; 7.6843  6.3304; ...
 %   6.9700  7.3246; 6.1866  8.1140; 5.0346  8.3480; 3.7673  8.2018; ...
 %   3.1682  7.7924; 2.4539  6.7105; 2.3848  5.1023];
-% arena_map{2} = ...
+% arena_map{1} = ...
 % [ 5.2889  5.1131; 4.7111  4.2839; 4.8869  3.5302; ...
 %   6.1683  3.9070; 6.1432  5.0377 ];
 arena_map{2} = ...

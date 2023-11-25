@@ -55,17 +55,9 @@ potFunc = attrPot(qstart, qgoal');
 
 % Repulsive Potential Gradient
 for i = 1: length(arena_map)
-    if obst_approx == "EXACT"
-        potFunc = potFunc + 1*replPot(qstart', i);
-    elseif obst_approx == "APPROX"
-        potFunc = potFunc + 1*replPot(qstart', i);
-    end
+    potFunc = potFunc + 1*replPot(qstart', i);
 end
 
-
-% if abs(norm(potFunc)) < 0.1
-%     potFunc = zeros(dimension,1);
-% end
 
 if norm(potFunc) > 100
     potFunc = 100;
@@ -77,6 +69,16 @@ for m = 1: length(arena_map)
     if potFunc ~= 100
         if inpolygon(qstart(1), qstart(2), arena_map{m}(:,1), arena_map{m}(:,2))
             potFunc = 100;
+        end
+    end
+end
+
+if obst_approx == "APPROX"
+    for m = 1: length(arena_map)
+        if potFunc ~= 100
+            if inpolygon(qstart(1), qstart(2), arena_map{m}(:,1), arena_map{m}(:,2))
+                potFunc = 100;
+            end
         end
     end
 end
