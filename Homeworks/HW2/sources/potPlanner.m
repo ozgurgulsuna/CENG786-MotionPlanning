@@ -102,7 +102,7 @@ Y
 
 
 plotPotential();
-% plotPath(Y);
+plotPath(Y);
 
 
 

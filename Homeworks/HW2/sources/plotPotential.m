@@ -3,7 +3,7 @@ function plotPotential()
 global arena_map arena_limits qgoal approx_map;
 
 % field resolution
-res = 0.5;
+res = 0.3;
 dimension = size(arena_map{1},2);
 
 % get the radius of the bounding sphere
@@ -66,12 +66,12 @@ elseif dimension == 3 % if the start point is 3D
 
 
     % now we will plot the vector field
-    x = repmat(x_pot , size(y_pot,2),1,size(z_pot,2));
-    y = repmat(y_pot' , 1,size(x_pot,2),size(z_pot,2));
-    z = permute(x, [1 3 2]);
+    y = repmat(x_pot , size(y_pot,2),1,size(z_pot,2));
+    z = repmat(y_pot' , 1,size(x_pot,2),size(z_pot,2))
+    x = permute(z, [3 2 1]);
 
-    s = scatter3(x(:),y(:),z(:),[],v_pot(:),'filled','MarkerFaceAlpha',0.5);
-    colormap jet
+    s = scatter3(x(:),y(:),z(:),[],v_pot(:),'o','MarkerEdgeAlpha',0.2);
+    colormap hsv
     % s.AlphaData = v_pot/max(max(max(v_pot)));
     % max(max(max(v_pot)))
     % min(min(min(v_pot)))
