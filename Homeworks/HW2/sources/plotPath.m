@@ -30,16 +30,6 @@ if dimension == 3
     plot3(Y(:,1),Y(:,2),Y(:,3),'r');
     plot3(qstart(1),qstart(2),qstart(3),'bo');
     plot3(qgoal(1),qgoal(2),qgoal(3),'go');
-    hold off;
-    axis(arena_limits);
-    axis equal;
-    xlabel('x');
-    ylabel('y');
-    zlabel('z');
-    title('ODE45');
-    legend('path','start','goal','goal');
-    drawnow;
-
 
 end
 

@@ -47,7 +47,10 @@ for i = 1: length(arena_map)
 end
 
 if (dimension_start ~= 2 || dimension_goal ~= 2 || dimension_map ~= 2 ) && obst_approx == "EXACT"
-    error('Exact obstacle representation is only available for 2D configuration spaces');
+    obst_approx = "APPROX";
+    disp('Exact obstacle representation is only available for 2D configuration spaces');
+    disp('For dimensions higher than 3, the obstacles will be approximated');
+
 end
 
 end
