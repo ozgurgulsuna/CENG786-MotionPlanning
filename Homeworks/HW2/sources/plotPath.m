@@ -22,12 +22,12 @@ if  dimension == 2
     drawnow;
 end
 
-if dimension == 3
+if dimension >= 3
     figure(1);
     clf;
     draw_arena();
     hold on;
-    plot3(Y(:,1),Y(:,2),Y(:,3),'r');
+    plot3(Y(:,1),Y(:,2),Y(:,3),'--k');
     plot3(qstart(1),qstart(2),qstart(3),'bo');
     plot3(qgoal(1),qgoal(2),qgoal(3),'go');
 
