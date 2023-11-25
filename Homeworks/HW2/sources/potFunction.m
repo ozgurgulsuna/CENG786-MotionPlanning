@@ -58,7 +58,7 @@ for i = 1: length(arena_map)
     if obst_approx == "EXACT"
         potFunc = potFunc + 1*replPot(qstart', i);
     elseif obst_approx == "APPROX"
-        fprintf("Approximate obstacle representation is not implemented yet");
+        potFunc = potFunc + 1*replPot(qstart', i);
     end
 end
 
