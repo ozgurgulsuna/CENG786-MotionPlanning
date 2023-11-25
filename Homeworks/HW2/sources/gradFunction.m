@@ -58,7 +58,7 @@ for i = 1: length(arena_map)
     if obst_approx == "EXACT"
         gradPot = gradPot - 1*replGrad(qstart', i);
     elseif obst_approx == "APPROX"
-        fprintf("Approximate obstacle representation is not implemented yet");
+        gradPot = gradPot - 1*replGrad(qstart', i);
     end
 end
 

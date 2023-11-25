@@ -45,11 +45,13 @@ clc
 global sensor_range;  % Determines limited sensor range
 global arena_limits;  % Boundaries of the arena: [xmin xmax ymin ymax]
 global arena_map;     % Description of obstacles in the environment
+global approx_map;    % Approximate map of obstacles
 global infinity;      % Large value to be used as 'infinity'
 global qstart qgoal;  % Start and goal configurations
 global epsilon;       % Threshold for the goal region
 global solver;        % "DISCRETE" or "ODE"
 global obst_approx;   % "EXACT" or "BOUNDING_SPHERE"
+
 
 % Parameters
 epsilon = 0.1; % Threshold for the goal region
@@ -59,13 +61,17 @@ sensor_range = 100;
 infinity = 1e5;
 arena_limits = [0 10 0 10];
 qstart = [0.5 0.5];
-qgoal = [ 9 7];
+qgoal = [9 7];
 % n = 10; % time step for animation
 solver = "DISCRETE"; % "DISCRETE" or "ODE"
-obst_approx = "EXACT"; % "EXACT" or "BOUNDING_SPHERE"
+obst_approx = "APPROX"; % "EXACT" or "APPROX"
 
 % Invoking your solutions for the example arena ------------------------
 init_arena();
+if obst_approx == "APPROX"
+    approx_map = approxObst(arena_map)
+    arena_map
+end
 % tic
 % toc
 
@@ -78,11 +84,12 @@ if solver == "ODE"
 elseif solver == "DISCRETE"
     [Y] = qstart;
     for step = 1:155
-        Y(step+1,:) = Y(step,:)' + 0.1*gradFunction(0,Y(step,:)',qgoal)
+        gradFunction(0,Y(step,:)',qgoal)
+        Y(step+1,:) = Y(step,:)' + 0.1*gradFunction(0,Y(step,:)',qgoal);
     end
 end
 
-Y
+Y;
 % plot results
 
 % figure(2);
@@ -132,12 +139,12 @@ arena_map{2} = ...
 %     3.5    8  ];
 
 arena_map{1} =   ...
-   [5      4;    ...
-    4.5    4;    ...
-    4.5    2;    ...
-    6.5    2;    ...
-    6.5    2.5;  ...
-    5    2.5 ];
+   [5      4 ;    ...
+    4.5    4 ;    ...
+    4.5    2 ;    ...
+    6.5    2 ;    ...
+    6.5    2.5 ;  ...
+    5    2.5  ];
 
 % qstart = [0.5 0.5];
 % qgoal = [9 9];

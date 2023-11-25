@@ -5,18 +5,49 @@ function [nabla_Urepl] = replGrad(q, obst_num)
 %   Ozgur Gulsuna, METU
 %   CENG786 Robot Motion Planning and Control, Fall 2023
 
+global obst_approx approx_map;
+
 eta = 0.5;  % Repulsive potential gain
 Q_star = 20 ; % Distance at which the potential is truncated
 
 % Compute the distance from the robot to the obstacle
-[dista, angle ] = rps_sensor(q, obst_num) ;
+if obst_approx == "EXACT"
+    [dist, angle ] = rps_sensor(q, obst_num) ;
+    if dist <= Q_star
+        nabla_Urepl = eta * (1/dist - 1/Q_star) * (1/dist^2) * [cos(angle) ; sin(angle)] ;
+    else
+        nabla_Urepl = [0 ; 0] ;
+    end
 
 
-if dista <= Q_star
-    nabla_Urepl = eta * (1/dista - 1/Q_star) * (1/dista^2) * [cos(angle) ; sin(angle)] ;
-else
-    nabla_Urepl = [0 ; 0] ;
+elseif obst_approx == "APPROX"
+    approx_map{obst_num};
+    % center point of the obstacle
+    v = (approx_map{obst_num}(1,:)+approx_map{obst_num}(2,:))/2 ;
+
+    % distance from the robot to the center of the n-dimensonal coordinate of the obstacle
+    dist = norm(q-v) ;
+
+    % radius of the obstacle
+    radius = norm(approx_map{obst_num}(1,:) - approx_map{obst_num}(2,:))/2 ;
+
+    % distance from to the closest point on the n-sphere
+    dist_c = dist - radius ;
+
+    % closest point on the n-sphere
+    c = v + (q-v)*radius/dist ;
+
+    if dist_c <= Q_star
+        nabla_Urepl = -(eta * (1/dist_c - 1/Q_star) * (1/dist_c^2) * (q-c) / dist_c)'
+    else
+        nabla_Urepl = zeros(length(q),1) ;
+    end
+
 end
+
+
+
+
 
     
 
