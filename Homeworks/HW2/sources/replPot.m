@@ -37,8 +37,9 @@ elseif obst_approx == "APPROX"
 
     if dist_c <= Q_star
         Urepl = 0.5 * eta * (1/dist_c - 1/Q_star)^2 ;
+        % Urepl = 0 ;
     else
-        Urepl = zeros(length(q),1) ;
+        Urepl = 0 ;
     end
 
 end
