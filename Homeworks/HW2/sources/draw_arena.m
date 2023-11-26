@@ -32,12 +32,12 @@ if (dimension == 2)
 elseif (dimension >= 3)
   for i = 1:length(arena_map);
     obstacle = arena_map{i};
-    scatter3(obstacle(:,1), obstacle(:,2), obstacle(:,3),'o','filled','MarkerFaceColor',hsv2rgb([i/length(arena_map) 0.7 0.8]));
+    scatter3(obstacle(:,2), obstacle(:,3), obstacle(:,4),'o','filled','MarkerFaceColor',hsv2rgb([i/length(arena_map) 0.7 0.8]));
     hold on;
     v = (approx_map{i}(1,:)+approx_map{i}(2,:))/2 ;
     r = norm(approx_map{i}(1,:)-approx_map{i}(2,:))/2;
     [x y z] =sphere ;
-    surf(r*x+v(1),r*y+v(2),r*z+v(3),'EdgeColor','none','FaceAlpha',0.1,"FaceColor", hsv2rgb([i/length(arena_map) 0.7 0.8]));
+    surf(r*x+v(2),r*y+v(3),r*z+v(4),'EdgeColor','none','FaceAlpha',0.1,"FaceColor", hsv2rgb([i/length(arena_map) 0.7 0.8]));
     set(gca, 'Projection','perspective')
     camproj('perspective')
   end
@@ -45,8 +45,8 @@ elseif (dimension >= 3)
   xlim([arena_limits(1) arena_limits(2)]);
   ylim([arena_limits(1) arena_limits(2)]);
   zlim([arena_limits(1) arena_limits(2)]);
-  plot3(qstart(1), qstart(2), qstart(3), 'o');
-  plot3(qgoal(1), qgoal(2), qgoal(3), 'x');
+  plot3(qstart(2), qstart(3), qstart(4), 'o');
+  plot3(qgoal(2), qgoal(3), qgoal(4), 'x');
   hold off;
   grid on;
 else

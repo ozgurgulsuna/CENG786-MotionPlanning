@@ -6,6 +6,7 @@
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 \usepackage{soul}
+\usepackage{subcaption}
 \renewcommand{\algorithmicrequire}{\textbf{Input:}}
 \renewcommand{\algorithmicensure}{\textbf{Output:}}
 \newcommand{\algrule}[1][.1pt]{\par\vskip.2\baselineskip\hrule height #1\par\vskip.5\baselineskip}
@@ -63,13 +64,11 @@
 % \markboth{AUTHOR ET AL.}{SHORT ARTICLE TITLE}
 \maketitle
 
-\begin{abstract}\textls{This} \st{study investigates the performance of Bug algorithms in simulated space like environments. These algorithms, inspired by insect behavior, are tested under both static and dynamic conditions, where obstacles are represented by celestial rocks and debris.
-
-In dynamic environments, the algorithms adapt to obstacles that exhibit non-negligible motion in relation to the space probe's position. This unintentional tracking of obstacles is a testament to the algorithms' adaptability and responsiveness to their surroundings. These findings add to our understanding of how Bug algorithms perform in spacelike settings and provide valuable insights into their adaptability in both static and dynamic scenarios.}
+\begin{abstract}\textls{This} study explores the intricacies of robot motion planning in higher dimensions, deliberately excluding dimensions below two for depth. Detailing the robot's interaction with an n-dimensional environment and complex obstacles, the proposed Potential Function Approach employs conic and quadratic functions for attraction and dynamic adjustments for repulsion. Solver selection integrates ODE45 for accuracy and a discrete iterative solver for flexibility. Implementation intricacies, including obstacle representation through bounding n-spheres, address computational trade-offs. Experimentation ranges from 2D scenarios to 3D, seeking insights into effective motion planning within a MATLAB simulation environment. The study offers a concise exploration of path planning challenges in multi-dimensional spaces.
 \end{abstract}
 
 
-\begin{IEEEkeywords}Motion Planning, Bug Algorithms, Dynamic Obstacle, 2D Environment, Matlab, Simulation.
+\begin{IEEEkeywords}Motion Planning, Potential Functions, High Dimensions, Hypersphere, MATLAB, Simulation.
 \end{IEEEkeywords}
 \vfill\null
 
@@ -79,13 +78,11 @@ In dynamic environments, the algorithms adapt to obstacles that exhibit non-negl
 \section{\large \textbf{Introduction}}
 
 
-\st{
-{\scshape I}n an era where the vast expanse of space is filled with large celestial bodies, asteroids, drifting very close to each other slowly in their orbits forging a path to nowhere. Envision yourself as a tiny speck of cosmic dust, a space probe embarking on a mission that is reaching the goal.
+{\scshape T}his exploration delves into the challenges of robot motion planning in higher dimensions, deliberately focusing on dimensions greater than two for a nuanced investigation. It details the robot as a single-point entity within an n-dimensional environment, navigating static obstacles of varying complexities. The deliberate absence of repulsive systems from soft borders adds complexity to the robot's interaction with its environment, progressing from simple points to intricate high-dimensional geometric configurations.
 
-The cosmic environment is unforgiving, vast distances stretch out before you, while visual clues are imperceptible. The quest is to navigate this challenging terrain autonomously. In the void, absence of discernible medium and inconsistently changing lighting conditions render available sensors as untrustworthy. For the algorithm guiding this probe should make the most of the data available with minimum amount of computational resource.
+The utilized approach introduces additive attractive and repulsive potentials, with conic and quadratic functions for attraction and repulsion based on obstacle proximity. Employing Gradient Descent for goal-reaching, the implementation integrates both ODE45 for accuracy and a discrete iterative solver for flexibility in solver selection, unraveling advantages and trade-offs across dimensions.
 
-Bug algorithms are uniquely suited to operate analogous conditions. These type of algorithms use point robots that are equipped with limited sensory input, generally with a range, and designed to deliver efficient computational solutions. Although conventionally employed for planar problems, their application within the context of asteroid navigation is worth experimenting. Furthermore, an exploratory investigation into their adaptability within dynamic environments, filled with obstacles in varied trajectories and velocities, represents a compelling area for study and experimentation.
-}
+Implementation include obstacle representation through bounding n-spheres, accuracy trade-offs between exact and approximate representations. Experimentation spans 2D scenarios to eliminate local minima challenges and extends to 3D, visually representing potential functions in complex environments. The study seeks insights into effective robot motion planning in intricate spaces, offering a comprehensive exploration within a MATLAB simulation environment, aiming to deepen understanding of path planning challenges in multi-dimensional spaces.
 % n-dim meaning that have a dim number that is arbitrary, positive and integer
 \section{\large \textbf{Problem Definition}}
 
@@ -163,7 +160,7 @@ U_{att}(q)=
 
 \subsubsection{The Repulsive Potential}
 
-A repulsive potential used to keep the robot at a distance from obstacles. The intensity of the repulsive force is contingent on the robot's proximity to an obstacle. The closer the robot is to an obstacle, the stronger the repulsive force should be. As a result, the repulsive gradient operates exclusively within a domain near the obstacle. The repulsive potential is commonly defined in terms of the distance to the nearest obstacle, denoted as $D(q)$.
+A repulsive potential used to keep the robot at a distance from obstacles. The intensity of the repulsive force is contingent on the robot's proximity to an obstacle. The closer the robot is to an obstacle, the stronger the repulsive force should be. As a result, the repulsive gradient operates exclusively within a domain near the obstacle. The repulsive potential is commonly defined in terms of the distance to the nearest obstacle, denoted as $D(q)$. The repulsive potential and its gradient is explained in further detail in \cite{choset}.
 
 \begin{equation*}
     U_{\text{rep}}(q) =
@@ -256,22 +253,198 @@ The experimentation will include both approaches, comparing their efficacy acros
 % \end{algorithm}
 
 \section{\large \textbf{Experimentation}}
+\subsection{2D Experiments}
+
+The simple case serves as a distinct test to compare the discrete and ODE solutions. With uncomplicated obstacles, the path is easily found in both scenarios as the Fig.~(\ref{simple}) laying out. The step size for the DISCRETE option was set at 0.1, leading to a jittery motion along the path. The resulting path also exhibits a similarity to the Greedy Bug and Bug-2 algorithms, wherein the robot follows the boundary until it can directly sense the direction of the goal. Concave obstacles were deliberately chosen to minimize the risk of encountering local minima. The upcoming test will focus specifically on scenarios designed to further eliminate the possibility of local minima.
+
+The variables $\zeta$ and $\eta$ play a crucial role in modifying both attractive and repulsive potential fields, and their values are determined experimentally. Ensuring that adjustments to one variable do not adversely impact the other is a challenge, especially in cases where close or complex-shaped obstacles are involved. While calibration is straightforward in many instances, obstacles with intricate shapes or close proximity often require numerous tweaks to strike the right balance.
+
+\begin{figure}[t]
+    \begin{center}    
+        \includegraphics[width=1\linewidth]{simple.pdf}
+    \end{center}
+     \caption{Path from "ODE45" and "DISCRETE" approaches on the left and potential function shown on the right.}
+     \label{simple}
+\end{figure}
+
+\begin{figure}[t]
+    \vspace{-1em}
+    \begin{center}    
+        \includegraphics[width=0.8\linewidth]{simple-pot.png}
+    \end{center}
+     \caption{3D visualization of the potential function for the simple case.}
+     \label{simple-pot}
+\end{figure}
+
+In the second test, the starting point and goal remain unchanged, but the obstacle approximation is modified. The 2-sphere approximation now encapsulates the entire obstacles, including the available paths around them. However, a notable issue arises as the new obstacles are positioned closer to each other, creating a local minima point in between. Consequently, the algorithm struggles to find a viable path.
+
+This example highlights a couple of problems with the approximation. Notably, thin and long obstacles are approximated to circles, consuming a significant portion of the free space and affecting the algorithm's ability to navigate through complex configurations.
+
+\begin{figure}
+    \vspace{-1em}
+    \begin{center}    
+        \includegraphics[width=1\linewidth]{simple-2.pdf}
+    \end{center}
+     \caption{Simple case with obstacles are approximated, the solution cannot be found.}
+     \label{simple-2}
+\end{figure}
+
+\begin{figure}
+    \vspace{-1em}
+    \begin{center}    
+        \includegraphics[width=0.8\linewidth]{simple-approx-pot.png}
+    \end{center}
+     \caption{Potential field for the simple case with obstacle approximation.}
+     \label{simple-approx-2}
+\end{figure}
+
+In the upcoming test, specific convex polygons are introduced, designed to act like cups that can trap the robot along its path to the goal. If these obstacles are strategically placed in the available path, it becomes challenging for the robot to escape from the resulting local minima. One potential solution could involve increasing the repulsive potential. However, this approach poses a dilemma, as increasing repulsion may cause the obstacle to resemble a point-like structure, necessitating a corresponding increase in the attractive potential. Striking the right balance between these potentials becomes crucial for successful path planning through environments with strategically placed convex obstacles.
+
+The approximate hyper-sphere approach proves efficacy in transforming convex obstacles into concave hyperdimensional entities. This methodology contributes to eliminating local minima, thereby generating a more viable solution in complex environments.
+
+\begin{figure}
+    \vspace{-1em}
+    \begin{center}    
+        \includegraphics[width=0.8\linewidth]{simple-3.pdf}
+    \end{center}
+     \caption{Cup case with exact obstacles, the path cannot be found.}
+     \label{three}
+\end{figure}
+
+\begin{figure}
+    \vspace{-1em}
+    \begin{center}    
+        \includegraphics[width=0.8\linewidth]{cup-pot.png}
+    \end{center}
+     \caption{Potential field representation in 3D for the Cup case.}
+     \label{three}
+\end{figure}
+
+
+
+\begin{figure}
+    \vspace{-1em}
+    \begin{center}    
+        \includegraphics[width=0.8\linewidth]{simple-4.pdf}
+    \end{center}
+     \caption{Cup case with approximated obstacles, the solution is closer to the goal.}
+     \label{three}
+\end{figure}
+
+\begin{figure}
+    \vspace{-1em}
+    \begin{center}    
+        \includegraphics[width=0.8\linewidth]{cup-pot-approx.png}
+    \end{center}
+     \caption{The potential field plot for the approximated cup case.}
+     \label{three}
+\end{figure}
+
+
+\begin{figure}[b]
+    \vspace{-1em}
+    \begin{center}    
+        \includegraphics[width=0.8\linewidth]{swirl-1.pdf}
+    \end{center}
+     \caption{Hard case as a single obstacle twirls.}
+     \label{three}
+\end{figure}
+
+% \begin{figure}[b]
+%     \vspace{-1em}
+%     \begin{center}    
+%         \includegraphics[width=0.8\linewidth]{swirl-pot-3.png}
+%     \end{center}
+%      \caption{Potential for the Hard case, where the color in RGB shows the gradient of the surface.}
+%      \label{three}
+% \end{figure}
+
+% \begin{figure*}[t]
+%     \centering
+%     \begin{subfigure}[t]{0.5\textwidth}
+%         \centering
+%         \includegraphics[height=2in]{swirl-pot-2.png}
+%         \caption{Lorem ipsum}
+%     \end{subfigure}%
+%     ~ 
+%     \begin{subfigure}[t]{0.5\textwidth}
+%         \centering
+%         \includegraphics[height=2in]{swirl-pot.png}
+%         \caption{Lorem ipsum, lorem ipsum,Lorem ipsum, lorem ipsum,Lorem ipsum}
+%     \end{subfigure}
+%     \caption{Caption place holder}
+% \end{figure*}
+
+
+\begin{figure}
+  \centering
+  \begin{subfigure}{.5\columnwidth}
+    \centering
+    \includegraphics[width=\linewidth]{three-6.pdf}
+    \caption{Three dimensional solution with obstacles are approximated and the path is found.}
+  \end{subfigure}%
+  \hfill
+  \begin{subfigure}{.5\columnwidth}
+    \centering
+    \includegraphics[width=\linewidth]{three-pot-6.pdf}
+    \caption{The related potential function that is a volumetric scalar visualization.}
+  \end{subfigure}%
+\end{figure}
 
 
 
 
 
-\subsection{Observations}
+
+% \begin{figure}[b]
+%     \vspace{-1em}
+%     \begin{center}    
+%         \includegraphics[width=1\linewidth]{fig-3.pdf}
+%     \end{center}
+%      \caption{}
+%      \label{three}
+% \end{figure}
+
+\begin{figure*}
+  \begin{subfigure}{0.33\textwidth}
+    \includegraphics[width=\linewidth]{three-3.pdf}
+    \caption{}
+    \label{fig:figure1}
+  \end{subfigure}%
+  \hfill
+  \begin{subfigure}{0.33\textwidth}
+    \includegraphics[width=\linewidth]{three-1.pdf}
+    \caption{}
+    \label{fig:figure2}
+  \end{subfigure}%
+  \hfill
+  \begin{subfigure}{0.33\textwidth}
+    \includegraphics[width=\linewidth]{three-2.pdf}
+    \caption{}
+    \label{fig:figure3}
+  \end{subfigure}
+  \caption{Three dimensional path finding using potential functions, path is found.}
+\end{figure*}
+\subsection{3D Experiments}
+
+Displaying three-dimensional examples poses more challenges, but the path planning algorithm remains consistent. In these scenarios, the potential visualizations are volumetric, with the color intensity indicating the degree of repulsion; deeper shades of red signify higher repulsive forces, as evident in the figures.
 
 
+\begin{figure*}
+    \vspace{-1em}
+    \begin{center}    
+        \includegraphics[width=1\linewidth]{fourth.pdf}
+    \end{center}
+     \caption{Three dimensional projections of the fourth dimensional environments, the path is found consisting of a four dimensional vector. The figures above are orthogonal to each other.}
+     \label{three}
+\end{figure*}
+
+\subsection{4D Experiments}
+Extending the solution to four dimensions is as straightforward as adding one more dimension, although visualizations become more challenging. The figure below illustrates projections of the fourth-dimensional environment and the found path onto four distinct three-dimensional plots. Despite the complexity, the path is successfully found, and obstacles are approximated using high-dimensional spheres.
+% \subsection{Observations}
 
 
-
-Time comparisons have been conducted across various experimental scenarios. The findings reveal that, in terms of computational efficiency, Bug1 exhibits a more resourceful performance.
-
-For future investigations, there is a clear avenue for improvement. Upcoming experiments are envisioned to expand the scope of the environment by introducing higher-dimensional and non-planar elements. These non-planar envirnoments may include shape-changing obstacles in two-dimensional space, which pose a significant  challenge for Bug1 but offer an opportunity for Bug2 to showcase its improved adaptability and performance. 
-
-\section{\large \textbf{Conclusion}}
+% \section{\large \textbf{Conclusion}}
 
 % \section{\large \textbf{Conclusion}}
 

@@ -30,11 +30,14 @@ if dimension >= 3
     clf;
     draw_arena();
     hold on;
-    plot3(Y(:,1),Y(:,2),Y(:,3),'--k');
-    plot3(qstart(1),qstart(2),qstart(3),'bo');
-    plot3(qgoal(1),qgoal(2),qgoal(3),'go');
+    plot3(Y(:,2),Y(:,3),Y(:,4),'--k');
+    plot3(qstart(2),qstart(3),qstart(4),'bo');
+    plot3(qgoal(2),qgoal(3),qgoal(4),'go');
+    hold off;
 
 end
+
+
 
 % % field resolution
 % res = 0.1;
