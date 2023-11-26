@@ -26,10 +26,21 @@ if dimension == 2 % if the start point is 2D
         end
     end
     figure(2);
-    hnd = surf(x_pot,y_pot,z_pot,z_pot);
-    shading interp
-    set(hnd,'LineStyle','none');
 
+    X = repmat(x_pot(:),1,length(y_pot(:)));
+    Y = repmat(y_pot(:)',length(x_pot(:)),1);
+
+    Normals = [X(:)  Y(:)  z_pot(:)]; %on a sphere the points reflect the normal direction
+    mappedRGB = Sphere2RGBCube(Normals);
+    size(mappedRGB);
+    image = reshape(mappedRGB, [length(x_pot(:)), length(y_pot(:)), 3]);
+    image = imresize(image, 40, 'cubic');
+
+    hold on
+    % scatter3(Y(:),X(:),z_pot(:),50,mappedRGB,'.');
+    surf(double(Y),double(X),z_pot,'FaceColor','texturemap','CData',image,'EdgeColor','none');
+    % shading interp
+    % colormap hsv
 elseif dimension == 3 % if the start point is 3D
     x_pot = arena_limits(1):res:arena_limits(2);
     y_pot = arena_limits(1):res:arena_limits(2);
