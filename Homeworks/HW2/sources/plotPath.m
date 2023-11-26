@@ -9,16 +9,19 @@ if  dimension == 2
     clf;
     draw_arena();
     hold on;
-    plot(Y(:,1),Y(:,2),'r');
-    plot(qstart(1),qstart(2),'bo');
-    plot(qgoal(1),qgoal(2),'go');
+    plot(Y(:,1),Y(:,2),'--','LineWidth',1.5,'Color',[0.8500 0.3250 0.0980]);
+    % plot(qstart(1),qstart(2),'bo');
+    % plot(qgoal(1),qgoal(2),'go');
     hold off;
     axis(arena_limits);
     axis equal;
     xlabel('x');
     ylabel('y');
     title('ODE45');
-    legend('path','start','goal','goal');
+    set(findall(gcf,'type','text'),'FontWeight','bold');
+    set(gca,'FontSize',12);
+    grid minor;
+    legend('Path','Obstacle','Obstacle','Location','southeast');
     drawnow;
 end
 

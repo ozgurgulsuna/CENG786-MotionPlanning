@@ -23,8 +23,8 @@ if (dimension == 2)
     patch(obstacle(:,1), obstacle(:,2),'black');
   end
   hold on;
-  plot(qstart(1), qstart(2), 'o');
-  plot(qgoal(1), qgoal(2), 'x');
+  plot(qstart(1), qstart(2), 'o','MarkerSize',10); %'MarkerFaceColor','b'
+  plot(qgoal(1), qgoal(2), 'x','MarkerSize',10); %'MarkerFaceColor','b'
   hold off;
   axis tight;
   axis square;

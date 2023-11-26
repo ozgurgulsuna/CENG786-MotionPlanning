@@ -21,7 +21,7 @@ function Uatt = attrPot(q, w)
 %   Ozgur Gulsuna, METU
 %   CENG786 Robot Motion Planning and Control, Fall 2023
 
-zeta = 0.5 ;  % Attractive potential gain
+zeta = 1 ;  % Attractive potential gain
 dgoal_star = 20 ; % Distance at which the potential is truncated
 
 % Compute the distance between the two points

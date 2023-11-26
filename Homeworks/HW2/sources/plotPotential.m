@@ -39,6 +39,11 @@ if dimension == 2 % if the start point is 2D
     hold on
     % scatter3(Y(:),X(:),z_pot(:),50,mappedRGB,'.');
     surf(double(Y),double(X),z_pot,'FaceColor','texturemap','CData',image,'EdgeColor','none');
+    % surf(double(Y),double(X),z_pot,z_pot,'EdgeColor','none', 'FaceColor','interp');
+    grid off;
+    % axis off;
+    view([135 45]);
+
     % shading interp
     % colormap hsv
 elseif dimension == 3 % if the start point is 3D

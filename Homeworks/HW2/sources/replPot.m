@@ -7,7 +7,7 @@ function [Urepl] = replPot(q, obst_num)
 
 global obst_approx approx_map;
 
-eta = 0.5;  % Repulsive potential gain
+eta = 0.2;  % Repulsive potential gain
 Q_star = 20 ; % Distance at which the potential is truncated
 
 % Compute the distance from the robot to the obstacle
