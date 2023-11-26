@@ -67,10 +67,10 @@ elseif dimension == 3 % if the start point is 3D
 
     % now we will plot the vector field
     y = repmat(x_pot , size(y_pot,2),1,size(z_pot,2));
-    z = repmat(y_pot' , 1,size(x_pot,2),size(z_pot,2))
+    z = repmat(y_pot' , 1,size(x_pot,2),size(z_pot,2));
     x = permute(z, [3 2 1]);
-
-    s = scatter3(x(:),y(:),z(:),[],v_pot(:),'o','MarkerEdgeAlpha',0.2);
+    
+    s = scatter3(x(:),y(:),z(:),abs(v_pot(:)+0.01),v_pot(:),'o','MarkerEdgeAlpha',0.2);
     colormap hsv
     % s.AlphaData = v_pot/max(max(max(v_pot)));
     % max(max(max(v_pot)))
