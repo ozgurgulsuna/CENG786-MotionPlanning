@@ -34,13 +34,17 @@ global map; % map of the environment
 global robot_params; % parameters of the robots
 global q_init; % initial configuration
 global q_goal; % goal configuration
+global robot; % robot object
+
+% set parameters
+robot_config = [100*rand 100*rand 2*pi*rand 2*pi*rand 2*pi*rand]; % [x0 y0 r1 r2 ]
 
 % Create map
 createMap();
 drawMap();
 
 % Create robot
-% createRobot();
+createRobot(robot_config);
 
 % initial and goal configurations
 q_init = [0.1, 0.1];
