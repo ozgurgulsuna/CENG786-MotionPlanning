@@ -26,16 +26,21 @@
 % GitHub: ozgurgulsuna 
 % This implementation is part of the CENG786 course homework assignment.
 
+clc;
+clear;
 
 % global variables
 global map; % map of the environment
 global robot_params; % parameters of the robots
+global q_init; % initial configuration
+global q_goal; % goal configuration
 
 % Create map
 createMap();
+drawMap();
 
 % Create robot
-createRobot();
+% createRobot();
 
 % initial and goal configurations
 q_init = [0.1, 0.1];
