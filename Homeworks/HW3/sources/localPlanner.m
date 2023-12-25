@@ -34,6 +34,7 @@ while total < sampleCount
     for links = 1 : length(robot.angles)
         q_rand = [q_rand rand*2*pi];
     end
+    % q_rand = [q_rand pi/2];
     q_rand = [rand*map.limits(2) rand*map.limits(4) q_rand];
         % check for collision
         if ~checkCollision(q_rand)

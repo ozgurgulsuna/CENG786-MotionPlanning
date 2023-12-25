@@ -9,7 +9,7 @@ function drawMap()
 global map;
 
 % Draw the map
-figure(1), clf, hold on
+% figure(1), clf, hold on
 axis equal
 axis([map.limits(1) map.limits(2) map.limits(3) map.limits(4)])
 

@@ -14,27 +14,29 @@ function road_map = constructRoadmap(K_nearest)
 
 global nodes;
 
-road_map = [];
+roadMap = [];
 
+% FILEPATH: /d:/2023-24/Education/CENG786/Homeworks/HW3/sources/constructRoadmap.m
+% BEGIN: ed8c6549bwf9
 for i = 1:size(nodes,1)
     distances = sqrt(sum((nodes - nodes(i,:))'.^2)');
     [~, sortedIndices] = sort(distances);
     kNearestIndices = sortedIndices(2:K_nearest+1);
     for j = 1:length(kNearestIndices)
         if  ~checkPath(nodes(i,:), nodes(kNearestIndices(j),:))
-            road_map = [road_map; i kNearestIndices(j)];
+            roadMap = [roadMap; i kNearestIndices(j)];
             % nodes(i,:)
         end
     end
 end
-
+% END: ed8c6549bwf9
 % draw the roadmap with lines
 figure(1);
-for i = 1:size(road_map,1)
-    plot([nodes(road_map(i,1),1) nodes(road_map(i,2),1)], ...
-         [nodes(road_map(i,1),2) nodes(road_map(i,2),2)], 'b');
+for i = 1:size(roadMap,1)
+    plot([nodes(roadMap(i,1),1) nodes(roadMap(i,2),1)], ...
+         [nodes(roadMap(i,1),2) nodes(roadMap(i,2),2)], 'b');
 end
-road_map
-nodes(end,:)
+
+roadMap
 end
 
