@@ -26,6 +26,7 @@ robot = createRobot(q_init,"draw");
 % createRobot(q_rand,"draw");
 
 % check for collision
+nodes = [q_init];
 total = 0;
 while total < sampleCount
     % select a random configuration
@@ -37,17 +38,23 @@ while total < sampleCount
         % check for collision
     if ~checkCollision(q_rand)
         % if no collision, add the node to the graph
-        nodes = [nodes; q_rand];
-        % draw the node
-        createRobot(q_rand,"draw");
-        total = total + 1;
-        % draw the edge
-        line([q_init(1) q_rand(1)],[q_init(2) q_rand(2)],'Color','k','LineWidth',1);
-        % check if the goal is reached
-        if norm(q_rand(1:2)-q_goal(1:2)) < 0.1
-            % if goal is reached, stop the simulation
-            disp("Goal is reached!");
+        if ~checkPath(nodes(end,:),q_rand)
+            % if the path is collision free, add the node to the graph
+            nodes = [nodes; q_rand];
+            % draw the node
+            createRobot(q_rand,"draw");
+            total = total + 1;
+            % draw the edge
+            % hold on;
+            line([nodes(end-1,1) q_rand(1)],[nodes(end-1,2) q_rand(2)],'Color','k','LineWidth',1);
+        
+            % check if the goal is reached
+            if norm(q_rand(1:2)-q_goal(1:2)) < 0.1
+                % if goal is reached, stop the simulation
+                disp("Goal is reached!");
             return;
+            end
         end
     end
 end
+nodes 
