@@ -29,6 +29,7 @@ end
 robot = struct('base', [configuration(1); configuration(2)], ...
                'angles', configuration(3:end), ...
                'lengths', lengths, ...
+               'bodies', [], ...
                'closed', false);
 
 % make sure the angles are between 0 and 2*pi
@@ -42,18 +43,19 @@ previous_angle = 0;
 for i = 1:length(lengths)
     corner_1 = [next_base(1) + robot.lengths(i,1)*sin(robot.angles(i)+previous_angle), next_base(2) - robot.lengths(i,1)*cos(robot.angles(i)+previous_angle)];
     corner_2 = [2*next_base(1)-corner_1(1),2*next_base(2)-corner_1(2)];
-    corner_3 = [corner_1(1) + robot.lengths(i,2)*cos(robot.angles(i)+previous_angle),corner_1(2) + robot.lengths(i,2)*sin(robot.angles(i)+previous_angle)];
-    corner_4 = [corner_2(1) + robot.lengths(i,2)*cos(robot.angles(i)+previous_angle),corner_2(2) + robot.lengths(i,2)*sin(robot.angles(i)+previous_angle)];
+    corner_3 = [corner_2(1) + robot.lengths(i,2)*cos(robot.angles(i)+previous_angle),corner_2(2) + robot.lengths(i,2)*sin(robot.angles(i)+previous_angle)];
+    corner_4 = [corner_1(1) + robot.lengths(i,2)*cos(robot.angles(i)+previous_angle),corner_1(2) + robot.lengths(i,2)*sin(robot.angles(i)+previous_angle)];
     next_base = [(corner_3(1)+corner_4(1))/2,(corner_3(2)+corner_4(2))/2];
     previous_angle = robot.angles(i)+previous_angle;
+    robot.bodies = [robot.bodies; [corner_1(1) corner_2(1) corner_3(1) corner_4(1)] [corner_1(2) corner_2(2) corner_3(2) corner_4(2)]];
 
     if draw =="draw"
         newcolors = [[0 0.4470 0.7410] ; [0.8500 0.3250 0.0980] ; [0.9290 0.6940 0.1250] ; [0.4940 0.1840 0.5560] ; [0.4660 0.6740 0.1880] ; [0.3010 0.7450 0.9330] ; [0.6350 0.0780 0.1840]];
         c = newcolors(mod(i,7)+1,:);
     
         % draw the arm
-        patch([corner_1(1), corner_2(1), corner_4(1), corner_3(1)], ...
-            [corner_1(2), corner_2(2), corner_4(2), corner_3(2)],c);
+        patch([corner_1(1), corner_2(1), corner_3(1), corner_4(1)], ...
+            [corner_1(2), corner_2(2), corner_3(2), corner_4(2)],c);
         hold on;
     end
 

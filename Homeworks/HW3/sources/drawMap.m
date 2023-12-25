@@ -14,15 +14,8 @@ axis equal
 axis([map.limits(1) map.limits(2) map.limits(3) map.limits(4)])
 
 
-
 for i = 1:length(map.obstacles)
-    fill(map.obstacles{i}(:,1), map.obstacles{i}(:,2), 'k')
-end
-figure(1), clf, hold on
-axis equal
-axis([map.limits(1) map.limits(2) map.limits(3) map.limits(4)])
-for i = 1:length(map.obstacles)
-    fill(map.obstacles{i}(:,1), map.obstacles{i}(:,2), 'k')
+    plot(map.obstacles{i}, 'FaceColor', 'black', 'EdgeColor', 'k')
 end
 
 % Customize plot appearance
