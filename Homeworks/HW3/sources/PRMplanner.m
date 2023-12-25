@@ -39,7 +39,7 @@ global robot; % robot object
 robot_config = [100*rand 100*rand 2*pi*rand 2*pi*rand 2*pi*rand]; % [x0 y0 r1 r2 r3]
 % initial and goal configurations
 q_init = [75 90 3*pi/2 pi/2 0];
-q_goal = [0.9, 0.9 2*pi*rand 2*pi*rand 2*pi*rand];
+q_goal = [40 5  0 0 0];
 
 % create map
 createMap();
@@ -51,7 +51,9 @@ drawMap();
 % createRobot(robot_config,"draw");
 
 % local planner
-localPlanner(1);
+tic
+localPlanner(100);
+toc
 % Start
 
 

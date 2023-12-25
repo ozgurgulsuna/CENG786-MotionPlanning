@@ -6,7 +6,7 @@ function check = checkCollision(configuration)
 
 global map;
 
-robot = createRobot(configuration,"draw");
+robot = createRobot(configuration,"do not draw");
 
 % Check collision with the obstacles
 for i = 1:size(map.obstacles, 2)
@@ -15,7 +15,7 @@ for i = 1:size(map.obstacles, 2)
         obstacle = map.obstacles{i};
         if overlaps(arm, obstacle)
             % collision detected
-            check = 1; 
+            check = 1;
             return;
         elseif overlaps(arm, map.outside)
             % out of bounds
