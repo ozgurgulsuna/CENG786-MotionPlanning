@@ -23,7 +23,6 @@
 %       - plotPath
 %  
 % Author: Ozgur Gulsuna
-% GitHub: ozgurgulsuna 
 % This implementation is part of the CENG786 course homework assignment.
 
 clc;
@@ -37,18 +36,24 @@ global q_goal; % goal configuration
 global robot; % robot object
 
 % set parameters
-robot_config = [100*rand 100*rand 2*pi*rand 2*pi*rand 2*pi*rand]; % [x0 y0 r1 r2 ]
+robot_config = [100*rand 100*rand 2*pi*rand 2*pi*rand 2*pi*rand]; % [x0 y0 r1 r2 r3]
+% initial and goal configurations
+q_init = [0.1 0.1 2*pi*rand 2*pi*rand 2*pi*rand];
+q_goal = [0.9, 0.9 2*pi*rand 2*pi*rand 2*pi*rand];
 
-% Create map
+% create map
 createMap();
 drawMap();
 
-% Create robot
-createRobot(robot_config);
+% 
 
-% initial and goal configurations
-q_init = [0.1, 0.1];
-q_goal = [0.9, 0.9];
+% create robot
+% createRobot(robot_config,"draw");
+
+% local planner
+localPlanner(1);
+% Start
+
 
 
 
