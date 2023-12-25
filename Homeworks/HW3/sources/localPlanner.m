@@ -36,25 +36,21 @@ while total < sampleCount
     end
     q_rand = [rand*map.limits(2) rand*map.limits(4) q_rand];
         % check for collision
-    if ~checkCollision(q_rand)
+        if ~checkCollision(q_rand)
         % if no collision, add the node to the graph
-        if ~checkPath(nodes(end,:),q_rand)
-            % if the path is collision free, add the node to the graph
+            % if ~checkPath(nodes(end,:),q_rand) % check for path collision in picking the node, makes it unrandom and slower
             nodes = [nodes; q_rand];
             % draw the node
             createRobot(q_rand,"draw");
             total = total + 1;
             % draw the edge
             % hold on;
-            line([nodes(end-1,1) q_rand(1)],[nodes(end-1,2) q_rand(2)],'Color','k','LineWidth',1);
-        
-            % check if the goal is reached
-            if norm(q_rand(1:2)-q_goal(1:2)) < 0.1
-                % if goal is reached, stop the simulation
-                disp("Goal is reached!");
-            return;
-            end
+
+            % line([nodes(end-1,1) q_rand(1)],[nodes(end-1,2) q_rand(2)],'Color','k','LineWidth',1);
         end
-    end
 end
-nodes 
+
+% add the goal to the graph
+createRobot(q_goal,"draw");
+nodes = [nodes; q_goal];
+end

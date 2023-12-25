@@ -3,14 +3,14 @@ function check = checkPath(current_configuration, next_configuration)
 %   is collision free. For the collision checking, the function interpolates
 %   the path between two configurations with N steps and checks if any of
 %   the interpolated configurations is in collision with the obstacles. If
-%   there is a collision the function is halted and returns 0.
+%   there is a collision the function is halted and returns 1.
 %   TODO: perhaps change the incremental method to subdivision method
 %   
 %   Ozgur Gulsuna, METU
 %   CENG786 Robot Motion Planning and Control, Fall 2023
 
 
-N = 20; % number of steps for interpolation
+N = 10; % number of steps for interpolation
 check = 0; % return value
 
 % interpolate the path between two configurations

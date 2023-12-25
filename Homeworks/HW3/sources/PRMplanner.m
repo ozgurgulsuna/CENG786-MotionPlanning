@@ -52,7 +52,11 @@ drawMap();
 
 % local planner
 tic
-localPlanner(50);
+localPlanner(20);
+toc
+
+tic
+constructRoadmap(5);
 toc
 % Start
 
