@@ -1,4 +1,4 @@
-function drawMap()
+function drawMap(fig)
 %DRAWMAP Draw the map that is created by CREATEMAP function
 %   This function draws the map. It also draws the start and
 %   goal points of the robot.
@@ -9,10 +9,9 @@ function drawMap()
 global map;
 
 % Draw the map
-% figure(1), clf, hold on
+figure(fig), clf, hold on
 axis equal
 axis([map.limits(1) map.limits(2) map.limits(3) map.limits(4)])
-
 
 for i = 1:length(map.obstacles)
     plot(map.obstacles{i}, 'FaceColor', 'black', 'EdgeColor', 'k')

@@ -43,10 +43,7 @@ q_goal = [40 5  0 pi/2 ];
 
 % create map
 createMap();
-figure(1), clf, hold on
-axis equal
-axis([map.limits(1) map.limits(2) map.limits(3) map.limits(4)])
-drawMap();
+drawMap(1);
 
 % 
 

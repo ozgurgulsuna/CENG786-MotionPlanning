@@ -33,9 +33,9 @@ robot = struct('base', [configuration(1); configuration(2)], ...
                'closed', false);
 
 % make sure the angles are between 0 and 2*pi
-for i = 1:length(lengths)
-    robot.angles(i) = mod(robot.angles(i), 2*pi);
-end
+% for i = 1:length(lengths)
+%     robot.angles(i) = mod(robot.angles(i), 2*pi);
+% end
 
 % create each arm
 next_base = robot.base;

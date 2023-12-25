@@ -6,10 +6,12 @@ global nodes;
 N = 20; % number of steps for interpolation
 
 % open new figure window
-figure;
-hold on;
-drawMap();
+% figure;
+% hold on;
+drawMap(2);
 
+% plot start configuration
+createRobot(nodes(1,:),"draw");
 
 for i = 1:length(path)-1
     current_configuration = nodes(path(i),:);
@@ -21,5 +23,7 @@ for i = 1:length(path)-1
 
 end
 
+% plot goal configuration
+createRobot(nodes(end,:),"draw");
 
 end
