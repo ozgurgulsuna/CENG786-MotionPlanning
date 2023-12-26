@@ -4,6 +4,9 @@ function distance = distanceMetric(nodes1, nodes2)
 %   nodes2 = [z1 z1 alpha1 alpha2; z2 z2 alpha1 alpha2; ...]
 
 % global nodes;
+weight = [1 1 10 10];
+nodes1 = nodes1.*weight;
+nodes2 = nodes2.*weight;
 distance = sqrt((sum((nodes1'-nodes2').^2)));
 
 % distance = sqrt(sum((nodes(s,:)-nodes(t,:)).^2'))
