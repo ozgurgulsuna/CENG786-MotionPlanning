@@ -21,6 +21,6 @@ t = road_map(:,2)';
 G = graph(s,t);
 
 % then compute the shortest path
-path = shortestpath(G,1,size(nodes,1));
+path = shortestpath(G,1,size(nodes,1))
 
 end

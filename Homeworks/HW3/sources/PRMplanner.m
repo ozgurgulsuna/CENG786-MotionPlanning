@@ -34,12 +34,15 @@ global robot_params; % parameters of the robots
 global q_init; % initial configuration
 global q_goal; % goal configuration
 global robot; % robot object
+global nodes; % nodes of the roadmap
 
 % set parameters
 robot_config = [100*rand 100*rand 2*pi*rand 2*pi*rand 2*pi*rand]; % [x0 y0 r1 r2 r3]
 % initial and goal configurations
-q_init = [75 90 3*pi/2 pi/2 ];
-q_goal = [40 5  0 pi/2 ];
+q_init = [75  90  3*pi/2   0  ];
+q_goal = [40   5    0    pi/2 ];
+sample = 10;    % number of samples
+kNearest = 5; % number of nearest neighbors, should be smaller than sample
 
 % create map
 createMap();
@@ -52,17 +55,19 @@ drawMap(1);
 
 % local planner
 tic
-localPlanner(20);
+localPlanner(sample);
 toc
 
 tic
-road_map = constructRoadmap(10);
+road_map = constructRoadmap(kNearest);
 toc
-
+% nodes
 tic 
-path = shortestPath(road_map)
+% path = shortestPath(road_map);
+path = dijkstrasAlgorithm(road_map)
 toc
-hold off;
+% hold off;
+
 
 % plot path
 plotPath(path);
