@@ -33,9 +33,9 @@ distance(1:nn) = inf;    % it stores the shortest distance between each node and
 parent(1:nn) = 0;
 distance(1) = 0;
 
-for i = 1:(nn-1),
+for i = 1:(nn-1)
     temp = [];
-    for h = 1:nn,
+    for h = 1:nn
          if visited(h) == 0   % in the tree;
              temp=[temp distance(h)];
          else
@@ -44,7 +44,7 @@ for i = 1:(nn-1),
      end
      [t, u] = min(temp);    % it starts from node with the shortest distance to the source;
      visited(u) = 1;       % mark it as visited;
-     for v = 1:nn,           % for each neighbors of node u;
+     for v = 1:nn           % for each neighbors of node u;
          if ( ( A(u, v) + distance(u)) < distance(v) )
              distance(v) = distance(u) + A(u, v);   % update the shortest distance when a shorter path is found;
              parent(v) = u;                                     % update its parent;
@@ -66,4 +66,5 @@ end
 if isempty(path)
     disp('No path found!');
 end
+a = shortestpath(G,1,nn)
 end
