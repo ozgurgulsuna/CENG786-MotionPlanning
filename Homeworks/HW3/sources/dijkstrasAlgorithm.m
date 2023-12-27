@@ -64,5 +64,6 @@ end
 if isempty(path)
     disp('No path found!');
 end
+path 
 path = shortestpath(G,1,nn);
 end

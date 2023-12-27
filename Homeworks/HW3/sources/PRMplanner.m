@@ -40,10 +40,10 @@ global sample; % number of samples
 % set parameters
 robot_config = [100*rand 100*rand 2*pi*rand 2*pi*rand 2*pi*rand]; % [x0 y0 r1 r2 r3]
 % initial and goal configurations
-q_init = [75  90  3*pi/2  pi/2 ];
-q_goal = [40   5    0     pi/2 ];
-sample = 100;    % number of samples
-kNearest = 10; % number of nearest neighbors, should be smaller than sample
+q_init = [75  90  -pi/2  ];
+q_goal = [27   5  0    ];
+sample = 150;    % number of samples
+kNearest = 20; % number of nearest neighbors, should be smaller than sample
 
 profile on
 n = 100;
