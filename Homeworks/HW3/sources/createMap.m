@@ -14,11 +14,11 @@ map = struct('limits', [], 'obstacles', [], 'outside', []);
 map_limits = [0 100 0 100];
 
 % Environment 1
-obstacle1 = polyshape([0 0 20 20], [0 20 20 0]);
-obstacle2 = polyshape([80 80 100 100], [80 100 100 80]);
-obstacle3 = polyshape([0 0 20 20], [80 100 100 80]);
-obstacle4 = polyshape([80 80 100 100], [0 20 20 0]);
-obstacle5 = polyshape([40 40 60 60], [40 60 60 40]);
+obstacle1 = polyshape([0 0 25 25], [0 25 25 0]);
+obstacle2 = polyshape([75 75 100 100], [75 100 100 75]);
+obstacle3 = polyshape([0 0 25 25], [75 100 100 75]);
+obstacle4 = polyshape([75 75 100 100], [0 25 25 0]);
+obstacle5 = polyshape([35 35 65 65], [35 65 65 35]);
 
 map.obstacles{1} = obstacle1;
 map.obstacles{2} = obstacle2;
