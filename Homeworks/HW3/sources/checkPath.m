@@ -11,7 +11,7 @@ function check = checkPath(current_configuration, next_configuration)
 
 global map sample;
 
-N = sample/10; % number of steps for interpolation
+N = 10; % number of steps for interpolation
 check = 0; % return value
 
 % interpolate the path between two configurations

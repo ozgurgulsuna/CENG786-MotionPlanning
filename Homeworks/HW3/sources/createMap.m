@@ -7,11 +7,11 @@ function createMap()
 %   Ozgur Gulsuna, METU
 %   CENG786 Robot Motion Planning and Control, Fall 2023
 
-global map ground_path;
+global map base_path;
 
 map = struct('limits', [], 'obstacles', [], 'outside', []);
 
-map_limits = [0 100 0 50];
+map_limits = [0 150 0 50];
 
 % % Environment 1
 % obstacle1 = polyshape([0 0 25 25], [0 25 25 0]);
@@ -24,7 +24,7 @@ map_limits = [0 100 0 50];
 % map.obstacles{2} = obstacle2;
 % map.obstacles{3} = obstacle3;
 % map.obstacles{4} = obstacle4;
-% map.obstacles{5} = obstacle5;   
+% map.obstacles{1} = obstacle3;   
 
 % map.limits = map_limits;
 
@@ -32,6 +32,7 @@ map_limits = [0 100 0 50];
 
 
 % Environment 2
+
 ground = polyshape([ 0 0 20 20 50 50 60 60 75 90 100 100 ],[-10 0 0 20 20 0 0 10 10 0 0 -10]);
 ground_offset = polybuffer(ground, 2);
 ground_path = intersect(ground_offset, polyshape([map_limits(1) map_limits(2) map_limits(2) map_limits(1)], [map_limits(3) map_limits(3) map_limits(4) map_limits(4)]));
@@ -42,10 +43,10 @@ yl = ground_path(:,2)';
 
 c = 'k';    % Black
 
-step = 1;    % Affects point quantity
+step = 0.5;    % Affects point quantity
 coeff = 0;    % Affects point density
 
-figure(3)
+% figure(3)
 for n = 1:numel(xl)-1 
     r = norm([xl(n)-xl(n+1), yl(n)-yl(n+1)]);
     m = round(r/step) + 1;
@@ -55,10 +56,10 @@ for n = 1:numel(xl)-1
     % scatter(x,y,'filled','MarkerFaceColor',c);
 end
 
-soln =interparc(100,xl,yl,'linear')
+base_path =interparc(100,xl,yl,'linear');
 
 % figure(3)
-scatter(soln(:,1),soln(:,2),'filled','MarkerFaceColor',c);
+% scatter(base_path(:,1),base_path(:,2),'filled','MarkerFaceColor',c);
 
 
 

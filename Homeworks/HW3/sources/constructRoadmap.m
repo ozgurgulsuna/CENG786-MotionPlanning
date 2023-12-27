@@ -34,7 +34,6 @@ for i = 1:size(road_map,1)
     plot([nodes(road_map(i,1),1) nodes(road_map(i,2),1)], ...
          [nodes(road_map(i,1),2) nodes(road_map(i,2),2)], 'b');
 end
-road_map
-nodes(end,:)
+% nodes(end,:);
 end
 

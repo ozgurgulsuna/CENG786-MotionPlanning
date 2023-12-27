@@ -10,7 +10,7 @@ function localPlanner(sampleCount)
 %   Ozgur Gulsuna, METU
 %   CENG786 Robot Motion Planning and Control, Fall 2023
 
-global nodes q_init q_goal robot map;
+global nodes q_init q_goal robot map base_path ;
 
 % draw the initial configuration
 robot = createRobot(q_init,"draw");
@@ -31,24 +31,38 @@ total = 0;
 while total < sampleCount
     % select a random configuration
     q_rand = [];
-    for links = 1 : length(robot.angles)
-        q_rand = [q_rand (-pi+rand*2*pi)];
-    end
-    % q_rand = [q_rand pi/2];
-    q_rand = [rand*map.limits(2) rand*map.limits(4) q_rand];
-        % check for collision
-        if ~checkCollision(q_rand)
-        % if no collision, add the node to the graph
-            % if ~checkPath(nodes(end,:),q_rand) % check for path collision in picking the node, makes it unrandom and slower
-            nodes = [nodes; q_rand];
-            % draw the node
-            createRobot(q_rand,"draw");
-            total = total + 1;
-            % draw the edge
-            % hold on;
 
-            % line([nodes(end-1,1) q_rand(1)],[nodes(end-1,2) q_rand(2)],'Color','k','LineWidth',1);
+    random_state = randi(1);
+    if random_state == 1
+        pos= ceil(rand*size(base_path,1));
+
+        q_rand = [base_path(pos,1) base_path(pos,2) ];
+
+        for links = 1 : length(robot.angles)
+            q_rand = [q_rand (-pi+rand*2*pi)];
         end
+
+    elseif random_state == 2
+        pass = 0;
+    elseif random_state == 3
+        pass = 0;
+    end
+
+
+    % q_rand = [rand*map.limits(2) rand*map.limits(4) q_rand];
+    % check for collision
+    if ~checkCollision(q_rand)
+    % if no collision, add the node to the graph
+        % if ~checkPath(nodes(end,:),q_rand) % check for path collision in picking the node, makes it unrandom and slower
+        nodes = [nodes; q_rand];
+        % draw the node
+        hold on;
+        createRobot(q_rand,"draw");
+        total = total + 1;
+        % draw the edge
+
+        % line([nodes(end-1,1) q_rand(1)],[nodes(end-1,2) q_rand(2)],'Color','k','LineWidth',1);
+    end
 end
 
 % add the goal to the graph

@@ -40,10 +40,10 @@ global sample; % number of samples
 % set parameters
 robot_config = [100*rand 100*rand 2*pi*rand 2*pi*rand 2*pi*rand]; % [x0 y0 r1 r2 r3]
 % initial and goal configurations
-q_init = [95 5 pi/2 -pi/3-pi/2 2*pi/3 -pi/3-pi/2 ];
-q_goal = [10 5 pi/2 -pi/3-pi/2 2*pi/3 -pi/3-pi/2 ];
-sample = 10;    % number of samples
-kNearest = 5; % number of nearest neighbors, should be smaller than sample
+q_init = [92 2 pi/2 -pi/3-pi/2  ];
+q_goal = [10 2 -0.349066+pi/2 pi-0.349066 ];
+sample = 50;    % number of samples
+kNearest = 10; % number of nearest neighbors, should be smaller than sample
 
 profile on
 n = 100;
@@ -68,7 +68,7 @@ toc
 % nodes
 tic 
 % path = shortestPath(road_map);
-path = dijkstrasAlgorithm(road_map)
+path = dijkstrasAlgorithm(road_map);
 toc
 % hold off;
 
