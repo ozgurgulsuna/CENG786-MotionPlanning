@@ -24,9 +24,7 @@ G = graph(s,t,w);
 nn = numnodes(G);
 A = full(sparse(s,t,G.Edges.Weight,nn,nn));
 
-A=A+1./(A~=0)-1
-
-A
+A=A+1./(A~=0)-1;
 
 visited(1:nn) = 0;
 distance(1:nn) = inf;    % it stores the shortest distance between each node and the source node;
@@ -66,5 +64,5 @@ end
 if isempty(path)
     disp('No path found!');
 end
-a = shortestpath(G,1,nn)
+path = shortestpath(G,1,nn);
 end

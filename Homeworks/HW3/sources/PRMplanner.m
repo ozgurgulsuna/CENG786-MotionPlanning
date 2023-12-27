@@ -35,13 +35,14 @@ global q_init; % initial configuration
 global q_goal; % goal configuration
 global robot; % robot object
 global nodes; % nodes of the roadmap
+global sample; % number of samples
 
 % set parameters
 robot_config = [100*rand 100*rand 2*pi*rand 2*pi*rand 2*pi*rand]; % [x0 y0 r1 r2 r3]
 % initial and goal configurations
-q_init = [75  90  3*pi/2   0  ];
-q_goal = [40   5    0    pi/2 ];
-sample = 50;    % number of samples
+q_init = [75  90  3*pi/2  pi/2 ];
+q_goal = [40   5    0     pi/2 ];
+sample = 100;    % number of samples
 kNearest = 10; % number of nearest neighbors, should be smaller than sample
 
 profile on

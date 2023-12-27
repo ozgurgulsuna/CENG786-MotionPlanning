@@ -9,17 +9,26 @@ function check = checkPath(current_configuration, next_configuration)
 %   Ozgur Gulsuna, METU
 %   CENG786 Robot Motion Planning and Control, Fall 2023
 
+global map sample;
 
-N = 10; % number of steps for interpolation
+N = sample/10; % number of steps for interpolation
 check = 0; % return value
 
 % interpolate the path between two configurations
+for i = 1:size(map.obstacles,2)
+    if any(any(intersect(map.obstacles{i}, [current_configuration(1) current_configuration(2) ; next_configuration(1) next_configuration(2)])))
+        check = 1;
+        return;
+    end
+end
+
+
 for i = 1:N
     q = (N-i)/N*current_configuration + i/N*next_configuration;
     % createRobot(q,"draw");
     if checkCollision(q)
         check = 1;
-        break;
+        return;
     end
 end
 
