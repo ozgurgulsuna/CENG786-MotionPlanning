@@ -4,7 +4,7 @@ function distance = distanceMetric(nodes1, nodes2)
 %   nodes2 = [z1 z1 alpha1 alpha2; z2 z2 alpha1 alpha2; ...]
 
 % global nodes;
-weight = [1 1 1 1];
+weight = [1 1 10 10 ];
 nodes1_height = zeros(size(nodes1,1),1);
 nodes2_height = zeros(size(nodes2,1),1);
 for i = 1 : size(nodes1,1)
@@ -25,7 +25,7 @@ height_penalty = (nodes1_height + nodes2_height)'
 nodes1 = nodes1.*weight;
 nodes2 = nodes2.*weight;
 distance = sqrt((sum((nodes1'-nodes2').^2)))
-distance = distance + height_penalty-5
+distance = distance + height_penalty*10
 
 % distance = sqrt(sum((nodes(s,:)-nodes(t,:)).^2'))
 

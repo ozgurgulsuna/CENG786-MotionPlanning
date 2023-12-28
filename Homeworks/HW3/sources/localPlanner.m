@@ -32,7 +32,7 @@ while total < sampleCount
     % select a random configuration
     q_rand = [];
 
-    random_state = randi(1);
+    random_state = randi(2);
     if random_state == 1
         pos= ceil(rand*size(base_path,1));
 
@@ -43,7 +43,20 @@ while total < sampleCount
         end
 
     elseif random_state == 2
-        pass = 0;
+        for links = 1 : length(robot.angles)
+            q_rand = [q_rand (-pi+rand*2*pi)];
+        end
+
+        alpha_1 = q_rand(1);
+        alpha_2 = q_rand(2);
+
+        pos= ceil(rand*size(base_path,1));
+
+        x_base = - 2*20*cos(alpha_1)/3 - 13*cos(alpha_1+alpha_2) + base_path(pos,1);
+        y_base = - 2*20*sin(alpha_1)/3 - 13*sin(alpha_1+alpha_2) + base_path(pos,2);
+
+        q_rand = [x_base y_base q_rand];
+
     elseif random_state == 3
         pass = 0;
     end
