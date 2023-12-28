@@ -37,25 +37,19 @@ global robot; % robot object
 global nodes; % nodes of the roadmap
 global sample; % number of samples
 
-% set parameters
-robot_config = [100*rand 100*rand 2*pi*rand 2*pi*rand 2*pi*rand]; % [x0 y0 r1 r2 r3]
 % initial and goal configurations
 q_init = [70  90  -pi/2 0 0 ];
 q_goal = [70  10  -pi   0 0 ];
-sample = 50;    % number of samples
-kNearest = 10; % number of nearest neighbors, should be smaller than sample
+sample = 100;    % number of samples
+kNearest = 50; % number of nearest neighbors, should be smaller than sample
 
 profile on
 n = 100;
 M = magic(n);
+
 % create map
 createMap();
 drawMap(1);
-
-% 
-
-% create robot
-% createRobot(robot_config,"draw");
 
 % local planner
 tic
@@ -65,17 +59,13 @@ toc
 tic
 road_map = constructRoadmap(kNearest);
 toc
-% nodes
-tic 
-% path = shortestPath(road_map);
-path = dijkstrasAlgorithm(road_map)
-toc
-% hold off;
 
+tic 
+path = dijkstrasAlgorithm(road_map);
+toc
 
 % plot path
 plotPath(path);
-% Start
 
 profile viewer
 
