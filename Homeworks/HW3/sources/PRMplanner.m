@@ -38,36 +38,32 @@ global nodes; % nodes of the roadmap
 global sample; % number of samples
 
 % initial and goal configurations
-q_init = [70  90  -pi/2 0 0 ];
-q_goal = [70  10  -pi   0 0 ];
-sample = 100;    % number of samples
-kNearest = 50; % number of nearest neighbors, should be smaller than sample
+q_init = [70  90  -pi/2 0 ];
+q_goal = [70  10  -pi   0];
+sample = 500;    % number of samples
+kNearest = 20; % number of nearest neighbors, should be smaller than sample
 
-profile on
-n = 100;
-M = magic(n);
+% profile on
+% n = 100;
+% M = magic(n);
 
 % create map
 createMap();
 drawMap(1);
 
 % local planner
-tic
 localPlanner(sample);
-toc
 
 tic
 road_map = constructRoadmap(kNearest);
 toc
 
-tic 
 path = dijkstrasAlgorithm(road_map);
-toc
 
 % plot path
 plotPath(path);
 
-profile viewer
+% profile viewer
 
 
 

@@ -18,7 +18,7 @@ function robot = createRobot(configuration,draw)
 %   Ozgur Gulsuna, METU
 %   CENG786 Robot Motion Planning and Control, Fall 2023
 
-lengths = [1 10 ; 1 10 ; 1 10]; % Length of each arm
+lengths = [1 10 ; 1 10]; % Length of each arm
 
 % check if the configuration is valid
 if length(configuration) ~= 2 + size(lengths,1)

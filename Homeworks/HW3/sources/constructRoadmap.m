@@ -17,7 +17,8 @@ global nodes;
 road_map = [];
 
 for i = 1:size(nodes,1)
-    distances = sqrt(sum((nodes - nodes(i,:))'.^2)');
+    distances = distanceMetric(nodes(i,:), nodes);
+    % distances = sqrt(sum((nodes - nodes(i,:))'.^2)');
     [~, sortedIndices] = sort(distances);
     kNearestIndices = sortedIndices(2:K_nearest+1);
     for j = 1:length(kNearestIndices)
