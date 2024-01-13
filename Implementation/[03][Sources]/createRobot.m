@@ -14,7 +14,7 @@ M = 12; % Number of members
 % Node Coordinates
 % Nodes are ordered as starting from  the bottom polygon, going in clockwise
 % direction and then going to the top polygon in a spiral way.
-trussNodes  =  [-1 0 0; ...  % Node 1 x,y,z
+trussNodes  =  [-1.5 0 0; ...  % Node 1 x,y,z
                 0 0 -1; ...  % Node 2 x,y,z
                 0 -1 0; ...  % Node 3
                 0 0 1; ...  % ...
@@ -64,10 +64,6 @@ robotTopology = struct('nodes', [trussNodes], ...
                        'numNodes', N, ...
                        'numMembers', M);
 
-
-
-% center of mass projection
-
 % Forwards Kinematics
 % length of the members are calculated by using the position of the nodes.
 % This is the forward kinematics problem. The solution is found by solving
@@ -79,40 +75,40 @@ robotTopology = struct('nodes', [trussNodes], ...
 
 % to find the R matrix, we can first calculate the member lengths in the
 % reference configuration.
-% L = [norm(trussNodes(1,:) - trussNodes(2,:)); ...
-%      norm(trussNodes(2,:) - trussNodes(3,:)); ...
-%      norm(trussNodes(3,:) - trussNodes(1,:)); ...
 
+x = [trussNodes(:,1); trussNodes(:,2); trussNodes(:,3)];
+
+% calculate the length of each member
 L = zeros(M,1);
+
 for i = 1:M
     L(i) = norm(trussNodes(trussConnectivity(i,1),:) - trussNodes(trussConnectivity(i,2),:));
 end
 
 
-% quick plot
-figure(1)
-clf
-hold on
-axis equal
-grid on
-xlabel('x')
-ylabel('y') 
-zlabel('z')
-view(3)
-for i = 1:M
-    pause(1)
-    plot3(trussNodes(trussConnectivity(i,:),1), ...
-          trussNodes(trussConnectivity(i,:),2), ...
-          trussNodes(trussConnectivity(i,:),3), ...
-          'k-', 'LineWidth', 2)
-end
 
-hold off
-
+% % quick plot
+% figure(1)
+% clf
+% hold on
+% axis equal
+% grid on
+% xlabel('x')
+% ylabel('y') 
+% zlabel('z')
+% view(3)
+% for i = 1:M
+%     plot3(trussNodes(trussConnectivity(i,:),1), ...
+%           trussNodes(trussConnectivity(i,:),2), ...
+%           trussNodes(trussConnectivity(i,:),3), ...
+%           'k-', 'LineWidth', 2)
+% end
+% hold off
 
 
+% Now we can find the R matrix by solving the linear system.
 
-% Then we can calculate the R matrix by using the following formula:
+
 
 
 
