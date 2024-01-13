@@ -6,6 +6,7 @@
 clc
 clear
 
+global robotTopology
 
 
 N = 6; % Number of nodes
@@ -15,7 +16,7 @@ M = 12; % Number of members
 % Nodes are ordered as starting from  the bottom polygon, going in clockwise
 % direction and then going to the top polygon in a spiral way.
 trussNodes  =  [-1.5 0 0; ...  % Node 1 x,y,z
-                0 0 -1; ...  % Node 2 x,y,z
+                0 0 -1.1; ...  % Node 2 x,y,z
                 0 -1 0; ...  % Node 3
                 0 0 1; ...  % ...
                 0 1 0; ...
@@ -59,8 +60,8 @@ trussMembers = [1 ; ... % Member_1 length
                 ];
 
 robotTopology = struct('nodes', [trussNodes], ...
-                       'connections', [trussConnectivity], ...
-                       'lengths', [trussMembers], ...
+                       'connectivity', [trussConnectivity], ...
+                       'members', [trussMembers], ...
                        'numNodes', N, ...
                        'numMembers', M);
 
@@ -84,6 +85,8 @@ L = zeros(M,1);
 for i = 1:M
     L(i) = norm(trussNodes(trussConnectivity(i,1),:) - trussNodes(trussConnectivity(i,2),:));
 end
+
+
 
 
 
