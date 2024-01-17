@@ -20,5 +20,10 @@ Implementation/Proposals/\[P*/**/*.pdf
 !Implementation/Proposals/\[P*/**/*\[\★\]*
 !Implementation/Proposals/\[P*/**/*\[P-*
 
+# ignore auto save files
+Implementation/\[03\]\[Sources\]/*.asv
+
+# ignore the .vscode directory
+Implementation/\[03\]\[Sources\]/.vscode/
 
 

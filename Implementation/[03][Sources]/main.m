@@ -34,3 +34,49 @@
 %|╭─╮╭─╮╭─╮╱╱╱╱╱╱╱╱╱╭╮╱╭┬─╮╭─╮╭─╮┬─╮┌─╮╭─╮╱╱╱╱╭─╮┬─╮┌─╱╱╱╱╱╱╱╱╱┌─╮╭─╮╱╱╱╱╭─╮╭─╮╭─╮┬─╮┌─╮╭─╮╱╱╱╱╱╱╱╱╱╭─╮┬─|
 %|─╯└─╯├─╯╱╱╱╱╱╱╱╱╱┃┃╱├┴┐├─╯├─╯├──╮┤└─╯├─╯╱╱╱╱├─╯├─┤└─╱╱╱╱╱╱╱╱╱└─╯├─╯╱╱╱╱├─╯├──╮┤└─╯├─╯╱╱╱╱╱╱╱╱├─╯├─┤└─╱╱|
 %└─╯┴─╯╰┴─╯╰─────────╯╱╰─╯┴──╯╰─╯─╯┴─╯╰┴─╯╰──╯╰─╯─╯──────────╯┴─╯╰┴─╯╰─╯─╯┴─╯╰┴─╯╰─────────╯╱╰─╯┴┴┴┴──╯╰─╯
+
+clear 
+close all
+clc
+
+global robotTopology
+
+
+
+% Create the VGT Robot
+createRobot()
+
+% Robot Parameters
+N = size(robotTopology.nodes,1);  % Number of nodes
+M = size(robotTopology.members,1); % Number of members
+% L = zeros(M,1); % Member lengths
+x = [robotTopology.nodes(:,1); robotTopology.nodes(:,2); robotTopology.nodes(:,3)]; % Node coordinates
+
+
+% Inverse Kinematics (IK) Jacobian
+J = inverseKinematics();
+
+L = J * x;
+
+
+
+
+
+
+% quick plot
+figure(1)
+clf
+hold on
+axis equal
+grid on
+xlabel('x')
+ylabel('y') 
+zlabel('z')
+view(3)
+for i = 1:M
+    plot3(robotTopology.nodes(robotTopology.connectivity(i,:),1), ...
+          robotTopology.nodes(robotTopology.connectivity(i,:),2), ...
+          robotTopology.nodes(robotTopology.connectivity(i,:),3), ...
+          'k-', 'LineWidth', 2)
+end
+hold off

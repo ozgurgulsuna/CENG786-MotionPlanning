@@ -3,10 +3,10 @@
 % CREATE ROBOT
 % The robot created can have different number of nodes and members. Selected topology is octahedron.
 %
-clc
-clear
 
-global robotTopology
+function createRobot()
+
+global robotTopology;
 
 
 N = 6; % Number of nodes
@@ -15,8 +15,8 @@ M = 12; % Number of members
 % Node Coordinates
 % Nodes are ordered as starting from  the bottom polygon, going in clockwise
 % direction and then going to the top polygon in a spiral way.
-trussNodes  =  [-1.5 0 0; ...  % Node 1 x,y,z
-                0 0 -1.1; ...  % Node 2 x,y,z
+trussNodes  =  [-1 0 0; ...  % Node 1 x,y,z
+                0 0 -1; ...  % Node 2 x,y,z
                 0 -1 0; ...  % Node 3
                 0 0 1; ...  % ...
                 0 1 0; ...
@@ -40,7 +40,7 @@ trussConnectivity = [1 2; ... % Member_1 -> node-1 node-2
                      4 5; ... % Member_10 -> node-4 node-5
                      5 6; ... % Member_11 -> node-5 node-6
                      6 4; ... % Member_12 -> node-6 node-4
-                     ];
+                     ]  ;
 
 
 
@@ -57,74 +57,11 @@ trussMembers = [1 ; ... % Member_1 length
                 1 ; ... % Member_10 length
                 1 ; ... % Member_11 length
                 1 ; ... % Member_12 length
-                ];
+                ] ;
 
 robotTopology = struct('nodes', [trussNodes], ...
                        'connectivity', [trussConnectivity], ...
-                       'members', [trussMembers], ...
-                       'numNodes', N, ...
-                       'numMembers', M);
-
-% Forwards Kinematics
-% length of the members are calculated by using the position of the nodes.
-% This is the forward kinematics problem. The solution is found by solving
-% the following linear system:
-%
-%                       L = R * x
-%
-% where L is the vector of member lengths.
-
-% to find the R matrix, we can first calculate the member lengths in the
-% reference configuration.
-
-x = [trussNodes(:,1); trussNodes(:,2); trussNodes(:,3)];
-
-% calculate the length of each member
-L = zeros(M,1);
-
-for i = 1:M
-    L(i) = norm(trussNodes(trussConnectivity(i,1),:) - trussNodes(trussConnectivity(i,2),:));
-end
-
-
-
-
-
-% % quick plot
-% figure(1)
-% clf
-% hold on
-% axis equal
-% grid on
-% xlabel('x')
-% ylabel('y') 
-% zlabel('z')
-% view(3)
-% for i = 1:M
-%     plot3(trussNodes(trussConnectivity(i,:),1), ...
-%           trussNodes(trussConnectivity(i,:),2), ...
-%           trussNodes(trussConnectivity(i,:),3), ...
-%           'k-', 'LineWidth', 2)
-% end
-% hold off
-
-
-% Now we can find the R matrix by solving the linear system.
-
-
-
-
-
-
-
-% Inverse Kinematics
-
-
-
-
-
-
-
+                       'members', [trussMembers] );
 
 
 
