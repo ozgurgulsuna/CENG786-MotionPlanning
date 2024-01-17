@@ -4,67 +4,67 @@
 
 function [J] = inverseKinematics()
 
-global robotTopology x_dot
+    global robotTopology x_dot
 
-N = size(robotTopology.nodes,1);
-M = size(robotTopology.members,1);
-connectivity = robotTopology.connectivity;
-
-
-% Forwards Kinematics
-% length of the members are calculated by using the position of the nodes.
-% This is the forward kinematics problem. The solution is found by solving
-% the following linear system:
-%
-%                       L = R * x
-%
-% where L is the vector of member lengths.
-
-% to find the R matrix, we can first calculate the member lengths in the
-% reference configuration.
-
-% Now we can find the R matrix by solving the linear system.
+    N = size(robotTopology.nodes,1);
+    M = size(robotTopology.members,1);
+    connectivity = robotTopology.connectivity;
 
 
+    % Forwards Kinematics
+    % length of the members are calculated by using the position of the nodes.
+    % This is the forward kinematics problem. The solution is found by solving
+    % the following linear system:
+    %
+    %                       L = R * x
+    %
+    % where L is the vector of member lengths.
 
-% Coordinates
-x = sym('x',[1 N]);
-y = sym('y',[1 N]);
-z = sym('z',[1 N]);
-% d = sym('d',[1 M]);
+    % to find the R matrix, we can first calculate the member lengths in the
+    % reference configuration.
 
-% Coordinates of the nodes
-p = transpose([x; y; z]);
+    % Now we can find the R matrix by solving the linear system.
 
-% Connectivity matrix
-C = zeros(M,N);
 
-for i = 1:M
-    C(i,connectivity(i,1)) = 1;
-    C(i,connectivity(i,2)) = -1;
-end
 
-% Member lengths
+    % Coordinates
+    x = sym('x',[1 N]);
+    y = sym('y',[1 N]);
+    z = sym('z',[1 N]);
+    % d = sym('d',[1 M]);
 
-d =C*p;
-%D = zeros(M,1);
-for i = 1:M
-    D(i) = norm(d(i,:));
-end
+    % Coordinates of the nodes
+    p = transpose([x; y; z]);
 
-% Function valued vector of the member lengths
-F = D';
+    % Connectivity matrix
+    C = zeros(M,N);
 
-% Jacobian of the member lengths
-assume(p ,"real")
-J = jacobian(F,[x y z]);
+    for i = 1:M
+        C(i,connectivity(i,1)) = 1;
+        C(i,connectivity(i,2)) = -1;
+    end
 
-% Substituting the coordinates of the nodes
-x_dot = [ robotTopology.nodes(:,1) ; robotTopology.nodes(:,2) ; robotTopology.nodes(:,3) ];
+    % Member lengths
 
-J = subs(J,[x y z],x_dot');
+    d =C*p;
+    %D = zeros(M,1);
+    for i = 1:M
+        D(i) = norm(d(i,:));
+    end
 
-% L = J*x_dot
+    % Function valued vector of the member lengths
+    F = D';
+
+    % Jacobian of the member lengths
+    assume(p ,"real")
+    J = jacobian(F,[x y z]);
+
+    % Substituting the coordinates of the nodes
+    x_dot = [ robotTopology.nodes(:,1) ; robotTopology.nodes(:,2) ; robotTopology.nodes(:,3) ];
+
+    J = subs(J,[x y z],x_dot');
+
+    % L = J*x_dot
 
 
 

@@ -58,6 +58,24 @@ J = inverseKinematics();
 
 L = J * x;
 
+CoM = calculateCoM();
+
+
+% Constraints
+
+% Locomotion
+
+% Actuation 
+
+% Optimization
+
+% Simulation
+
+% Analysis
+
+% Plotting
+
+
 
 
 
