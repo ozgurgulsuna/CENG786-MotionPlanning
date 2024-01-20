@@ -25,8 +25,8 @@
 %|                  Customize this header with relevant information for your application.                |
 %|                                                                                                       |
 %|                  Acknowledgements:                                                                    |
-%|                  This code was developed as part of the MECH 6313 - Advanced Robotics course at       |
-%|                  Carleton University.                                                                 |
+%|                  This code was developed as part of the CENG786 - Robot Motion Planning and Control   |
+%|                  course at the Middle East Technical University, Ankara, Turkey.                      |
 %|                                                                                                       |
 %|                                                                                                       |
 %|                                                                                                       |
@@ -39,7 +39,7 @@ clear
 close all
 clc
 
-global robotTopology
+global robotTopology terrain
 
 
 
@@ -58,16 +58,17 @@ J = inverseKinematics();
 
 L = J * x;
 
-CoM = calculateCoM();
-
-
-% Constraints
+% CoM = calculateCoM();
 
 % Locomotion
+    % Constraints
+    % Optimization
+    % Actuation 
 
-% Actuation 
-
-% Optimization
+% Path Planning
+generateTerrain('terrain1.png');
+    % obstacles
+    % goal
 
 % Simulation
 
@@ -78,23 +79,20 @@ CoM = calculateCoM();
 
 
 
-
-
-
-% quick plot
-figure(1)
-clf
-hold on
-axis equal
-grid on
-xlabel('x')
-ylabel('y') 
-zlabel('z')
-view(3)
-for i = 1:M
-    plot3(robotTopology.nodes(robotTopology.connectivity(i,:),1), ...
-          robotTopology.nodes(robotTopology.connectivity(i,:),2), ...
-          robotTopology.nodes(robotTopology.connectivity(i,:),3), ...
-          'k-', 'LineWidth', 2)
-end
+% % quick plot
+% figure(1)
+% clf
+% hold on
+% axis equal
+% grid on
+% xlabel('x')
+% ylabel('y') 
+% zlabel('z')
+% view(3)
+% for i = 1:M
+%     plot3(robotTopology.nodes(robotTopology.connectivity(i,:),1), ...
+%           robotTopology.nodes(robotTopology.connectivity(i,:),2), ...
+%           robotTopology.nodes(robotTopology.connectivity(i,:),3), ...
+%           'k-', 'LineWidth', 2)
+% end
 hold off
