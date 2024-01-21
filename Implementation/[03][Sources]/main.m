@@ -13,7 +13,7 @@
 %|                  Date: 07-01-2024                                                                     |
 %|                                                                                                       |
 %|                  Description:                                                                         |
-%|                  This MATLAB code implements a variable truss topology robot, allowing                |
+%|                  This MATLAB code implements a variable uss topology robot, allowing                  |
 %|                  for flexibility in the design of the truss structure.                                |
 %|                                                                                                       |
 %|                  Usage:                                                                               |
@@ -66,7 +66,7 @@ L = J * x;
     % Actuation 
 
 % Path Planning
-generateTerrain('terrain1.png');
+generateTerrain('sch.jpg');
     % obstacles
     % goal
 
@@ -84,7 +84,7 @@ generateTerrain('terrain1.png');
 % clf
 % hold on
 % axis equal
-% grid on
+% grid 
 % xlabel('x')
 % ylabel('y') 
 % zlabel('z')

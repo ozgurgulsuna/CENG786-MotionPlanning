@@ -2,87 +2,69 @@
 %  └─╯┴─╯╰┴─╯╰─────────╯╱╰─╯┴──╯╰─╯─╯┴─╯╰┴─╯╰──╯╰─╯─╯──────────╯┴─╯╰┴─╯╰─╯─╯┴─╯╰┴─╯╰─────────╯╱╰─╯┴──╯╰─|
 % TERRAIN GENERATION
 % From the heightmap, the terrain is generated.
-
-function generateTerrain(image)
-global terrain;
-% Generate the terrain from the heightmap.
 % The terrain is a mesh of triangles.
 % The heightmap is a grayscale image.
 
-% Import the image.
-image = imread(image);
+function generateTerrain(image)
+    global terrain;
 
-% Convert the image to grayscale.
-image = rgb2gray(image);
 
-imshow(image);
+    % Import the image.
+    image = imread(image);
 
-% Get the size of the image.
-[height, width] = size(image);
+    % convert the image to grayscale
+    image = rgb2gray(image);
 
-fprintf('Height: %d\n', height);
+    % downsampling the image 
+    factor = 2;
+    image = imresize(image, [size(image,1)/factor size(image,2)/factor]);
 
-% Create the terrain.
-terrain = zeros(height, width, 3);
+    % Get the size of the image.
+    [height, width] = size(image);
 
-% Create the vertices.
-for i = 1:height
-    for j = 1:width
-        % Get the height of the vertex.
-        height = image(i, j);
-        
-        % Create the vertex.
-        terrain(i, j, :) = [i, j, height];
+
+    % image = rgb2gray(image);
+    figure
+    imshow(image);
+
+
+    terrain = zeros(1, 3);
+
+    for x = 1:height
+        for y = 1:width
+            % Get the height of the point.
+            z = image(x, y);
+            z = double(z)/20;
+            
+            % Add the point to the array.
+            terrain = [terrain; x y z];
+        end
     end
-end
 
-% Create the faces.
-faces = zeros((height - 1) * (width - 1), 3);
+    % convert the uint8 to double
+    terrain = double(terrain);
 
-% Create the faces.
-for i = 1:height - 1
-    for j = 1:width - 1
-        % Get the indices of the vertices.
-        v1 = (i - 1) * width + j;
-        v2 = (i - 1) * width + j + 1;
-        v3 = i * width + j;
-        v4 = i * width + j + 1;
-        
-        % Create the faces.
-        faces((i - 1) * (width - 1) + j, :) = [v1, v2, v3];
-        faces((i - 1) * (width - 1) + j + (height - 1) * (width - 1), :) = [v2, v4, v3];
-    end
-end
+    terrainPt = pointCloud(terrain);
 
-% Create the mesh.
-terrainMesh = struct('vertices', terrain, 'faces', faces);
+    % % plot the point cloud
+    % figure
+    % pcshow(terrainPt)
 
-% Save the terrain.
+    gridstep = 4;
+    ptCloudDownSampled = pcdownsample(terrainPt,"gridAverage",gridstep);
 
-fprintf('Saving terrain...\n');
+    % figure
+    % pcshow(ptCloudDownSampled)
 
-save('terrain.mat', 'terrain');
+    depth = 4;
+    mesh = pc2surfacemesh(ptCloudDownSampled,"ball-pivot");
+    figure
+    surfaceMeshShow(mesh)
 
-fprintf('Terrain saved.\n');
+    % save the mesh
+    save('terrainMesh.mat', 'mesh');
 
-% plot the mesh
-
-fprintf('Plotting terrain...\n');
-
-figure;
-trisurf(terrainMesh.faces, terrainMesh.vertices(:, 1), terrainMesh.vertices(:, 2), terrainMesh.vertices(:, 3));
-xlabel('x');
-ylabel('y');
-zlabel('z');
-title('Terrain');
-axis equal;
-
-
-
-
-
-
-
+    % stlwrite('terrain.stl', mesh);
 
 
 end
