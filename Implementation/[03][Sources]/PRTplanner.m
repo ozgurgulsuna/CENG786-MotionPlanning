@@ -21,6 +21,7 @@ function PRTplanner(p_init, s_goal)
     % initialize tree structure
     tree = struct('polygon', [], 'parent', []);
     tree(1).polygon = p_init;
+    tree(1).parent = 0;
 
     while ~goal_reached
     % for i = 1:250
@@ -32,7 +33,8 @@ function PRTplanner(p_init, s_goal)
                 s_obj = s_goal;
             end
         
-        temp_polygon = findNearest(s_obj,tree);
+        [temp_polygon , parent_polygon] = findNearest(s_obj,tree);
+
 
         % check if the polygon is slanted
         temp_polygon_normal = meshNormal3d(temp_polygon);
@@ -40,6 +42,7 @@ function PRTplanner(p_init, s_goal)
         % atan2(norm(cross(temp_polygon_normal,vertical_direction)),dot(temp_polygon_normal,vertical_direction))
         if atan2(norm(cross(temp_polygon_normal,vertical_direction)),dot(temp_polygon_normal,vertical_direction))/pi < 0.085
             tree(end+1).polygon = temp_polygon;
+            tree(end).parent = parent_polygon;
         else
             % fprintf('slanted polygon, not added to the tree\n');
         end
@@ -61,18 +64,41 @@ function PRTplanner(p_init, s_goal)
         end
     end
     
+    % % backtracking
+    solved_tree = [];
+    solved_tree(1).polygon = tree(end).polygon;
+    while parent_polygon ~= 0
+        solved_tree(end+1).polygon = tree(parent_polygon).polygon;
+        parent_polygon = tree(parent_polygon).parent;
+    end
+    solved_tree(end+1).polygon = p_init;
+    solved_tree = flip(solved_tree)
+
+    % solved_tree
+
+
     % fprintf('done\n');
 
     % plot all polygons
     figure;
     hold on;
-    scatter3(mesh.Vertices(:,1), mesh.Vertices(:,2), mesh.Vertices(:,3), 1, 'k');
+    % scatter3(mesh.Vertices(:,1), mesh.Vertices(:,2), mesh.Vertices(:,3), 1, 'k');
+    scatter3(terrain(:,1), terrain(:,2), terrain(:,3), 1, 'k' );
     xlim([0 100]);
     ylim([0 100]);
     zlim([0 20]);
     view(3);
     for i = 1: length(tree)
         polygon = tree(i).polygon;
+        for j = 1:3
+            plot3([polygon(j,1), polygon(mod(j,3)+1,1)], [polygon(j,2), polygon(mod(j,3)+1,2)], [polygon(j,3), polygon(mod(j,3)+1,3)], 'b');
+        end
+        hold on;
+    end
+
+    % plot the solved path
+    for i = 1: length(solved_tree)
+        polygon = solved_tree(i).polygon;
         for j = 1:3
             plot3([polygon(j,1), polygon(mod(j,3)+1,1)], [polygon(j,2), polygon(mod(j,3)+1,2)], [polygon(j,3), polygon(mod(j,3)+1,3)], 'r');
         end
@@ -85,7 +111,7 @@ function PRTplanner(p_init, s_goal)
 
 end
 
-function new_polygon = findNearest(s_obj, tree)
+function [ new_polygon , parent_polygon ] = findNearest(s_obj, tree)
     % given the tree structure and an object point, find the nearest foot alternative 
     % the algorithm searches every polygon in the mesh and finds the nearest foot
     % future work: only use the outeredges of the polygons in the tree
@@ -104,8 +130,6 @@ function new_polygon = findNearest(s_obj, tree)
     for i = 1: length(tree)
         polygon = tree(i).polygon;
         polygon_normal = meshNormal3d(polygon);
-
-        foot = [0 0 0];
 
         if i == 1
             edge_start = 1;
@@ -130,6 +154,7 @@ function new_polygon = findNearest(s_obj, tree)
                 min_distance = obj_distance;
                 % the order of the polygon is important, reversed since it is the new polygon
                 new_polygon = [foot; polygon(edge_selection(j,2),:); polygon(edge_selection(j,1),:)];
+                parent_polygon = i;
             end
 
         end
