@@ -73,8 +73,8 @@ L = J * x;
 
 
 % Path Planning
-% generateTerrain('sch.jpg');
-load('terrainMesh.mat')
+generateTerrain('sch.jpg');
+% load('terrainMesh.mat')
 PRTplanner(p_init, s_goal);
 
 

@@ -75,7 +75,7 @@ function foot = findNearest(s_obj, tree)
 
     poly = [ [-0.5 -sqrt(3)/6 0] ; [0.5 -sqrt(3)/6 0] ; [0 sqrt(3)/3 0] ]
 
-    poly = poly + [ [50 50 50 ] ; [50 50 50 ] ; [50 50 50 ] ]
+    poly = poly + [ [45 45 45] ; [45 45 45] ; [45 45 45] ]
 
     poly_normal = polyNormal(poly)
 
@@ -100,6 +100,13 @@ function foot = findNearest(s_obj, tree)
     % zlim([48 52])
 
     [a b c] = intersectLineMesh3d(foot_line, mesh.Vertices, mesh.Faces)
+
+    figure
+    scatter3(mesh.Vertices(:,1),mesh.Vertices(:,2),mesh.Vertices(:,3),'k.')
+    hold on
+    scatter3(a(:,1),a(:,2),a(:,3))
+
+    zlim([0 10])
 
 end
 
@@ -167,7 +174,7 @@ function [points pos faceInds] = intersectLineMesh3d(line, vertices, faces)
     v   = vertices(faces(:,3), :) - t0;
     
     % triangle normal
-    n   = normalizeVector3d(vectorCross3d(u, v));
+    n   = normalizeVector3d(crossProduct3d(u, v));
     
     % direction vector of line
     dir = line(4:6);
@@ -230,11 +237,11 @@ function [points pos faceInds] = intersectLineMesh3d(line, vertices, faces)
 
 end
 
-function c = vectorCross3d(a,b)
-    %VECTORCROSS3D Vector cross product faster than inbuilt MATLAB cross.
+function c = crossProduct3d(a,b)
+    %CROSSPRODUCT3D Vector cross product faster than inbuilt MATLAB cross.
     %
-    %   C = vectorCross3d(A, B) 
-    %   returns the cross product of the 3D vectors A and B, that is: 
+    %   C = crossProduct3d(A, B) 
+    %   returns the cross product of the two 3D vectors A and B, that is: 
     %       C = A x B
     %   A and B must be N-by-3 element vectors. If either A or B is a 1-by-3
     %   row vector, the result C will have the size of the other input and will
@@ -243,7 +250,7 @@ function c = vectorCross3d(a,b)
     %   Example
     %     v1 = [2 0 0];
     %     v2 = [0 3 0];
-    %     vectorCross3d(v1, v2)
+    %     crossProduct3d(v1, v2)
     %     ans =
     %         0   0   6
     %
@@ -253,30 +260,24 @@ function c = vectorCross3d(a,b)
     %
     %   See also DOT.
     %   Sven Holcombe
-    % needed_colons = max([3, length(size(a)), length(size(b))]) - 3;
-    % tmp_colon = {':'};
-    % clnSet = tmp_colon(ones(1, needed_colons));
-    % 
-    % c = bsxfun(@times, a(:,[2 3 1],clnSet{:}), b(:,[3 1 2],clnSet{:})) - ...
-    %     bsxfun(@times, b(:,[2 3 1],clnSet{:}), a(:,[3 1 2],clnSet{:}));
-    % deprecation warning
-    warning('geom3d:deprecated', ...
-        [mfilename ' is deprecated, use ''crossProduct3d'' instead']);
-    sza = size(a);
-    szb = size(b);
+    % HISTORY
+    % 2017-11-24 rename from vectorCross3d to crossProduct3d
+    % size of inputs
+    sizeA = size(a);
+    sizeB = size(b);
     % Initialise c to the size of a or b, whichever has more dimensions. If
     % they have the same dimensions, initialise to the larger of the two
-    switch sign(numel(sza) - numel(szb))
+    switch sign(numel(sizeA) - numel(sizeB))
         case 1
-            c = zeros(sza);
+            c = zeros(sizeA);
         case -1
-            c = zeros(szb);
+            c = zeros(sizeB);
         otherwise
-            c = zeros(max(sza, szb));
+            c = zeros(max(sizeA, sizeB));
     end
-    c(:) =  bsxfun(@times, a(:,[2 3 1],:), b(:,[3 1 2],:)) - ...
-            bsxfun(@times, b(:,[2 3 1],:), a(:,[3 1 2],:));
-
+    c(:) = bsxfun(@times, a(:,[2 3 1],:), b(:,[3 1 2],:)) - ...
+           bsxfun(@times, b(:,[2 3 1],:), a(:,[3 1 2],:));
+    
 end
 
 function n = vectorNorm3d(v)

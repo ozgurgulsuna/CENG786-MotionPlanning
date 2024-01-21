@@ -16,7 +16,7 @@ function generateTerrain(image)
     image = rgb2gray(image);
 
     % downsampling the image 
-    factor = 2;
+    factor = 1;
     image = imresize(image, [size(image,1)/factor size(image,2)/factor]);
 
     % Get the size of the image.
@@ -28,16 +28,16 @@ function generateTerrain(image)
     imshow(image);
 
 
-    terrain = zeros(1, 3);
+    terrain = [];
 
     for x = 1:height
         for y = 1:width
             % Get the height of the point.
             z = image(x, y);
-            z = double(z)/20;
+            z = double(z)/100;
             
             % Add the point to the array.
-            terrain = [terrain; x y z];
+            terrain = [terrain; x/2 y/2 z];
         end
     end
 
@@ -50,7 +50,7 @@ function generateTerrain(image)
     % figure
     % pcshow(terrainPt)
 
-    gridstep = 4;
+    gridstep = 2;
     ptCloudDownSampled = pcdownsample(terrainPt,"gridAverage",gridstep);
 
     % figure
