@@ -60,7 +60,7 @@ function generateTerrain(image)
 
     depth = 8;
     mesh = pc2surfacemesh(ptCloudDownSampled,"ball-pivot");
-    figure
+    % figure
     surfaceMeshShow(mesh)
     hold on
     pcshow(ptCloudDownSampled)

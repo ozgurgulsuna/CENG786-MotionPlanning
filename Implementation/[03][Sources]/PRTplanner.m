@@ -9,6 +9,7 @@ function PRTplanner(p_init, s_goal)
     % global variables
     global terrain;
     global mesh;
+    global tree;
 
     % initialize variables
     goal_reached = false;
@@ -17,10 +18,12 @@ function PRTplanner(p_init, s_goal)
     % initialize terrain
     bounding_box = max(mesh.Vertices) - min(mesh.Vertices);
 
-    % initialize tree
-    tree = [p_init]; % tree = [ polygon , edge ]
+    % initialize tree structure
+    tree = struct('polygon', [], 'parent', []);
+    tree(1).polygon = p_init;
 
-    while ~goal_reached
+    % while ~goal_reached
+    for i = 1:100
         % generate random point
         s_rand = [rand*bounding_box(1), rand*bounding_box(2), rand*bounding_box(3)];
             if rand >= mixing_factor
@@ -29,7 +32,9 @@ function PRTplanner(p_init, s_goal)
                 s_obj = s_goal;
             end
         
-        temp_foot = findNearest(s_obj);
+        temp_polygon = findNearest(s_obj,tree)
+
+        tree(end+1).polygon = temp_polygon;
 
 
         % % find nearest node
@@ -44,11 +49,29 @@ function PRTplanner(p_init, s_goal)
         %     goal_reached = is_goal_reached(p_new);
         % end
     end
+    
+    fprintf('done\n');
+
+    % plot all polygons
+    figure;
+    hold on;
+    xlim([0 100]);
+    ylim([0 100]);
+    zlim([0 20]);
+    for i = 1: length(tree)
+        polygon = tree(i).polygon;
+        for j = 1:3
+            plot3([polygon(j,1), polygon(mod(j,3)+1,1)], [polygon(j,2), polygon(mod(j,3)+1,2)], [polygon(j,3), polygon(mod(j,3)+1,3)], 'b');
+        end
+        hold on;
+    end
+
+
 
 
 end
 
-function foot = findNearest(s_obj, tree)
+function new_polygon = findNearest(s_obj, tree)
     % given the tree structure and an object point, find the nearest foot alternative 
     % the algorithm searches every polygon in the mesh and finds the nearest foot
     % future work: only use the outeredges of the polygons in the tree
@@ -58,59 +81,50 @@ function foot = findNearest(s_obj, tree)
     global mesh;
 
     % initialize variables
+    max_distance = 0;
 
-    % for i = 1: length(tree)
-    %     % get the polygon
-    %     polygon = tree(i).polygon;
-    %     % get the edges
-    %     edges = tree(i).edges;
-    %     % get the vertices
-    %     vertices = tree(i).vertices;
-    %     % get the normals
-    %     normals = tree(i).normals;
-    %     % get the foot
-    %     foot = findFoot(s_obj, polygon, edges, vertices, normals);
-    % end
+    % edge selection matrix
+    edge_selection = [2 3; 3 1; 1 2];
+    min_distance = inf;
 
+    for i = 1: length(tree)
+        length(tree)
+        polygon = tree(i).polygon;
+        polygon_normal = meshNormal3d(polygon);
 
-    poly = [ [-0.5 -sqrt(3)/6 0] ; [0.5 -sqrt(3)/6 0] ; [0 sqrt(3)/3 0] ]
+        foot = [0 0 0];
 
-    poly = poly + [ [45 45 45] ; [45 45 45] ; [45 45 45] ]
+        if i == 1
+            edge_start = 1;
+        else
+            edge_start = 2;
+        end
+        for j = edge_start:3
+            foot_direction = cross(polygon_normal, (polygon(edge_selection(j,1),:)-polygon(edge_selection(j,2),:))/(norm(polygon(edge_selection(j,1),:)-polygon(edge_selection(j,2),:))));
+            foot_origin = (polygon(edge_selection(j,1),:)/2 + polygon(edge_selection(j,2),:)/2) +  sqrt(3)/2*(norm(polygon(edge_selection(j,1),:)-polygon(edge_selection(j,2),:))) * foot_direction;
+            foot_line = [ foot_origin , polygon_normal ];
+            % here due to our planar assumption, the robot member length increase TO DO : SOLVE THIS
+            [foot b c] = intersectLineMesh3d(foot_line, mesh.Vertices, mesh.Faces);
+            
+            % throw an error if the foot is not found
+            if isempty(foot)
+                error('No intersection: foot is not found');
+            end
 
-    poly_normal = polyNormal(poly)
+            obj_distance = distanceMetric(s_obj, foot);
+            if obj_distance < min_distance
+                min_distance = obj_distance;
+                % the order of the polygon is important, reversed since it is the new polygon
+                new_polygon = [foot; polygon(edge_selection(j,2),:); polygon(edge_selection(j,1),:)] 
+            end
 
-    foot_direction = cross(poly_normal, (poly(1,:)-poly(2,:))/(norm(poly(1,:)-poly(2,:))))
+        end
 
-    foot_origin = (poly(1,:)/2 + poly(2,:)/2) +  sqrt(3)/2*(norm(poly(1,:)-poly(2,:))) * foot_direction
-
-    foot_line = [ foot_origin , poly_normal ]
-
-    % here due to our planar assumption, the robot member length increase TO DO : SOLVE THIS
-
-    % figure
-    % scatter3(poly(:,1),poly(:,2),poly(:,3))
-    % hold on
-    % scatter3(foot_origin(1),foot_origin(2),foot_origin(3))
-    % hold on
-    % quiver3(foot_origin(1),foot_origin(2),foot_origin(3),poly_normal(1),poly_normal(2),poly_normal(3))
-
-
-    % xlim([48 52])
-    % ylim([48 52])
-    % zlim([48 52])
-
-    [a b c] = intersectLineMesh3d(foot_line, mesh.Vertices, mesh.Faces)
-
-    figure
-    scatter3(mesh.Vertices(:,1),mesh.Vertices(:,2),mesh.Vertices(:,3),'k.')
-    hold on
-    scatter3(a(:,1),a(:,2),a(:,3))
-
-    zlim([0 10])
+    end
 
 end
 
-function direction = polyNormal(polygon)
+function direction = meshNormal3d(polygon)
     % given a polygon, calculate the normal of the polygon
     % future work: use the normal of the polygon from the mesh
     % https://www.maths.usyd.edu.au/u/MOW/vectors/vectors-11/v-11-7.html
@@ -128,10 +142,11 @@ end
 
 
 
-function distance = distanceMetric(s_obj, foot)
+function distance = distanceMetric(goal, start)
     % given an object point and a foot point, calculate the distance between them
     % future work: use the distance metric from the paper
-    distance = norm(s_obj - foot);
+    distance = norm(goal - start);
+    % distance = norm(goal - start) + 0.1*[normal vector angle] TODO
 
 end
 

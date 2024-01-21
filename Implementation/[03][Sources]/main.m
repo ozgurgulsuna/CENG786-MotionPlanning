@@ -43,9 +43,10 @@ clc
 global robotTopology;
 global terrain;
 global mesh;
+global tree;
 
 % initial and goal configurations
-p_init = [robotTopology.nodes(:,1) robotTopology.nodes(:,2) robotTopology.nodes(:,3) ] ; % p = [foot1 foot2 foot3]
+p_init = [[9.24587 14.0343 1.29837] ; [8.14445 17.1578 1.5472] ; [11.4071 16.5581 1.34989]]; % initial configuration (p = [x y z])
 s_goal = [ 50 50 50]; % goal coordinates (s = [x y z])
 
 % Create the VGT Robot
@@ -75,6 +76,7 @@ L = J * x;
 % Path Planning
 generateTerrain('shackcorrected.jpg');
 % load('terrainMesh.mat')
+
 PRTplanner(p_init, s_goal);
 
 
