@@ -72,10 +72,34 @@ function foot = findNearest(s_obj, tree)
     %     foot = findFoot(s_obj, polygon, edges, vertices, normals);
     % end
 
-    poly = [ mesh.Vertices(1,:) ; mesh.Vertices(73,:) ; mesh.Vertices(72,:) ]
-    norm = polyNormal(poly)
 
-    % [a b c] = intersectLineMesh3d([s_obj, 0, 0, 0], mesh.Vertices, mesh.Faces);
+    poly = [ [-0.5 -sqrt(3)/6 0] ; [0.5 -sqrt(3)/6 0] ; [0 sqrt(3)/3 0] ]
+
+    poly = poly + [ [50 50 50 ] ; [50 50 50 ] ; [50 50 50 ] ]
+
+    poly_normal = polyNormal(poly)
+
+    foot_direction = cross(poly_normal, (poly(1,:)-poly(2,:))/(norm(poly(1,:)-poly(2,:))))
+
+    foot_origin = (poly(1,:)/2 + poly(2,:)/2) +  sqrt(3)/2*(norm(poly(1,:)-poly(2,:))) * foot_direction
+
+    foot_line = [ foot_origin , poly_normal ]
+
+    % here due to our planar assumption, the robot member length increase TO DO : SOLVE THIS
+
+    % figure
+    % scatter3(poly(:,1),poly(:,2),poly(:,3))
+    % hold on
+    % scatter3(foot_origin(1),foot_origin(2),foot_origin(3))
+    % hold on
+    % quiver3(foot_origin(1),foot_origin(2),foot_origin(3),poly_normal(1),poly_normal(2),poly_normal(3))
+
+
+    % xlim([48 52])
+    % ylim([48 52])
+    % zlim([48 52])
+
+    [a b c] = intersectLineMesh3d(foot_line, mesh.Vertices, mesh.Faces)
 
 end
 
@@ -205,3 +229,100 @@ function [points pos faceInds] = intersectLineMesh3d(line, vertices, faces)
     end
 
 end
+
+function c = vectorCross3d(a,b)
+    %VECTORCROSS3D Vector cross product faster than inbuilt MATLAB cross.
+    %
+    %   C = vectorCross3d(A, B) 
+    %   returns the cross product of the 3D vectors A and B, that is: 
+    %       C = A x B
+    %   A and B must be N-by-3 element vectors. If either A or B is a 1-by-3
+    %   row vector, the result C will have the size of the other input and will
+    %   be the  concatenation of each row's cross product. 
+    %
+    %   Example
+    %     v1 = [2 0 0];
+    %     v2 = [0 3 0];
+    %     vectorCross3d(v1, v2)
+    %     ans =
+    %         0   0   6
+    %
+    %
+    %   Class support for inputs A,B:
+    %      float: double, single
+    %
+    %   See also DOT.
+    %   Sven Holcombe
+    % needed_colons = max([3, length(size(a)), length(size(b))]) - 3;
+    % tmp_colon = {':'};
+    % clnSet = tmp_colon(ones(1, needed_colons));
+    % 
+    % c = bsxfun(@times, a(:,[2 3 1],clnSet{:}), b(:,[3 1 2],clnSet{:})) - ...
+    %     bsxfun(@times, b(:,[2 3 1],clnSet{:}), a(:,[3 1 2],clnSet{:}));
+    % deprecation warning
+    warning('geom3d:deprecated', ...
+        [mfilename ' is deprecated, use ''crossProduct3d'' instead']);
+    sza = size(a);
+    szb = size(b);
+    % Initialise c to the size of a or b, whichever has more dimensions. If
+    % they have the same dimensions, initialise to the larger of the two
+    switch sign(numel(sza) - numel(szb))
+        case 1
+            c = zeros(sza);
+        case -1
+            c = zeros(szb);
+        otherwise
+            c = zeros(max(sza, szb));
+    end
+    c(:) =  bsxfun(@times, a(:,[2 3 1],:), b(:,[3 1 2],:)) - ...
+            bsxfun(@times, b(:,[2 3 1],:), a(:,[3 1 2],:));
+
+end
+
+function n = vectorNorm3d(v)
+    %VECTORNORM3D Norm of a 3D vector or of set of 3D vectors.
+    %
+    %   N = vectorNorm3d(V);
+    %   Returns the norm of vector V.
+    %
+    %   When V is a N-by-3 array, compute norm for each vector of the array.
+    %   Vector are given as rows. Result is then a N-by-1 array.
+    %
+    %   NOTE: compute only euclidean norm.
+    %
+    %   See Also
+    %   vectors3d, normalizeVector3d, vectorAngle3d, hypot3
+    %
+    %   ---------
+    %   author : David Legland 
+    %   INRA - TPV URPOI - BIA IMASTE
+    %   created the 21/02/2005.
+    %   HISTORY
+    %   19/06/2009 rename as vectorNorm3d
+    n = sqrt(sum(v.*v, 2));
+end
+
+function vn = normalizeVector3d(v)
+    %NORMALIZEVECTOR3D Normalize a 3D vector to have norm equal to 1.
+    %
+    %   V2 = normalizeVector3d(V);
+    %   Returns the normalization of vector V, such that ||V|| = 1. Vector V is
+    %   given as a row vector.
+    %
+    %   If V is a N-by-3 array, normalization is performed for each row of the
+    %   input array.
+    %
+    %   See also:
+    %   vectors3d, vectorNorm3d
+    %
+    %   ---------
+    %   author : David Legland 
+    %   INRA - TPV URPOI - BIA IMASTE
+    %   created the 29/11/2004.
+    %
+    % HISTORY
+    % 2005-11-30 correct a bug
+    % 2009-06-19 rename as normalizeVector3d
+    % 2010-11-16 use bsxfun (Thanks to Sven Holcombe)
+    vn   = bsxfun(@rdivide, v, sqrt(sum(v.^2, 2)));
+end    
