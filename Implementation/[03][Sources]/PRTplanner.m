@@ -32,7 +32,7 @@ function PRTplanner(p_init, s_goal)
                 s_obj = s_goal;
             end
         
-        temp_polygon = findNearest(s_obj,tree)
+        temp_polygon = findNearest(s_obj,tree);
 
         tree(end+1).polygon = temp_polygon;
 
@@ -55,16 +55,18 @@ function PRTplanner(p_init, s_goal)
     % plot all polygons
     figure;
     hold on;
+    scatter3(mesh.Vertices(:,1), mesh.Vertices(:,2), mesh.Vertices(:,3), 1, 'k');
     xlim([0 100]);
     ylim([0 100]);
     zlim([0 20]);
     for i = 1: length(tree)
         polygon = tree(i).polygon;
         for j = 1:3
-            plot3([polygon(j,1), polygon(mod(j,3)+1,1)], [polygon(j,2), polygon(mod(j,3)+1,2)], [polygon(j,3), polygon(mod(j,3)+1,3)], 'b');
+            plot3([polygon(j,1), polygon(mod(j,3)+1,1)], [polygon(j,2), polygon(mod(j,3)+1,2)], [polygon(j,3), polygon(mod(j,3)+1,3)], 'r');
         end
         hold on;
     end
+
 
 
 
@@ -88,7 +90,6 @@ function new_polygon = findNearest(s_obj, tree)
     min_distance = inf;
 
     for i = 1: length(tree)
-        length(tree)
         polygon = tree(i).polygon;
         polygon_normal = meshNormal3d(polygon);
 
@@ -115,7 +116,7 @@ function new_polygon = findNearest(s_obj, tree)
             if obj_distance < min_distance
                 min_distance = obj_distance;
                 % the order of the polygon is important, reversed since it is the new polygon
-                new_polygon = [foot; polygon(edge_selection(j,2),:); polygon(edge_selection(j,1),:)] 
+                new_polygon = [foot; polygon(edge_selection(j,2),:); polygon(edge_selection(j,1),:)];
             end
 
         end
