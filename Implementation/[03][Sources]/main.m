@@ -47,7 +47,7 @@ global tree;
 
 % initial and goal configurations
 p_init = [[9.24587 14.0343 1.29837] ; [8.14445 17.1578 1.5472] ; [11.4071 16.5581 1.34989]]; % initial configuration (p = [x y z])
-s_goal = [ 50 50 50]; % goal coordinates (s = [x y z])
+s_goal = [38.25 78.25 0.8425]; % goal coordinates (s = [x y z])
 
 % Create the VGT Robot
 createRobot()
@@ -74,7 +74,7 @@ L = J * x;
 
 
 % Path Planning
-generateTerrain('shackcorrected.jpg');
+generateTerrain('shackleton-round.jpg');
 % load('terrainMesh.mat')
 
 PRTplanner(p_init, s_goal);
@@ -105,4 +105,5 @@ PRTplanner(p_init, s_goal);
 %           robotTopology.nodes(robotTopology.connectivity(i,:),3), ...
 %           'k-', 'LineWidth', 2)
 % end
-hold off
+
+

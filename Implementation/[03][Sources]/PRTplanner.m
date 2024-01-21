@@ -13,7 +13,7 @@ function PRTplanner(p_init, s_goal)
 
     % initialize variables
     goal_reached = false;
-    mixing_factor = 0.2;
+    mixing_factor = 0.1;
 
     % initialize terrain
     bounding_box = max(mesh.Vertices) - min(mesh.Vertices);
@@ -22,8 +22,8 @@ function PRTplanner(p_init, s_goal)
     tree = struct('polygon', [], 'parent', []);
     tree(1).polygon = p_init;
 
-    % while ~goal_reached
-    for i = 1:100
+    while ~goal_reached
+    % for i = 1:250
         % generate random point
         s_rand = [rand*bounding_box(1), rand*bounding_box(2), rand*bounding_box(3)];
             if rand >= mixing_factor
@@ -34,23 +34,34 @@ function PRTplanner(p_init, s_goal)
         
         temp_polygon = findNearest(s_obj,tree);
 
-        tree(end+1).polygon = temp_polygon;
+        % check if the polygon is slanted
+        temp_polygon_normal = meshNormal3d(temp_polygon);
+        vertical_direction = [0 0 -1];
+        % atan2(norm(cross(temp_polygon_normal,vertical_direction)),dot(temp_polygon_normal,vertical_direction))
+        if atan2(norm(cross(temp_polygon_normal,vertical_direction)),dot(temp_polygon_normal,vertical_direction))/pi < 0.085
+            tree(end+1).polygon = temp_polygon;
+        else
+            % fprintf('slanted polygon, not added to the tree\n');
+        end
 
 
-        % % find nearest node
-        % [p_near, p_near_idx] = find_nearest_node(p_rand);
-        % % find new point
-        % p_new = find_new_point(p_near, p_rand);
-        % % check if new point is valid
-        % if is_valid_point(p_new)
-        %     % add new point to tree
-        %     tree = add_new_point(p_new, p_near_idx);
-        %     % check if goal is reached
-        %     goal_reached = is_goal_reached(p_new);
-        % end
+
+        if length(tree) > 500
+            error('Took so many iterations, something is wrong')
+            break;
+        end
+
+        % check if the goal is reached
+        if norm(s_goal - temp_polygon(1,:)) < 10
+            temp_polygon(1,:)
+            s_goal
+            norm(s_goal - temp_polygon(1,:))
+            goal_reached = true;
+            fprintf('goal reached\n');
+        end
     end
     
-    fprintf('done\n');
+    % fprintf('done\n');
 
     % plot all polygons
     figure;
@@ -59,6 +70,7 @@ function PRTplanner(p_init, s_goal)
     xlim([0 100]);
     ylim([0 100]);
     zlim([0 20]);
+    view(3);
     for i = 1: length(tree)
         polygon = tree(i).polygon;
         for j = 1:3
@@ -109,10 +121,11 @@ function new_polygon = findNearest(s_obj, tree)
             
             % throw an error if the foot is not found
             if isempty(foot)
-                error('No intersection: foot is not found');
+                % error('No intersection: foot is not found');
+                continue;
             end
 
-            obj_distance = distanceMetric(s_obj, foot);
+            obj_distance = distanceMetric(s_obj, foot, polygon_normal);
             if obj_distance < min_distance
                 min_distance = obj_distance;
                 % the order of the polygon is important, reversed since it is the new polygon
@@ -143,11 +156,16 @@ end
 
 
 
-function distance = distanceMetric(goal, start)
+function distance = distanceMetric(goal, start, normal)
     % given an object point and a foot point, calculate the distance between them
-    % future work: use the distance metric from the paper
-    distance = norm(goal - start);
-    % distance = norm(goal - start) + 0.1*[normal vector angle] TODO
+
+    % THE NORMAL IS WRONG, IT SHOULD BE THE NORMAL OF THE NEW POLYGON
+    
+    % distance = norm(goal - start);
+    u = normal;
+    v = [0 0 1];
+    distance = norm(goal - start) + 0*(atan2(norm(cross(u,v)),dot(u,v)));
+
 
 end
 
