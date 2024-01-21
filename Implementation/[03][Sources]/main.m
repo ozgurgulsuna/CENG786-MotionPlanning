@@ -3,8 +3,8 @@
 %|┴─╮┌─╮┴─╮╭┬─╮╱╱╱╱╱╱┃┃╱├─┤└─╯├─╮┴─┤┌─╮┴─╮╭┬─╮├─╮┴─┤┌─╱╱╱╱╱╱╱╱╱┌─╮┴─╮╭┬─╮├─╮┴─╮╭┬─╮╱╱╱╱╱╱╱╱├─╮┴─╮╭┬─╮├─╮ |
 %|─╯└─╯┴─╯╰┴─╯╰─────────╯╱╰─╯┴──╯╰─╯─╯┴─╯╰┴─╯╰──╯╰─╯─╯──────────╯┴─╯╰┴─╯╰─╯─╯┴─╯╰┴─╯╰─────────╯╱╰─╯┴──╯╰─|
 %|                                                                                                       |
-%|                                      Variable Truss Topology Robot                                    |
-%|                                         MATLAB Implementation                                         |
+%|                                      Variable Geometry Truss Robot                                    |
+%|                                              Motion Planning                                          |
 %|                                                                                                       |
 %|───╮┌─╮╭┬─╮╱╱╱╱╱╱┃┃╱├─┤└─╯├─╮┴─┤┌─╮┴─╮╭┬─╮├─╮┴─┤┌─╱╱╱╱╱╱╱╱╱┌─╮┴─╮╭┬─╮├─╮┴─╮╭┬─╮╱╱╱╱╱╱╱╱├─╮┴─╮╭┬─╮├─╮ ├─|
 %|─╯└─╯╰┴─╯╰─────────╯╰─╰─╯┴──╯╰─╯─╯┴─╯╰┴─╯╰──╯╰─╯─╯──────────╯┴─╯╰┴─╯╰─╯─╯┴─╯╰┴─╯╰────────╯╰──╯┴┴┴┴──╯╰─|
@@ -13,7 +13,7 @@
 %|                  Date: 07-01-2024                                                                     |
 %|                                                                                                       |
 %|                  Description:                                                                         |
-%|                  This MATLAB code implements a variable uss topology robot, allowing                  |
+%|                  This MATLAB code implements a variable truss topology robot, allowing                |
 %|                  for flexibility in the design of the truss structure.                                |
 %|                                                                                                       |
 %|                  Usage:                                                                               |
@@ -39,9 +39,14 @@ clear
 close all
 clc
 
-global robotTopology terrain
+% global variables
+global robotTopology;
+global terrain;
+global mesh;
 
-
+% initial and goal configurations
+p_init = [robotTopology.nodes(:,1) robotTopology.nodes(:,2) robotTopology.nodes(:,3) ] ; % p = [foot1 foot2 foot3]
+s_goal = [ 50 50 50]; % goal coordinates (s = [x y z])
 
 % Create the VGT Robot
 createRobot()
@@ -65,10 +70,13 @@ L = J * x;
     % Optimization
     % Actuation 
 
+
+
 % Path Planning
-generateTerrain('sch.jpg');
-    % obstacles
-    % goal
+% generateTerrain('sch.jpg');
+load('terrainMesh.mat')
+PRTplanner(p_init, s_goal);
+
 
 % Simulation
 

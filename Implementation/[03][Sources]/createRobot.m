@@ -2,7 +2,7 @@
 %  └─╯┴─╯╰┴─╯╰─────────╯╱╰─╯┴──╯╰─╯─╯┴─╯╰┴─╯╰──╯╰─╯─╯──────────╯┴─╯╰┴─╯╰─╯─╯┴─╯╰┴─╯╰─────────╯╱╰─╯┴──╯╰─|
 % CREATE ROBOT
 % The robot created can have different number of nodes and members. Selected topology is octahedron.
-%
+% Initial length of the members is 1 meters, it is presumed that the average lenght will stay the same.
 
 function createRobot()
 

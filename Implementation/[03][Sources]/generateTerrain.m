@@ -1,12 +1,12 @@
 %╭─╮╭─╮╭─╮╱╱╱╱╱╱╱╱╱╭╮╱╭┬─╮╭─╮╭─╮┬─╮┌─╮╭─╮╱╱╱╱╭─╮┬─╮┌─╱╱╱╱╱╱╱╱╱┌─╮╭─╮╱╱╱╱╭─╮╭─╮╭─╮┬─╮┌─╮╭─╮╱╱╱╱╱╱╱╱╱╭┬─╮┬─╮
 %  └─╯┴─╯╰┴─╯╰─────────╯╱╰─╯┴──╯╰─╯─╯┴─╯╰┴─╯╰──╯╰─╯─╯──────────╯┴─╯╰┴─╯╰─╯─╯┴─╯╰┴─╯╰─────────╯╱╰─╯┴──╯╰─|
 % TERRAIN GENERATION
-% From the heightmap, the terrain is generated.
-% The terrain is a mesh of triangles.
-% The heightmap is a grayscale image.
+% From the heightmap, the terrain is generated. The terrain is a mesh of triangles. The heightmap is a gray
+% scale image. The image size is 200x150
 
 function generateTerrain(image)
     global terrain;
+    global mesh;
 
 
     % Import the image.
@@ -60,6 +60,8 @@ function generateTerrain(image)
     mesh = pc2surfacemesh(ptCloudDownSampled,"ball-pivot");
     figure
     surfaceMeshShow(mesh)
+    hold on
+    pcshow(ptCloudDownSampled)
 
     % save the mesh
     save('terrainMesh.mat', 'mesh');
