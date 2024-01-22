@@ -4,7 +4,7 @@
 %  ───────────────────────────────
 %  future work: make it an RRT* search
 %  ───────────────────────────────
-function PRTplanner(p_init, s_goal)
+function PRTplanner(p_init, s_goal, size)
 
     % global variables
     global terrain;
@@ -24,7 +24,7 @@ function PRTplanner(p_init, s_goal)
     tree(1).parent = 0;
 
     while ~goal_reached
-    % for i = 1:250
+    % for i = 1:200
         % generate random point
         s_rand = [rand*bounding_box(1), rand*bounding_box(2), rand*bounding_box(3)];
             if rand >= mixing_factor
@@ -33,14 +33,13 @@ function PRTplanner(p_init, s_goal)
                 s_obj = s_goal;
             end
         
-        [temp_polygon , parent_polygon] = findNearest(s_obj,tree);
-
+        [temp_polygon , parent_polygon] = findNearest(s_obj,tree,size);
 
         % check if the polygon is slanted
         temp_polygon_normal = meshNormal3d(temp_polygon);
         vertical_direction = [0 0 -1];
-        % atan2(norm(cross(temp_polygon_normal,vertical_direction)),dot(temp_polygon_normal,vertical_direction))
-        if atan2(norm(cross(temp_polygon_normal,vertical_direction)),dot(temp_polygon_normal,vertical_direction))/pi < 0.085
+        if atan2(norm(cross(temp_polygon_normal,vertical_direction)),dot(temp_polygon_normal,vertical_direction))/pi < 1
+        % if atan2(norm(cross(temp_polygon_normal,vertical_direction)),dot(temp_polygon_normal,vertical_direction))/pi < 0.085
             tree(end+1).polygon = temp_polygon;
             tree(end).parent = parent_polygon;
         else
@@ -136,7 +135,7 @@ function PRTplanner(p_init, s_goal)
 
 end
 
-function [ new_polygon , parent_polygon ] = findNearest(s_obj, tree)
+function [ new_polygon , parent_polygon ] = findNearest(s_obj, tree, size)
     % given the tree structure and an object point, find the nearest foot alternative 
     % the algorithm searches every polygon in the mesh and finds the nearest foot
     % future work: only use the outeredges of the polygons in the tree
@@ -147,6 +146,7 @@ function [ new_polygon , parent_polygon ] = findNearest(s_obj, tree)
 
     % initialize variables
     max_distance = 0;
+    scaling_factor = 0.1;
 
     % edge selection matrix
     edge_selection = [2 3; 3 1; 1 2];
@@ -163,7 +163,8 @@ function [ new_polygon , parent_polygon ] = findNearest(s_obj, tree)
         end
         for j = edge_start:3
             foot_direction = cross(polygon_normal, (polygon(edge_selection(j,1),:)-polygon(edge_selection(j,2),:))/(norm(polygon(edge_selection(j,1),:)-polygon(edge_selection(j,2),:))));
-            foot_origin = (polygon(edge_selection(j,1),:)/2 + polygon(edge_selection(j,2),:)/2) +  sqrt(3)/2*(norm(polygon(edge_selection(j,1),:)-polygon(edge_selection(j,2),:))) * foot_direction;
+            scale = size + scaling_factor*(1-(norm(polygon(edge_selection(j,1),:)-polygon(edge_selection(j,2),:))));
+            foot_origin = (polygon(edge_selection(j,1),:)/2 + polygon(edge_selection(j,2),:)/2) +  sqrt(3)/2*(norm(polygon(edge_selection(j,1),:)-polygon(edge_selection(j,2),:))) * foot_direction*scale;
             foot_line = [ foot_origin , polygon_normal ];
             % here due to our planar assumption, the robot member length increase TO DO : SOLVE THIS
             [foot b c] = intersectLineMesh3d(foot_line, mesh.Vertices, mesh.Faces);

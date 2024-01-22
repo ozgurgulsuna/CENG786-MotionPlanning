@@ -47,7 +47,14 @@ global tree;
 
 % initial and goal configurations
 p_init = [[9.24587 14.0343 1.29837] ; [8.14445 17.1578 1.5472] ; [11.4071 16.5581 1.34989]]; % initial configuration (p = [x y z])
+% p_init = 3*[[1 1 0.3] ; [1+sqrt(3)/2 3/2 0.3] ; [1 2 0.3]  ]; % initial configuration (p = [x y z])
+% p_init = p_init + 2*[[10 10 0] ; [10 10 0] ; [10 10 0]];
 s_goal = [38.25 78.25 0.8425]; % goal coordinates (s = [x y z])
+robot_size = 1.2; % size of the robot
+
+% figure
+% hold on
+% scatter3(p_init(:,1), p_init(:,2), p_init(:,3), 'filled', 'MarkerFaceColor', 'r')
 
 % Create the VGT Robot
 createRobot()
@@ -74,10 +81,11 @@ L = J * x;
 
 
 % Path Planning
-generateTerrain('shackleton-round.jpg');
+generateTerrain('shackleton-high.jpg');
+% generateTerrain('plain_arena_2.png');
 % load('terrainMesh.mat')
 
-PRTplanner(p_init, s_goal);
+PRTplanner(p_init, s_goal, robot_size);
 
 
 % Simulation
