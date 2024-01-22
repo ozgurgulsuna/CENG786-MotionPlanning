@@ -60,10 +60,9 @@ function generateTerrain(image)
 
     depth = 8;
     mesh = pc2surfacemesh(ptCloudDownSampled,"ball-pivot");
-    % figure
-    surfaceMeshShow(mesh)
-    hold on
-    pcshow(ptCloudDownSampled)
+    % surfaceMeshShow(mesh)
+    % hold on
+    % pcshow(ptCloudDownSampled)
 
     % save the mesh
     save('terrainMesh.mat', 'mesh');

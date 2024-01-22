@@ -55,7 +55,7 @@ function PRTplanner(p_init, s_goal)
         end
 
         % check if the goal is reached
-        if norm(s_goal - temp_polygon(1,:)) < 10
+        if norm(s_goal - temp_polygon(1,:)) < 5
             temp_polygon(1,:)
             s_goal
             norm(s_goal - temp_polygon(1,:))
@@ -72,7 +72,7 @@ function PRTplanner(p_init, s_goal)
         parent_polygon = tree(parent_polygon).parent;
     end
     solved_tree(end+1).polygon = p_init;
-    solved_tree = flip(solved_tree)
+    solved_tree = flip(solved_tree);
 
     % solved_tree
 
@@ -81,17 +81,41 @@ function PRTplanner(p_init, s_goal)
 
     % plot all polygons
     figure;
+    % set(gcf, 'Renderer', 'painters');
+    % set the figure size
+    set(gcf, 'Position',  [100, 50, 1200, 800])
     hold on;
     % scatter3(mesh.Vertices(:,1), mesh.Vertices(:,2), mesh.Vertices(:,3), 1, 'k');
     scatter3(terrain(:,1), terrain(:,2), terrain(:,3), 1, 'k' );
     xlim([0 100]);
     ylim([0 100]);
     zlim([0 20]);
-    view(3);
+
+    % view(3);
+    % set the camera angle
+    view(35 ,-50);
+
+    % set camera position
+    campos([-280,-350,350]);
+
+    % set camera target
+    camtarget([36,50,2.5]);
+
+    % set camera up vector
+    camup([0,0,1]);
+
+    % set camera view angle
+    camva(11);
+    
+    axis equal;
+
+    pause(1);
+
     for i = 1: length(tree)
         polygon = tree(i).polygon;
         for j = 1:3
             plot3([polygon(j,1), polygon(mod(j,3)+1,1)], [polygon(j,2), polygon(mod(j,3)+1,2)], [polygon(j,3), polygon(mod(j,3)+1,3)], 'b');
+            pause(0.01);
         end
         hold on;
     end
@@ -101,6 +125,7 @@ function PRTplanner(p_init, s_goal)
         polygon = solved_tree(i).polygon;
         for j = 1:3
             plot3([polygon(j,1), polygon(mod(j,3)+1,1)], [polygon(j,2), polygon(mod(j,3)+1,2)], [polygon(j,3), polygon(mod(j,3)+1,3)], 'r');
+            pause(0.01);
         end
         hold on;
     end
