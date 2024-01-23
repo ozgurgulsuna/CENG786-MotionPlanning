@@ -50,7 +50,7 @@ p_init = [[9.24587 14.0343 1.29837] ; [8.14445 17.1578 1.5472] ; [11.4071 16.558
 % p_init = 3*[[1 1 0.3] ; [1+sqrt(3)/2 3/2 0.3] ; [1 2 0.3]  ]; % initial configuration (p = [x y z])
 % p_init = p_init + 2*[[10 10 0] ; [10 10 0] ; [10 10 0]];
 s_goal = [38.25 78.25 0.8425]; % goal coordinates (s = [x y z])
-robot_size = 1.2; % size of the robot
+robot_size = 1.5; % size of the robot
 
 % figure
 % hold on
@@ -81,7 +81,7 @@ L = J * x;
 
 
 % Path Planning
-generateTerrain('shackleton-high.jpg');
+generateTerrain('shackcorrected.jpg');
 % generateTerrain('plain_arena_2.png');
 % load('terrainMesh.mat')
 

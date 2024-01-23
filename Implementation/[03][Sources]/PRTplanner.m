@@ -38,7 +38,7 @@ function PRTplanner(p_init, s_goal, size)
         % check if the polygon is slanted
         temp_polygon_normal = meshNormal3d(temp_polygon);
         vertical_direction = [0 0 -1];
-        if atan2(norm(cross(temp_polygon_normal,vertical_direction)),dot(temp_polygon_normal,vertical_direction))/pi < 1
+        if atan2(norm(cross(temp_polygon_normal,vertical_direction)),dot(temp_polygon_normal,vertical_direction))/pi < 0.08
         % if atan2(norm(cross(temp_polygon_normal,vertical_direction)),dot(temp_polygon_normal,vertical_direction))/pi < 0.085
             tree(end+1).polygon = temp_polygon;
             tree(end).parent = parent_polygon;
