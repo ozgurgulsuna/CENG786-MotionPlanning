@@ -51,7 +51,7 @@
 \editor{}
 \supplementary{}
 
-\markboth{GULSUNA}{PRM PLANNING}
+\markboth{Gulsuna}{PRT-IT}
 
 
 
@@ -64,49 +64,81 @@
 \end{IEEEkeywords}
 \vfill\null
 
-
 \section{\normalsize INTRODUCTION}
 
-{\scshape T}he Variable Geometry Truss (VGT) systems, characterized by linearly actuated truss members and passive rotational joints, faciliatate adaptability in various applications. Miura et al. introduced the foundational concept of VGT systems, primarily emphasizing fixed configurations \cite{miura}. Subsequent exploration of VGT as a modular and mobile system was undertaken by Hamlin et al. \cite{hamlin}, while Usevitch et al. contributed to the literature by introducing the kinematic analysis and optimization based locomotion of VGT systems \cite{usevitch}.
+{\scshape T}he Variable Geometry Truss (VGT) systems, composed of linearly actuated truss members and passive rotational joints, offer adaptability across wide range of applications. These robotic systems have the capability to alter their shape and topology significantly through coordinated actuation of their linear members. The foundational concept of VGT systems was introduced by Miura et al., with a primary focus on fixed configurations with crane structure \cite{miura}. Subsequent advancements in the field involved the exploration of VGT as a modular and mobile system by Hamlin et al. \cite{hamlin}, expanding the scope of potential applications. Furthermore, Usevitch et al. contributed to the literature by introducing kinematic analysis and optimization-based locomotion for VGT systems \cite{usevitch}, thereby enhancing our understanding of the dynamic capabilities of these robotic structures. The control of robots with a large degrees of freedom is important leverage that allows robots to adapt to the wide variety of tasks.
+
+The prior research focused on various aspects of the system, with an emphasis on locomotion. The problem addresses the kinematic relationships to determine a series of size changes in member lengths that enable the desired motion of the whole structure. In the case of complex truss structures, the rigidity of the topology and mechanical constraints contribute to a large solution space. Consequently, solving this problem necessitates the optimization-based methods. The present work builds upon the foundation, incorporating kinematic relations and derivations. Specifically, the kinematic relations and optimization methodology stems from the insights provided by Usevitch et al. \cite{usevitch}. 
+
+The second facet of research concerning VGT systems involved path planning from a higher-level perspective, with the objective of navigating the environment to reach the goal position. Existing literature in this domain concentrated on employing probabilistic methods, with a specific emphasis on the Polygonal Random Tree search (PRT) algorithm, forming the foundational basis for the current study. It is noteworthy to highlight that prior work on path planning focused strictly on scenarios involving planar terrains and well-defined obstacles.
+
+The objective of this study is to extend the current understanding of VGT systems by advancing both the kinematic relations and the nonlinear optimization problem, in terms of adapting it for irregular terrain scenarios. Additionally, from a higher-level planning perspective the PRT algorithm is aimed to be expanded to address challenges posed by more complex terrains and the obstacles laying coherently in real-world environments.
+
+\vfill
 
 
-
-Our research builds upon this historical trajectory, culminating in the development of the Variable Topology Truss (VTT) system. Positioned as an evolutionary iteration of VGT, the VTT system represents an advancement that surpasses its predecessor's capabilities by enabling dynamic changes to the truss topology. This innovation is particularly instrumental in the context of search and rescue operations within disaster sites, where adaptability and versatility are paramount. VTT serves as an improved version of VGT, demonstrating the capacity to dynamically alter the configuration of the truss to optimize its functionality in complex and dynamic environments.
-
-Fig. 1 provides a tangible representation of our scholarly pursuits—a hardware prototype and conceptual demonstration of the VTT system. The octahedral configuration chosen for locomotion studies aligns with the symmetry and impact-free rolling attributes, emblematic of its suitability for kinematic analysis and algorithmic development. While rooted in the kinematics and constraints of an octahedral VTT, our algorithmic framework is conceived with adaptability in mind, demonstrating its potential applicability to a broad spectrum of truss robots characterized by arbitrary configurations and triangular faces.
-
-In summary, our research endeavors stand at the intersection of historical developments in VGT systems and the contemporary evolution represented by the Variable Topology Truss system. Positioned as a transformative force in adaptable robotic technologies, our work contributes both theoretically and practically to the ongoing discourse in the field
-
-
-
-
-tochastic methods in robot motion control have proven to be effective in the literature. The introduction of randomness becomes particularly useful when searching for a solution in a vast configuration space, especially when dealing with robots that pose challenges for kinematics solutions. The core concept behind probabilistic methods is to randomly sample points from the free configuration space. As the number of samples increases, creating a local plan to connect these sampled configurations leads to the development of a global plan for the overall task. This method is especially advantageous in higher-dimensional worlds or robot configurations where calculation times are prolonged.
-
-When comparing probabilistic approaches to more straightforward methods, it becomes evident that stochastic methods exhibit greater generalizability. Notably, by harnessing probabilistic completeness, these approaches effectively overcome limitations, navigating the configuration space with efficiency without the need to explicitly construct the configuration space itself to plan further. The crucial factor lies in formulating a sampling strategy based on a selected probabilistic function, generating multiple sample robot configurations within the free workspace. Despite the space and memory requirements entailed, the achieved probabilistic completeness positions this method as a successful motion planner suitable for navigating unrestricted worlds and intricate robot configurations. 
-
-The paper will delve into this approach, initiating with the implementation of a simple probabilistic roadmap (PRM) planner designed for a planar two-link robot navigating within a polygonal world. The implementation details, including the sampling method, distance metric, and collision check aspects, will be explicitly addressed. The discussion will progress to the experimental settings, where the mentioned robot model is deliberately constrained, narrowing down the solution space. By focusing on the intricacies of the PRM planner's practical application to this specific robot scenario, the paper aims to provide a comprehensive understanding of the method's performance and adaptability in constrained environments.
-
-\section{\large \textbf{Problem Definition}}
+\section{VARIABLE GEOMETRY TRUSS SYSTEM}
 
 \begin{figure}[t!]
     \centering
     \vspace{0.5em}
 \end{figure}
+In the context of a network of linear actuators within a Variable Geometry Truss (VGT) system, determining node positions by manipulating edge lengths is a non-trivial task. Each link length imposes a constraint on the node positions, and the challenge is to find positions that satisfy all these constraints, accounting for translation and rotation of the entire network. The rigidity of the underlying graph plays a pivotal role, with different classes of solutions emerging based on this rigidity. For instance, if the system of equations yields infinite solutions, indicating non-rigidity, the framework allows movement relative to itself without violating length constraints. Conversely, a rigid framework possesses a discrete number of solutions, and any deflection of the system relative to itself violates the length constraints. A simple example on the rigidity is a parallelogram with passive joints, this mechanism is under-constrained and the solution for the edge lengths result in variety of node positions. However if one connect two non-neighbouring edges then with the new length constraint the system becomes rigid. The analysis of device kinematics and system constraints in subsequent sections will be an important step in terms of tacking the robot locomotion task.
 
-The initial step is to precisely construct the problem, which involves mathematically defining the robot, environment, and obstacles. When constructing these models, the structure is created so that the planar robot and the environment can be easily altered to facilitate widespread experiments. This adaptability aligns with the generalizability of the PRM method. This foundational step sets the stage for subsequent experiments, emphasizing the method's versatility in handling diverse robot configurations and environmental conditions.
+\subsection{\small{\fontsize{10}{10}\selectfont O}VERVIEW}
 
-% This work specifically engages with dimensions higher than two. This choice is deliberate, as navigating one-dimensional environments and obstacles presents a balance of being straightforward and complex simultaneously. Moreover, the notion of an "obstacle" itself poses a challenge to finding a "suitable path" solution in a single dimension. However, there exist a distinct research-area in the domain of list-type path planning tasks for deformable structures, as outlined in the literature \cite{one-dim}. Given these considerations, our primary focus is on higher dimensions, and dimensions lower than two are intentionally excluded from our current analysis.
-% Implementation is carried on the simulation environment created in MATLAB. The 2D field has dimensions that are ten by ten units. There is a single start node and a single goal. The obstacle number is altered but finite and the workspace is bounded. The bug or in our case the probe is a point object with rotational range sensor that has a finite range. 
+The chosen topology for the VGT robot is an octahedron, consisting of 6 nodes and 12 members, as illustrated in Figure ~\ref{robot}. The robot's structure can be represented as a graph $\mathbf{G}$, which comprises a node set $\mathbf{N} = \{n_1, n_2, \dots, n_6\}$ referring to the vertices of the robot. The connectivity or adjacency set, denoted as $\mathbf{A}$, wires specific nodes together, defining the structure through elements like $\{\{n_1, n_2\}, \{n_2, n_3\}, \dots, \{n_6, n_4\}\}$. Additionally, the member length set, denoted as $\mathbf{L}$, serves as an analogous representation for the edges of the robot, with $\mathbf{L} = \{l_1, l_2, \dots, l_{12}\}$ which are the edge lengths. The nodes in three-dimensional matrix form are expressed as $\mathbf{n_i} = \begin{bmatrix} n_{i_x} & n_{i_y} & n_{i_z} \end{bmatrix}$, where each $n_i$ represents a node. Lastly, the vector $\mathbf{x}$ denotes the position of all the nodes $\mathbf{x}=\begin{bmatrix} n_{1_x}& \dots & n_{6_x} & n_{1_y} & \dots & n_{6_y} & n_{1_z} & \dots & n_{6_z} \end{bmatrix}$ which will come in handy in Jacobian construction.
 
-\subsection{{\fontsize{11}{10}\selectfont R}OBOT CONFIGURATION}
+\subsection{\small{\fontsize{10}{10}\selectfont K}INEMATICS}
+
+The kinematic structre of the robot is plainly simple, the relations stem from the distances between two connected nodes, that is 
+\begin{equation*}
+    L_k = \| n_i - n_j \| \  \forall \{n_i,n_j\} \in N 
+\end{equation*}
+and expanding this relation into matrix form results in 
+\begin{equation*}
+    \dot L = R \dot x
+\end{equation*}
+which is the inverse kinematics equation in matrix form. The result is named inverse kinematic sincce the node point configuration is analogous to the end effector position where the three-dimensional coordinates are used only to locate the nodes, and the length of the members are analogous to the joint positions in a serial manipulator. The matrix representation of the topology is given below
+
+\begin{equation*}
+\begin{bmatrix}
+     L_1    \\
+     L_2    \\
+     \vdots \\
+     L_{12}\\
+\end{bmatrix}_{12\times1}
+=
+\begin{bmatrix}
+    R_{1-1}(x) & R_{1-2}(x) & \dots & R_{1-18}(x) \\
+    R_{2-1}(x) & R_{2-2}(x) & \dots & R_{2-18}(x) \\
+    \vdots    & \vdots    & \ddots& \vdots    \\
+    R_{12-1}(x)& R_{12-2}(x)& \dots & R_{12-18}(x)\\
+\end{bmatrix}_{12\times18}
+    
+\end{bmatrix}
+\begin{bmatrix}
+     x_1    \\
+     x_2    \\
+     \vdots \\
+     x_6 \\
+     y_1 \\
+     \vdots \\
+     z_{6}\\
+\end{bmatrix}_{18\times1}
+\end{equation*}
+The length vector is by size 12 and node vector is of size 18, the resultant Jacobian matrix which is derived from the norm function incorporating the connectivity for all nodes is of size 12x18.  
+
+This octahedral configuration is considered rigid, once the six degrees of freedom in space are constrained, the robot remains fixed. The structural rigidity of the octahedron can be demonstrated through a set of linear system equations, proving the immobility of the robot when certain constraints are applied.
+
+%
 
 The robot have a multiple rigid links each connected to the previous one with a rotational joint and the joint location is selected from the previous link, as depicted in the Fig.~\ref{robot}.
-
-\begin{figure}[h!]
+\begin{figure}[t!]
     \begin{center}
-        \includegraphics[width=0.85\linewidth]{figures/[1]ROBOT.pdf}
+        \includegraphics[width=1\linewidth]{figures/01-octahedron.pdf}
      \end{center}
-     \caption{Robot configuration, $L_i$ and $W_i$ are link lengths and widths.}
+     \caption{Octahedral topology of the VGT robot and the node order.}
      \label{robot}
 \end{figure}
 
@@ -154,6 +186,8 @@ The configuration space for the robots, that having multiple links, is in the fo
 \subsection{{\fontsize{11}{10}\selectfont W}ORKSPACE CONFIGURATION}
 
 The workspace comprises a planar map bounded by an adjustable-size rectangle. Planar obstacles, taking the form of polygonal shapes, are placed to restrict the robot's freedom within this workspace. Both the initial and goal configurations are predefined, with careful consideration to ensure they avoid collisions with the obstacles initially. Notably, the obstacles are static and shapes remain constant over time without any variations. Unlike a grid-based structure, the workspace is not laid out over a grid, freeing the sampling process from dependence on such a structured grid for selection. This characteristic allows for a more flexible and adaptive sampling approach in navigating the robot through the dynamic environment.
+
+
 
 
 \section{\large \textbf{Probabilistic Roadmap Planning}}

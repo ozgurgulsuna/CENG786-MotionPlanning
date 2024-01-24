@@ -95,6 +95,18 @@ PRTplanner(p_init, s_goal, robot_size);
 % Plotting
 
 
+% % rotate the robot on its side
+% yaw_angle = 0; % degrees
+% pitch_angle = 45; % degrees
+% roll_angle = 35.15; % degrees
+
+% rotation_matrix = [cosd(yaw_angle) -sind(yaw_angle) 0; sind(yaw_angle) cosd(yaw_angle) 0; 0 0 1] * ...
+%                   [cosd(pitch_angle) 0 sind(pitch_angle); 0 1 0; -sind(pitch_angle) 0 cosd(pitch_angle)] * ...
+%                   [1 0 0; 0 cosd(roll_angle) -sind(roll_angle); 0 sind(roll_angle) cosd(roll_angle)];
+
+% robotTopology.nodes = robotTopology.nodes * rotation_matrix;
+
+
 
 
 % % quick plot
@@ -106,12 +118,25 @@ PRTplanner(p_init, s_goal, robot_size);
 % xlabel('x')
 % ylabel('y') 
 % zlabel('z')
-% view(3)
+% % view(-215,25.8)
+% view(-142, 32)
+% % campos([8.330841562736607,11.216880804505152,6.762704086483187])
+% campos([-8.920211876837246,11.535634218319535,9.346601695454195 ])
+% % camera view angle:
+% camva(9.50594848470686)
+% xlim([-1 1])
+% ylim([-1 1])
+% zlim([-1 1])
+
+
 % for i = 1:M
 %     plot3(robotTopology.nodes(robotTopology.connectivity(i,:),1), ...
 %           robotTopology.nodes(robotTopology.connectivity(i,:),2), ...
 %           robotTopology.nodes(robotTopology.connectivity(i,:),3), ...
-%           'k-', 'LineWidth', 2)
+%           'k-', 'LineWidth', 1.5)
 % end
+
+% exportgraphics(gcf,'D:\2023-24\Education\CENG786\Implementation\[04][Report]\images\01-blank.pdf','ContentType','vector')
+
 
 
