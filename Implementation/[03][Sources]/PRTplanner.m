@@ -48,7 +48,7 @@ function PRTplanner(p_init, s_goal, size)
 
 
 
-        if length(tree) > 500
+        if length(tree) > 5000
             error('Took so many iterations, something is wrong')
             break;
         end
@@ -163,22 +163,20 @@ function [ new_polygon , parent_polygon ] = findNearest(s_obj, tree, size)
         end
         for j = edge_start:3
             foot_direction = cross(polygon_normal, (polygon(edge_selection(j,1),:)-polygon(edge_selection(j,2),:))/(norm(polygon(edge_selection(j,1),:)-polygon(edge_selection(j,2),:))));
-            scale = size + scaling_factor*(1-(norm(polygon(edge_selection(j,1),:)-polygon(edge_selection(j,2),:))));
-            foot_origin = (polygon(edge_selection(j,1),:)/2 + polygon(edge_selection(j,2),:)/2) +  sqrt(3)/2*(norm(polygon(edge_selection(j,1),:)-polygon(edge_selection(j,2),:))) * foot_direction*scale;
+            scale =  scaling_factor*(4*size-(norm(polygon(edge_selection(j,1),:)-polygon(edge_selection(j,2),:))));
+            foot_origin = (polygon(edge_selection(j,1),:)/2 + polygon(edge_selection(j,2),:)/2) +  (sqrt(3)/2*(norm(polygon(edge_selection(j,1),:)-polygon(edge_selection(j,2),:))) +scale)* foot_direction;
             foot_line = [ foot_origin , polygon_normal ];
-            % here due to our planar assumption, the robot member length increase TO DO : SOLVE THIS
-            [foot b c] = intersectLineMesh3d(foot_line, mesh.Vertices, mesh.Faces);
-            
-            % throw an error if the foot is not found
-            if isempty(foot)
-                % error('No intersection: foot is not found');
-                continue;
-            end
 
-            obj_distance = distanceMetric(s_obj, foot, polygon_normal);
+            obj_distance = distanceMetric(s_obj, foot_origin, polygon_normal);
             if obj_distance < min_distance
                 min_distance = obj_distance;
                 % the order of the polygon is important, reversed since it is the new polygon
+                [foot b c] = intersectLineMesh3d(foot_line, mesh.Vertices, mesh.Faces);
+                % throw an error if the foot is not found
+                if isempty(foot)
+                    % error('No intersection: foot is not found');
+                    continue;
+                end
                 new_polygon = [foot; polygon(edge_selection(j,2),:); polygon(edge_selection(j,1),:)];
                 parent_polygon = i;
             end
