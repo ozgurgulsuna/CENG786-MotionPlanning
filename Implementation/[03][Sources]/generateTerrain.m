@@ -36,7 +36,7 @@ function generateTerrain(image)
         for y = 1:width
             % Get the height of the point.
             z = image(x, y) - min_height;
-            z = double(z)/50;
+            z = double(z)/50; %50 
             
             % Add the point to the array.
             terrain = [terrain; x/2 y/2 z];

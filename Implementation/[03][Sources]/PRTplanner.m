@@ -38,7 +38,7 @@ function PRTplanner(p_init, s_goal, size)
         % check if the polygon is slanted
         temp_polygon_normal = meshNormal3d(temp_polygon);
         vertical_direction = [0 0 -1];
-        if atan2(norm(cross(temp_polygon_normal,vertical_direction)),dot(temp_polygon_normal,vertical_direction))/pi < 0.08
+        if double(atan2(norm(cross(temp_polygon_normal,vertical_direction)),dot(temp_polygon_normal,vertical_direction)))/pi < 0.12
         % if atan2(norm(cross(temp_polygon_normal,vertical_direction)),dot(temp_polygon_normal,vertical_direction))/pi < 0.085
             tree(end+1).polygon = temp_polygon;
             tree(end).parent = parent_polygon;
@@ -54,7 +54,7 @@ function PRTplanner(p_init, s_goal, size)
         end
 
         % check if the goal is reached
-        if norm(s_goal - temp_polygon(1,:)) < 5
+        if norm(s_goal - temp_polygon(1,:)) < 3
             temp_polygon(1,:)
             s_goal
             norm(s_goal - temp_polygon(1,:))
@@ -83,51 +83,67 @@ function PRTplanner(p_init, s_goal, size)
     % set(gcf, 'Renderer', 'painters');
     % set the figure size
     set(gcf, 'Position',  [100, 50, 1200, 800])
+    colormap([0.8 0.8 0.8]);
+
+    lighting gouraud;
+a1 = camlight('right');
+a2 = camlight('left');
+a3 = camlight('headlight');
     hold on;
-    % scatter3(mesh.Vertices(:,1), mesh.Vertices(:,2), mesh.Vertices(:,3), 1, 'k');
-    scatter3(terrain(:,1), terrain(:,2), terrain(:,3), 1, 'k' );
+    % plot the mesh
+    % trimesh(mesh.Faces, mesh.Vertices(:,1), mesh.Vertices(:,2), mesh.Vertices(:,3), 'FaceColor', 'interp', 'EdgeColor', 'none', 'FaceLighting', 'gouraud');
+    % scatter3(mesh.Vertices(:,1), mesh.Vertices(:,2), mesh.Vertices(:,3), 10, 'k','o');
+    scatter3(terrain(:,1), terrain(:,2), terrain(:,3), 1, 'o','MarkerEdgeColor', [0 0 0]);
     xlim([0 100]);
     ylim([0 100]);
     zlim([0 20]);
 
+    
     % view(3);
     % set the camera angle
-    view(35 ,-50);
+    view(-50 ,35);
 
-    % set camera position
-    campos([-280,-350,350]);
+    % % set camera position
+    % campos([-280,-350,350]);
 
-    % set camera target
-    camtarget([36,50,2.5]);
+    % % set camera target
+    % camtarget([36,50,2.5]);
 
-    % set camera up vector
-    camup([0,0,1]);
+    % % set camera up vector
+    % camup([0,0,1]);
 
-    % set camera view angle
-    camva(11);
+    % % set camera view angle
+    % camva(11);
     
     axis equal;
+    scatter3(s_goal(1), s_goal(2), s_goal(3), 100, 'r','o','filled');
+    scatter3(mean(p_init(:,1)) , mean(p_init(:,2)) , mean(p_init(:,3)) , 100, 'b','o','filled');
 
     pause(1);
 
     for i = 1: length(tree)
         polygon = tree(i).polygon;
         for j = 1:3
-            plot3([polygon(j,1), polygon(mod(j,3)+1,1)], [polygon(j,2), polygon(mod(j,3)+1,2)], [polygon(j,3), polygon(mod(j,3)+1,3)], 'b');
+            plot3([polygon(j,1), polygon(mod(j,3)+1,1)], [polygon(j,2), polygon(mod(j,3)+1,2)], [polygon(j,3), polygon(mod(j,3)+1,3)], 'b')
             pause(0.01);
         end
         hold on;
     end
 
+    %plot the goal point
+
     % plot the solved path
     for i = 1: length(solved_tree)
         polygon = solved_tree(i).polygon;
         for j = 1:3
-            plot3([polygon(j,1), polygon(mod(j,3)+1,1)], [polygon(j,2), polygon(mod(j,3)+1,2)], [polygon(j,3), polygon(mod(j,3)+1,3)], 'r');
+            plot3([polygon(j,1), polygon(mod(j,3)+1,1)], [polygon(j,2), polygon(mod(j,3)+1,2)], [polygon(j,3), polygon(mod(j,3)+1,3)], 'r')
             pause(0.01);
         end
         hold on;
     end
+
+    %save the figure
+    saveas(gcf,'PRT.png')
 
 
 
@@ -146,7 +162,7 @@ function [ new_polygon , parent_polygon ] = findNearest(s_obj, tree, size)
 
     % initialize variables
     max_distance = 0;
-    scaling_factor = 0.1;
+    scaling_factor = 0.5;
 
     % edge selection matrix
     edge_selection = [2 3; 3 1; 1 2];
